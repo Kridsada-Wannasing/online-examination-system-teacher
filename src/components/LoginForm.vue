@@ -8,8 +8,8 @@
     <p class="pt-8 pb-8 color-white" style="font-size: 12px">
       Welcome back! Plaese login to your account.
     </p>
-    <v-text-field dark label="Username"></v-text-field>
-    <v-text-field dark label="Password"></v-text-field>
+    <v-text-field dark label="Email" v-model="email"></v-text-field>
+    <v-text-field dark label="Password" v-model="password"></v-text-field>
 
     <div>
       <v-row no-gutters>
@@ -30,6 +30,23 @@
 </template>
 <script>
 export default {
-  name: "loginForm"
+  name: "loginForm",
+  data() {
+    return {
+      email: "",
+      password: "",
+    };
+  },
+  methods: {
+    login() {
+      this.$store
+        .dispatch("teacher/login", {
+          email: this.email,
+          password: this.password,
+        })
+        .then(() => this.$router.push({ name: "Welcome" }))
+        .catch((error) => error);
+    },
+  },
 };
 </script>
