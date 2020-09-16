@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="17.807" height="16.611" viewBox="0 0 17.807 16.611">
+  <defs>
+    <clipPath id="clip-path">
+      <rect width="17.807" height="16.611" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="paperclip" clip-path="url(#clip-path)">
+    <path id="paperclip-2" data-name="paperclip" d="M17.5,8.237l-7.328,6.515a5.22,5.22,0,0,1-6.77,0,3.93,3.93,0,0,1,0-6.018l7.328-6.515a3.48,3.48,0,0,1,4.513,0,2.62,2.62,0,0,1,0,4.012L7.909,12.746a1.74,1.74,0,0,1-2.257,0,1.31,1.31,0,0,1,0-2.006l6.77-6.011" transform="translate(-0.848 -0.388)" fill="none" stroke="#1a73e8" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+  </g>
+</svg>

@@ -1,0 +1,30 @@
+<style lang="scss"></style>
+<template id="score">
+  <div class="h-100">
+    <v-row no-gutters class="h-100" align="center">
+      <v-col lg="8" md="8" sm="12" xs="12" class="h-100">
+        <h1 class="color-white">คะแนนสอบ</h1>
+        <FilterClass />
+        <div class="pt-10">
+          <ScoreTable />
+        </div>
+      </v-col>
+      <v-col lg="4" md="4" sm="12" xs="12" class="h-100">
+        <ProfileMenu />
+      </v-col>
+    </v-row>
+  </div>
+</template>
+<script>
+import ProfileMenu from "@/components/ProfileMenu";
+import ScoreTable from "@/components/ScoreTable";
+import FilterClass from "@/components/FilterClass";
+export default {
+  name: "score",
+  components: {
+    ProfileMenu,
+    FilterClass,
+    ScoreTable
+  }
+};
+</script>
