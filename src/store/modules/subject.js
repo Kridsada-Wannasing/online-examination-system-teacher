@@ -34,13 +34,13 @@ export const mutations = {
 export const actions = {
   async createSubject({ commit }, subject) {
     const response = await subjectServices.createSubject(subject);
-    commit("ADD_SUBJECT", response.data);
-    return response;
+    commit("ADD_SUBJECT", response.data.newSubject);
+    return response.data;
   },
   async getAllSubjects({ commit }) {
     const response = await subjectServices.getAllSubjects();
-    commit("SET_SUBJECTS", response.data);
-    return response;
+    commit("SET_SUBJECTS", response.data.allSubject);
+    return response.data;
   },
   async getSubject({ commit, getters }, subjectId) {
     const target = getters.getBySubjectId(subjectId);
@@ -51,13 +51,13 @@ export const actions = {
     }
 
     const response = await subjectServices.getSubject(subjectId);
-    commit("SET_SUBJECT", response.data);
-    return response;
+    commit("SET_SUBJECT", response.data.target);
+    return response.data.target;
   },
   async updateSubject({ commit }, { subject }) {
     const response = await subjectServices.updateSubject(subject);
-    commit("EDIT_SUBJECT", response.data);
-    return response;
+    commit("EDIT_SUBJECT", response.data.updatedSubject);
+    return response.data.updatedSubject;
   },
   async deleteSubject({ commit }, subjectId) {
     const response = await subjectServices.deleteSubject(subjectId);
