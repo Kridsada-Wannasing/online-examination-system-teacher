@@ -9,7 +9,7 @@ export const state = {
 export const mutations = {
   SET_TOKEN(state, token) {
     state.token = token;
-    localStorage.setItem("token", token);
+    localStorage.setItem("token_teacher", token);
   },
   SET_TEACHER(state, teacher) {
     state.teacher = teacher;
