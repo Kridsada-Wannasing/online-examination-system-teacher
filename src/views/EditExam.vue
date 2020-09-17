@@ -3,18 +3,21 @@
   <div class="h-100">
     <v-row no-gutters class="h-100" align="center">
       <v-col lg="9" md="8" sm="12" xs="12" class="h-100 pr-5">
-        <v-card class="pa-10" style="border-radius: 20px; max-height: 700px; overflow: auto;">
+        <v-card
+          class="pa-10"
+          style="border-radius: 20px; max-height: 700px; overflow: auto;"
+        >
           <h3 class="color-dark-blue">แก้ไขชุดข้อสอบ</h3>
           <hr class="mt-3 mb-3" />
           <div class="mb-2">
-            <TypeExam />
+            <TypeExam :exam="exam" />
           </div>
           <hr class="mt-5 mb-5" />
           <div class="mb-2">
             <Question :questions="questions" />
           </div>
           <div class="mb-2">
-            <AddExam />
+            <AddExam :editing="editingExam" />
           </div>
         </v-card>
       </v-col>
@@ -29,13 +32,16 @@ import ShowEditExam from "@/components/ShowEditExam";
 import TypeExam from "@/components/TypeExam";
 import Question from "@/components/Question";
 import AddExam from "@/components/AddExam";
+import { mapState } from "vuex";
+
 export default {
   name: "editExam",
+  props: ["examId"],
   components: {
     Question,
     ShowEditExam,
     TypeExam,
-    AddExam
+    AddExam,
   },
   data: () => ({
     questions: [
@@ -46,10 +52,16 @@ export default {
           "A.) Lorem ipsum dolor sit amet.",
           "B.) Lorem ipsum dolor sit amet.",
           "C.) Lorem ipsum dolor sit amet.",
-          "D.) Lorem ipsum dolor sit amet."
-        ]
-      }
-    ]
-  })
+          "D.) Lorem ipsum dolor sit amet.",
+        ],
+      },
+    ],
+  }),
+  computed: {
+    ...mapState("exam", ["exam"]),
+  },
+  created() {
+    this.$store.dispatch("exam/getExam", this.examId);
+  },
 };
 </script>

@@ -55,16 +55,16 @@ export default {
       {
         text: "ชุดข้อสอบ",
         icon: "mdi-file-document-outline",
-        to: "/examination"
+        to: "/exam",
       },
       { text: "คะแนนสอบ", icon: "mdi-poll", to: "/score" },
       {
         text: "การนัดหมาย",
         icon: "mdi-calendar-blank-outline",
-        to: "/appointment"
+        to: "/appointment",
       },
-      { text: "ห้องสอบ", icon: "mdi-cube-outline", to: "/welcome" }
-    ]
-  })
+      { text: "ห้องสอบ", icon: "mdi-cube-outline", to: "/welcome" },
+    ],
+  }),
 };
 </script>

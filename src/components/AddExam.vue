@@ -41,18 +41,18 @@
       <div class="mt-10" style="display: flex; justify-content: space-between;">
         <div style="display: flex; justify-content: space-between;">
           <span class="pr-4">2.)</span>
-          <div
+          <v-textarea
             class="pa-4 border-color-dark-blue mr-4"
             style="border: 1px solid; border-radius: 20px"
           >
+            <!-- Lorem ipsum dolor sit amet, ... Lorem ipsum dolor sit amet, ...
             Lorem ipsum dolor sit amet, ... Lorem ipsum dolor sit amet, ...
-            Lorem ipsum dolor sit amet, ... Lorem ipsum dolor sit amet, ...
-            Lorem ipsum dolor sit amet, ...
-          </div>
+            Lorem ipsum dolor sit amet, ... -->
+          </v-textarea>
         </div>
         <v-btn outlined color="primary" small dark>
           <v-icon v-text="'mdi-paperclip'" small class="color-blue"></v-icon
-          >Upload file
+          >Upload Image
         </v-btn>
       </div>
 
@@ -60,7 +60,7 @@
         <v-col cols="12" sm="12" md="6" lg="6">
           <div
             class="mb-4"
-            v-for="(item, i) in items"
+            v-for="(choice, i) in choices"
             :key="i"
             style="display: flex; justify-content: space-between;"
           >
@@ -71,8 +71,8 @@
               <v-checkbox
                 class="ma-0 mb-1"
                 hide-details
-                v-model="allowSpaces"
-                :label="item"
+                v-model="answer"
+                :label="choice"
               ></v-checkbox>
             </v-card>
             <v-icon class="mr-5" v-text="'mdi-delete-outline'" small></v-icon>
@@ -179,11 +179,19 @@
 import ListCode from "@/components/ListCode";
 export default {
   name: "addExam",
+  props: {
+    editing: Object,
+  },
   components: {
-    ListCode
+    ListCode,
   },
   data: () => ({
-    items: ["Test 1", "Test 2", "Test 3", "Test 4"]
-  })
+    items: ["Test 1", "Test 2", "Test 3", "Test 4"],
+  }),
+  computed: {
+    isEditingExam() {
+      return this.editing ? true : false;
+    },
+  },
 };
 </script>

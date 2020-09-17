@@ -12,7 +12,7 @@
         </v-card>
       </v-col>
       <v-col lg="4" md="4" sm="12" xs="12" class="h-100">
-        <ShowEditExam />
+        <ShowEditExam :exam="exam" />
       </v-col>
     </v-row>
   </div>
@@ -20,35 +20,46 @@
 <script>
 import Question from "@/components/Question";
 import ShowEditExam from "@/components/ShowEditExam";
+import { mapState } from "vuex";
+
 export default {
   name: "question",
+  props: ["examId"],
   components: {
     Question,
-    ShowEditExam
+    ShowEditExam,
   },
   data: () => ({
-    questions: [
-      {
-        title:
-          "1.) Lorem ipsum dolor sit amet, consetetur sedipscing elitr, sed diam noumy",
-        answer: [
-          "A.) Lorem ipsum dolor sit amet.",
-          "B.) Lorem ipsum dolor sit amet.",
-          "C.) Lorem ipsum dolor sit amet.",
-          "D.) Lorem ipsum dolor sit amet."
-        ]
-      },
-      {
-        title:
-          "2.) Lorem ipsum dolor sit amet, consetetur sedipscing elitr, sed diam noumy",
-        answer: [
-          "A.) Lorem ipsum dolor sit amet.",
-          "B.) Lorem ipsum dolor sit amet.",
-          "C.) Lorem ipsum dolor sit amet.",
-          "D.) Lorem ipsum dolor sit amet."
-        ]
-      }
-    ]
-  })
+    // questions: [
+    //   {
+    //     title:
+    //       "1.) Lorem ipsum dolor sit amet, consetetur sedipscing elitr, sed diam noumy",
+    //     answer: [
+    //       "A.) Lorem ipsum dolor sit amet.",
+    //       "B.) Lorem ipsum dolor sit amet.",
+    //       "C.) Lorem ipsum dolor sit amet.",
+    //       "D.) Lorem ipsum dolor sit amet.",
+    //     ],
+    //   },
+    //   {
+    //     title:
+    //       "2.) Lorem ipsum dolor sit amet, consetetur sedipscing elitr, sed diam noumy",
+    //     answer: [
+    //       "A.) Lorem ipsum dolor sit amet.",
+    //       "B.) Lorem ipsum dolor sit amet.",
+    //       "C.) Lorem ipsum dolor sit amet.",
+    //       "D.) Lorem ipsum dolor sit amet.",
+    //     ],
+    //   },
+    // ],
+  }),
+  created() {
+    this.$store.dispatch("question/getAllQuestions", this.examId);
+    this.$store.dispatch("exam/getExam", this.examId);
+  },
+  computed: {
+    ...mapState("question", ["questions"]),
+    ...mapState("exam", ["exam"]),
+  },
 };
 </script>

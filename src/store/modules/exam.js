@@ -39,7 +39,7 @@ export const actions = {
     commit("ADD_EXAM", response.data.newExam);
   },
   async getAllExams({ commit }, queryString) {
-    const response = await examServices.getAllExams();
+    const response = await examServices.getAllExams(queryString);
 
     commit("SET_TEACHER", response.data.exams);
   },
@@ -61,8 +61,8 @@ export const actions = {
     const response = await examServices.updateExam(subjectId, exam);
     commit("EDIT_EXAM", response.data.updateExam);
   },
-  async deleteExam({ commit }, examId) {
-    const { subjectId } = exam;
+  async deleteExam({ commit }, exam) {
+    const { subjectId, examId } = exam;
     await examServices.deleteExam(subjectId, examId);
     commit("DELETE_EXAM", examId);
   },

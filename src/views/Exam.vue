@@ -1,5 +1,5 @@
 <style lang="scss"></style>
-<template id="examination">
+<template id="exam">
   <div class="h-100">
     <v-row no-gutters class="h-100" align="center">
       <v-col lg="9" md="8" sm="12" xs="12" class="h-100 pr-5">
@@ -15,10 +15,10 @@
 import ProfileMenu from "@/components/ProfileMenu";
 import ListExam from "@/components/ListExam";
 export default {
-  name: "examination",
+  name: "exam",
   components: {
     ProfileMenu,
-    ListExam
-  }
+    ListExam,
+  },
 };
 </script>

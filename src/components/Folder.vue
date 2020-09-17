@@ -6,14 +6,14 @@
           <v-col class="text-left">
             <div style="height: 70%">
               <p class="mb-0" style="font-size: 14px;">
-                <b>{{ classId }}</b>
+                <b>{{ exam.subjectId }}</b>
               </p>
-              <p style="font-size: 12px">{{ title }}</p>
+              <p style="font-size: 12px">{{ exam.examName }}</p>
             </div>
             <div style="height: 30%">
-              <p class="mb-0" style="font-size: 12px">{{ date }}</p>
-              <p class="mb-0" style="font-size: 12px">{{ sector }}</p>
-              <p class="mb-0" style="font-size: 12px">{{ code }}</p>
+              <p class="mb-0" style="font-size: 12px">{{ exam.semester }}</p>
+              <p class="mb-0" style="font-size: 12px">{{ exam.examType }}</p>
+              <!-- <p class="mb-0" style="font-size: 12px">{{ code }}</p> -->
             </div>
           </v-col>
         </v-row>
@@ -25,14 +25,14 @@
           <v-col class="text-left">
             <div style="height: 70%">
               <p class="mb-0" style="font-size: 14px;">
-                <b>{{ classId }}</b>
+                <b>{{ exam.subjectId }}</b>
               </p>
-              <p style="font-size: 12px">{{ title }}</p>
+              <p style="font-size: 12px">{{ exam.examName }}</p>
             </div>
             <div style="height: 30%">
-              <p class="mb-0" style="font-size: 12px">{{ date }}</p>
-              <p class="mb-0" style="font-size: 12px">{{ sector }}</p>
-              <p class="mb-0" style="font-size: 12px">{{ code }}</p>
+              <p class="mb-0" style="font-size: 12px">{{ exam.semester }}</p>
+              <p class="mb-0" style="font-size: 12px">{{ exam.examType }}</p>
+              <!-- <p class="mb-0" style="font-size: 12px">{{ code }}</p> -->
             </div>
           </v-col>
         </v-row>
@@ -46,16 +46,19 @@
 <script>
 export default {
   name: "folder",
-  props: ["color", "classId", "title", "code", "sector", "date"],
+  props: {
+    exam: Object,
+    color: String,
+  },
   data() {
     return {
-      imagePath: `@/assets/icon/folder-${this.color}.svg`
+      imagePath: `@/assets/icon/folder-${this.color}.svg`,
     };
   },
   methods: {
     getImgUrl() {
       return require(this.imagePath);
-    }
-  }
+    },
+  },
 };
 </script>

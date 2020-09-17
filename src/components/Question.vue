@@ -2,7 +2,7 @@
   <div>
     <div style="display: flex; justify-content: space-between;">
       <h4 class="color-dark-blue">คำถาม</h4>
-      <h5 class="color-dark-blue">2 ข้อ</h5>
+      <h5 class="color-dark-blue">{{ questions.length }} ข้อ</h5>
     </div>
     <v-row>
       <v-col
@@ -17,9 +17,9 @@
           style="font-size: 12px; border-radius: 20px; min-height: 220px; max-height: 220px;"
           outlined
         >
-          <p>{{ question.title }}</p>
-          <p class="my-1" v-for="(answer, j) in question.answer" :key="j">
-            {{ answer }}
+          <p>{{ question.question }}</p>
+          <p class="my-1" v-for="(choice, j) in question.Choice" :key="j">
+            {{ choice.choice }}
           </p>
         </v-card>
       </v-col>
@@ -42,7 +42,7 @@
 <script>
 export default {
   name: "question",
-  props: ["questions"]
+  props: ["questions"],
   // Example
   //   data: () => ({
   //     questions: [

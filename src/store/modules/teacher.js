@@ -1,4 +1,4 @@
-import teacherServices from "../..teacher/api/services/teacher";
+import teacherServices from "../../api/services/teacher";
 
 export const namespaced = true;
 
