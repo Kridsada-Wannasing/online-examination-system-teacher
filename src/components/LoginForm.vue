@@ -9,7 +9,12 @@
       Welcome back! Plaese login to your account.
     </p>
     <v-text-field dark label="Email" v-model="email"></v-text-field>
-    <v-text-field dark label="Password" v-model="password"></v-text-field>
+    <v-text-field
+      dark
+      label="Password"
+      type="password"
+      v-model="password"
+    ></v-text-field>
 
     <div>
       <v-row no-gutters>
@@ -24,7 +29,9 @@
       </v-row>
     </div>
     <div class="pt-5 pb-8">
-      <v-btn rounded color="#6dc449" style="width: 50%" dark>Login</v-btn>
+      <v-btn rounded color="#6dc449" style="width: 50%" @click="login" dark
+        >Login</v-btn
+      >
     </div>
   </div>
 </template>
