@@ -5,11 +5,15 @@ export const namespaced = true;
 export const state = {
   questions: [],
   question: {},
+  questionsInExam: [],
 };
 
 export const mutations = {
   SET_QUESTIONS(state, questions) {
     state.questions = questions;
+  },
+  SET_QUESTIONS_IN_EXAM(state, questions) {
+    state.questionsInExam = questions;
   },
   SET_QUESTION(state, question) {
     state.question = question;
@@ -36,12 +40,17 @@ export const mutations = {
 export const actions = {
   async createQuestion({ commit }, question) {
     const response = await examServices.createExam(question);
-    commit("ADD_QUESTION", response.data.newExam);
+    commit("ADD_QUESTION", response.data.newQuestion);
   },
   async getAllQuestions({ commit }, queryString) {
     const response = await examServices.getAllExams();
 
-    commit("SET_QUESTIONS", response.data.questions);
+    commit("SET_QUESTIONS", response.data.allQuestion);
+  },
+  async getQuestionsInExam({ commit }, examId) {
+    const response = await examServices.getQuestionsInExam(examId);
+
+    commit("SET_QUESTIONS_IN_EXAM", response.data.getQuestions);
   },
   async getQuestion({ commit, getters }, question) {
     const { subjectId, questionId } = question;
@@ -54,7 +63,7 @@ export const actions = {
     }
 
     const response = await examServices.getExam(subjectId, questionId);
-    commit("SET_QUESTION", response.data.question);
+    commit("SET_QUESTION", response.data.target);
   },
   async editQuestion({ commit }, question) {
     const { subjectId } = question;
