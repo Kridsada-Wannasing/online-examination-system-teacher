@@ -18,7 +18,7 @@ apiClient.interceptors.request.use(
     )
       return config;
 
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token_teacher");
 
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;

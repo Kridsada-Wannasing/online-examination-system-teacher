@@ -1,21 +1,24 @@
 import { apiClient } from "../axios";
 
-const endpoint = "exam";
+const endpoint = "question";
 
 export default {
-  createQuestion(question) {
-    return apiClient.post(`/${endpoint}/login`, question);
+  createQuestion(exam) {
+    return apiClient.post(`/${endpoint}/login`, exam);
   },
   getAllQuestions(examId, queryString) {
-    return apiClient.get(`/${endpoint}/:${examId}?${queryString}`);
+    return apiClient.get(`/${endpoint}/${examId}`);
   },
-  getQuestion(questionId) {
-    return apiClient.get(`/${endpoint}/:${questionId}`);
+  getQuestionsInExam(examId) {
+    return apiClient.get(`/question-exam/${examId}`);
   },
-  updateQuestion(question) {
-    return apiClient.patch(`/${endpoint}/:${question.questionId}`, question);
+  getQuestion(subjectId, examId) {
+    return apiClient.get(`/${endpoint}/${subjectId}/${examId}`);
   },
-  deleteQuestion(questionId) {
-    return apiClient.delete(`${endpoint}/:${questionId}/:${examId}`);
+  updateQuestion(subjectId, exam) {
+    return apiClient.patch(`/${endpoint}/${subjectId}/${exam.examId}`, exam);
+  },
+  deleteQuestion(subjectId, examId) {
+    return apiClient.delete(`${endpoint}/${subjectId}/${examId}`, data);
   },
 };
