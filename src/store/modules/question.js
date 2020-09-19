@@ -1,4 +1,4 @@
-import examServices from "../../api/services/question";
+import questionServices from "../../api/services/question";
 
 export const namespaced = true;
 
@@ -61,22 +61,23 @@ export const actions = {
       return target;
     }
 
-    const response = await examServices.getExam(subjectId, questionId);
-    commit("SET_QUESTION", response.data.target);
+    const response = await questionServices.getExam(subjectId, questionId);
+    commit("SET_QUESTION", response.data.question);
   },
   async editQuestion({ commit }, question) {
     const { subjectId } = question;
-    const response = await examServices.updateExam(subjectId, question);
+    const response = await questionServices.updateExam(subjectId, question);
     commit("EDIT_QUESTION", response.data.updateExam);
   },
   async deleteQuestion({ commit }, questionId) {
-    await examServices.deleteExam(questionId);
+    const { subjectId } = question;
+    await questionServices.deleteExam(subjectId, questionId);
     commit("DELETE_QUESTION", questionId);
   },
 };
 
 export const getters = {
-  getByExamId: (state) => (questionId) => {
+  getByQuestionId: (state) => (questionId) => {
     if (questionId == state.question.questionId) return state.question;
 
     return state.questions.find(
