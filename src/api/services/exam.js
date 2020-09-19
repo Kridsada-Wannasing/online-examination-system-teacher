@@ -6,16 +6,16 @@ export default {
   createExam(exam) {
     return apiClient.post(`/${endpoint}/login`, exam);
   },
-  getAllExams(subjectId, queryString) {
-    return apiClient.get(`/${endpoint}/:${subjectId}`);
+  getAllExams(subjectId) {
+    return apiClient.get(`/${endpoint}/${subjectId}`);
   },
   getExam(subjectId, examId) {
     return apiClient.get(`/${endpoint}/:${subjectId}/:${examId}`);
   },
   updateExam(subjectId, exam) {
-    return apiClient.patch(`/${endpoint}/:${subjectId}/:${exam.examId}`, exam);
+    return apiClient.patch(`/${endpoint}/${subjectId}/${exam.examId}`, exam);
   },
   deleteExam(subjectId, examId) {
-    return apiClient.delete(`${endpoint}/:${subjectId}/:${examId}`, data);
+    return apiClient.delete(`${endpoint}/${subjectId}/${examId}`);
   },
 };

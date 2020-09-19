@@ -9,7 +9,9 @@
             rounded
             filled
             dense
-            label="ประเภทข้อสอบ"
+            :item="types"
+            v-model="questionType"
+            label="ประเภทคำถาม"
             hide-details
           ></v-select>
         </v-col>
@@ -19,6 +21,8 @@
             rounded
             dense
             filled
+            :item="tags"
+            v-model="tag"
             label="Tag"
             append-icon="mdi-plus"
             hide-details
@@ -30,6 +34,8 @@
             rounded
             filled
             dense
+            :items="levelItems"
+            v-model="level"
             label="ระดับความยาก"
             hide-details
           ></v-select>
@@ -135,63 +141,47 @@
         </v-card>
       </div>
     </v-card>
-    <!-- <v-row>
-      <v-col cols="12" sm="6" md="4" lg="4">
-        <v-select solo rounded filled dense :items="droupdownItems" label="วิชา"></v-select>
-      </v-col>
-      <v-col cols="12" sm="6" md="4" lg="4">
-        <v-select solo rounded filled dense :items="droupdownItems" label="ชุดข้อสอบ"></v-select>
-      </v-col>
-      <v-col cols="12" sm="6" md="4" lg="4">
-        <v-select solo rounded filled dense :items="droupdownItems" label="การสอบ"></v-select>
-      </v-col>
-    </v-row>-->
-
-    <!-- <v-card class="mx-auto pa-5" style="border-radius: 20px;" outlined>
-      <div class="pb-5" style="display: flex; justify-content: space-between;">
-        <h3 class="color-dark-blue">ชุดข้อสอบ</h3>
-        <v-btn small outlined color="primary" @click="status = !status">
-          <v-icon left>mdi-plus</v-icon>เพิ่มชุดข้อสอบ
-        </v-btn>
-      </div>
-      <div style="display: flex;">
-        <v-row no-gutters>
-          <v-col class="mb-2" v-for="(item, i) in items" :key="i">
-            <Folder
-              class="mr-2"
-              :color="item.color"
-              :title="item.title"
-              :classId="item.classId"
-              :code="item.code"
-              :date="item.date"
-              :sector="item.sector"
-            />
-          </v-col>
-          <v-col class="mb-2">
-            <Folder class="mr-2" color="plus" />
-          </v-col>
-        </v-row>
-      </div>
-    </v-card>-->
   </div>
 </template>
 <script>
 import ListCode from "@/components/ListCode";
 export default {
-  name: "addExam",
-  props: {
-    editing: Object,
-  },
+  name: "addQuestion",
   components: {
     ListCode,
   },
   data: () => ({
     items: ["Test 1", "Test 2", "Test 3", "Test 4"],
+    types: ["ปรนัย", "อัตนัย"],
+    levelItems: [1, 2, 3, 4, 5],
+    questionType: "",
+    tagOfQuestion: [],
+    level: null,
+    question: "",
+    choices: [
+      { choice: "ตัวเลือกที่ 1" },
+      { choice: "ตัวเลือกที่ 2" },
+      { choice: "ตัวเลือกที่ 3" },
+      { choice: "ตัวเลือกที่ 4" },
+    ],
   }),
-  computed: {
-    isEditingExam() {
-      return this.editing ? true : false;
+  methods: {
+    createQuestion() {
+      this.$store.dispatch("question/createQuestion", {
+        questionType: this.types,
+        question: this.question,
+        level: this.level,
+      });
     },
+    addChoice() {
+      this.choices.push({
+        choice: `ตัวเลือกที่ ${this.choices.length}`,
+      });
+    },
+    subChoice() {},
   },
+  // created() {
+  //   this.$store.dispatch('tag/getTagsInQuestion')
+  // }
 };
 </script>

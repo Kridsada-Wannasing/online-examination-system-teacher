@@ -14,15 +14,18 @@
           </div>
           <hr class="mt-5 mb-5" />
           <div class="mb-2">
-            <Question :questions="questions" />
+            <Question
+              :questions="questionsInExam"
+              @clickAddQuestion="showAddQuestion"
+            />
           </div>
           <div class="mb-2">
-            <AddExam :editing="editingExam" />
+            <AddQuestion :editing="editingQuestion" v-if="addQuestion" />
           </div>
         </v-card>
       </v-col>
       <v-col lg="3" md="4" sm="12" xs="12" class="h-100 pl-5">
-        <ShowEditExam />
+        <ShowEditExam :examId="examId" :subjectId="subjectId" />
       </v-col>
     </v-row>
   </div>
@@ -31,37 +34,49 @@
 import ShowEditExam from "@/components/ShowEditExam";
 import TypeExam from "@/components/TypeExam";
 import Question from "@/components/Question";
-import AddExam from "@/components/AddExam";
+import AddQuestion from "@/components/AddQuestion";
 import { mapState } from "vuex";
 
 export default {
   name: "editExam",
-  props: ["examId"],
+  props: ["examId", "subjectId"],
   components: {
     Question,
     ShowEditExam,
     TypeExam,
-    AddExam,
+    AddQuestion,
   },
   data: () => ({
-    questions: [
-      {
-        title:
-          "1.) Lorem ipsum dolor sit amet, consetetur sedipscing elitr, sed diam noumy",
-        answer: [
-          "A.) Lorem ipsum dolor sit amet.",
-          "B.) Lorem ipsum dolor sit amet.",
-          "C.) Lorem ipsum dolor sit amet.",
-          "D.) Lorem ipsum dolor sit amet.",
-        ],
-      },
-    ],
+    addQuestion: false,
+    // questions: [
+    //   {
+    //     title:
+    //       "1.) Lorem ipsum dolor sit amet, consetetur sedipscing elitr, sed diam noumy",
+    //     answer: [
+    //       "A.) Lorem ipsum dolor sit amet.",
+    //       "B.) Lorem ipsum dolor sit amet.",
+    //       "C.) Lorem ipsum dolor sit amet.",
+    //       "D.) Lorem ipsum dolor sit amet.",
+    //     ],
+    //   },
+    // ],
   }),
   computed: {
     ...mapState("exam", ["exam"]),
+    ...mapState("question", ["questionsInExam"]),
   },
   created() {
-    this.$store.dispatch("exam/getExam", this.examId);
+    this.$store.dispatch("exam/getExam", {
+      examId: this.examId,
+      subjectId: this.subjectId,
+    });
+    this.$store.dispatch("question/getQuestionsInExam", this.examId);
+  },
+  methods: {
+    showAddQuestion(event) {
+      console.log(event);
+      this.addQuestion = event;
+    },
   },
 };
 </script>

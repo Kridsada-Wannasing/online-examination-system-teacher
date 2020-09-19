@@ -14,6 +14,7 @@
             :item-value="'subjectId'"
             label="วิชา"
             v-model="subject"
+            name="subject"
           ></v-select>
         </v-col>
         <v-col cols="12" sm="6" md="4" lg="4">
@@ -59,7 +60,18 @@
               v-for="(exam, i) in exams"
               :key="i"
             >
-              <Folder :color="i % 2 === 0 ? 'green' : 'blue'" :exam="exam" />
+              <router-link
+                :to="{
+                  name: 'Question',
+                  params: { subjectId: subject, examId: exam.examId },
+                }"
+              >
+                <Folder
+                  v-if="exam"
+                  :color="i % 2 === 0 ? 'green' : 'blue'"
+                  :exam="exam"
+                />
+              </router-link>
             </v-col>
             <v-col cols="12" lg="4" md="6" sm="6" xs="12" class="h-100 mb-5">
               <Folder class="mr-2" color="plus" />
@@ -113,7 +125,6 @@ export default {
   }),
   created() {
     this.$store.dispatch("subject/getAllSubjects");
-    console.log(this.subjects);
   },
   computed: {
     ...mapState("subject", ["subjects"]),
@@ -121,7 +132,8 @@ export default {
   },
   watch: {
     subject() {
-      this.$store.dispatch("exam/getAllExam", this.subject);
+      this.$store.dispatch("exam/getAllExams", this.subject);
+      console.log(this.subject);
     },
   },
   methods: {

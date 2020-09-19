@@ -42,9 +42,8 @@ export const actions = {
     const response = await examServices.createExam(question);
     commit("ADD_QUESTION", response.data.newQuestion);
   },
-  async getAllQuestions({ commit }, queryString) {
+  async getAllQuestions({ commit }) {
     const response = await examServices.getAllExams();
-
     commit("SET_QUESTIONS", response.data.allQuestion);
   },
   async getQuestionsInExam({ commit }, examId) {
@@ -71,8 +70,7 @@ export const actions = {
     commit("EDIT_QUESTION", response.data.updateExam);
   },
   async deleteQuestion({ commit }, questionId) {
-    const { subjectId } = question;
-    await examServices.deleteExam(subjectId, questionId);
+    await examServices.deleteExam(questionId);
     commit("DELETE_QUESTION", questionId);
   },
 };

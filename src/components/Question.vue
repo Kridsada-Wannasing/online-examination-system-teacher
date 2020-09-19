@@ -18,7 +18,7 @@
           outlined
         >
           <p>{{ question.question }}</p>
-          <p class="my-1" v-for="(choice, j) in question.Choice" :key="j">
+          <p class="my-1" v-for="(choice, j) in question.Choices" :key="j">
             {{ choice.choice }}
           </p>
         </v-card>
@@ -28,6 +28,8 @@
           class="mx-auto color-dark-blue pa-4 text-center"
           style="font-size: 12px; border-radius: 20px; min-height: 220px; max-height: 220px;"
           outlined
+          @click="addQuestionClick"
+          v-model="click"
         >
           <img
             src="@/assets/icon/plus.svg"
@@ -43,6 +45,11 @@
 export default {
   name: "question",
   props: ["questions"],
+  data() {
+    return {
+      click: false,
+    };
+  },
   // Example
   //   data: () => ({
   //     questions: [
@@ -58,5 +65,16 @@ export default {
   //       }
   //     ]
   //   })
+  watch: {
+    click() {
+      console.log(this.click);
+      this.$emit("clickAddQuestion", this.click);
+    },
+  },
+  methods: {
+    addQuestionClick() {
+      this.click = !this.click;
+    },
+  },
 };
 </script>

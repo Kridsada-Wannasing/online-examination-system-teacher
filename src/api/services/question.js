@@ -6,7 +6,7 @@ export default {
   createQuestion(exam) {
     return apiClient.post(`/${endpoint}/login`, exam);
   },
-  getAllQuestions(examId, queryString) {
+  getAllQuestions(examId) {
     return apiClient.get(`/${endpoint}/${examId}`);
   },
   getQuestionsInExam(examId) {
@@ -15,10 +15,10 @@ export default {
   getQuestion(subjectId, examId) {
     return apiClient.get(`/${endpoint}/${subjectId}/${examId}`);
   },
-  updateQuestion(subjectId, exam) {
-    return apiClient.patch(`/${endpoint}/${subjectId}/${exam.examId}`, exam);
+  updateQuestion(questionId, updateQuestion) {
+    return apiClient.patch(`/${endpoint}/${questionId}`, updateQuestion);
   },
-  deleteQuestion(subjectId, examId) {
-    return apiClient.delete(`${endpoint}/${subjectId}/${examId}`, data);
+  deleteQuestion(questionId) {
+    return apiClient.delete(`${endpoint}/${questionId}`);
   },
 };

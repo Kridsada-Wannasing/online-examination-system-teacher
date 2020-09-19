@@ -8,11 +8,13 @@
           style="border-radius: 20px;"
           outlined
         >
-          <Question :questions="questions" />
+          <router-link :to="{ name: 'EditExam', params: { examId: examId } }">
+            <Question :questions="questionsInExam" />
+          </router-link>
         </v-card>
       </v-col>
       <v-col lg="4" md="4" sm="12" xs="12" class="h-100">
-        <ShowEditExam :exam="exam" />
+        <ShowEditExam :examId="examId" :subjectId="subjectId" />
       </v-col>
     </v-row>
   </div>
@@ -24,7 +26,7 @@ import { mapState } from "vuex";
 
 export default {
   name: "question",
-  props: ["examId"],
+  props: ["examId", "subjectId"],
   components: {
     Question,
     ShowEditExam,
@@ -54,12 +56,10 @@ export default {
     // ],
   }),
   created() {
-    this.$store.dispatch("question/getAllQuestions", this.examId);
-    this.$store.dispatch("exam/getExam", this.examId);
+    this.$store.dispatch("question/getQuestionsInExam", this.examId);
   },
   computed: {
-    ...mapState("question", ["questions"]),
-    ...mapState("exam", ["exam"]),
+    ...mapState("question", ["questionsInExam"]),
   },
 };
 </script>

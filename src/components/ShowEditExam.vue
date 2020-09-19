@@ -9,7 +9,13 @@
         <Folder class="w-100" :color="'green'" :exam="exam" />
       </div>
 
-      <v-btn class="mt-4 ml-4" outlined color="red" small dark to="/editexam"
+      <v-btn
+        class="mt-4 ml-4"
+        outlined
+        color="red"
+        small
+        dark
+        :to="{ name: 'EditExam', params: { examId: examId } }"
         >แก้ไขชุดข้อสอบ</v-btn
       >
     </v-card>
@@ -17,11 +23,11 @@
 </template>
 <script>
 import Folder from "./Folder";
+import { mapState } from "vuex";
+
 export default {
   name: "showEditExam",
-  props: {
-    exam: Object,
-  },
+  props: ["examId", "subjectId"],
   components: {
     Folder,
   },
@@ -34,5 +40,14 @@ export default {
     //   sector: "ภาคกลาง",
     // },
   }),
+  created() {
+    this.$store.dispatch("exam/getExam", {
+      examId: this.examId,
+      subjectId: this.subjectId,
+    });
+  },
+  computed: {
+    ...mapState("exam", ["exam"]),
+  },
 };
 </script>

@@ -38,23 +38,23 @@ export const actions = {
     const response = await examServices.createExam(exam);
     commit("ADD_EXAM", response.data.newExam);
   },
-  async getAllExams({ commit }, queryString) {
-    const response = await examServices.getAllExams(queryString);
-
-    commit("SET_TEACHER", response.data.exams);
+  async getAllExams({ commit }, subjectId) {
+    const response = await examServices.getAllExams(subjectId);
+    console.log(response.data.allExam);
+    commit("SET_EXAMS", response.data.allExam);
   },
-  async getExam({ commit, getters }, exam) {
-    const { subjectId, examId } = exam;
+  async getExam({ commit, state, getters }, exam) {
+    if (exam.examId == state.exam.examId) return state.exam;
 
-    const target = getters.getByExamId(subjectId);
+    const target = getters.getByExamId(exam.examId);
 
     if (target) {
       commit("SET_EXAM", target);
       return target;
     }
 
-    const response = await examServices.getExam(subjectId, examId);
-    commit("SET_EXAM", response.data.exam);
+    const response = await examServices.getExam(exam.subjectId, exam.examId);
+    commit("SET_EXAM", response.data.target);
   },
   async editExam({ commit }, exam) {
     const { subjectId } = exam;
@@ -70,8 +70,6 @@ export const actions = {
 
 export const getters = {
   getByExamId: (state) => (examId) => {
-    if (examId == state.exam.examId) return state.exam;
-
     return state.exams.find((exam) => exam.examId == examId);
   },
 };
