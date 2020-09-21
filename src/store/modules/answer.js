@@ -5,7 +5,6 @@ export const namespaced = true;
 export const state = {
   answers: [],
   answer: {},
-  answersInAnswer: [],
 };
 
 export const mutations = {
