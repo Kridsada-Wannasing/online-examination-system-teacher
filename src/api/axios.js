@@ -24,6 +24,10 @@ apiClient.interceptors.request.use(
       config.headers["Authorization"] = `Bearer ${token}`;
     }
 
+    if (config.data instanceof FormData) {
+      Object.assign(config.headers, config.data.getHeaders());
+    }
+
     return config;
   },
   (error) => {

@@ -20,7 +20,7 @@
             />
           </div>
           <div class="mb-2">
-            <AddQuestion :editing="editingQuestion" v-if="addQuestion" />
+            <AddQuestion v-if="addQuestion" />
           </div>
         </v-card>
       </v-col>

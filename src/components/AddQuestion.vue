@@ -9,24 +9,28 @@
             rounded
             filled
             dense
-            :item="types"
+            :items="types"
             v-model="questionType"
             label="ประเภทคำถาม"
             hide-details
           ></v-select>
         </v-col>
         <v-col cols="12" sm="6" md="4" lg="4">
-          <v-text-field
+          <v-select
             solo
             rounded
             dense
             filled
-            :item="tags"
-            v-model="tag"
+            multiple
+            :items="tags"
+            :item-text="'tagName'"
+            :item-value="'tagId'"
+            v-model="tagOfQuestion"
             label="Tag"
             append-icon="mdi-plus"
             hide-details
-          ></v-text-field>
+            @click:append-icon="manageTag"
+          ></v-select>
         </v-col>
         <v-col cols="12" sm="6" md="4" lg="4">
           <v-select
@@ -41,25 +45,50 @@
           ></v-select>
         </v-col>
       </v-row>
-      <div>
+      <!-- <div>
         <ListCode />
+      </div> -->
+      <div v-if="image">
+        <v-img :src="image"></v-img>
       </div>
       <div class="mt-10" style="display: flex; justify-content: space-between;">
         <div style="display: flex; justify-content: space-between;">
-          <span class="pr-4">2.)</span>
+          <span class="pr-4">{{ this.choices.length + 1 }})</span>
           <v-textarea
+            outlined
+            rounded
             class="pa-4 border-color-dark-blue mr-4"
-            style="border: 1px solid; border-radius: 20px"
+            v-model="question"
           >
             <!-- Lorem ipsum dolor sit amet, ... Lorem ipsum dolor sit amet, ...
             Lorem ipsum dolor sit amet, ... Lorem ipsum dolor sit amet, ...
             Lorem ipsum dolor sit amet, ... -->
           </v-textarea>
         </div>
-        <v-btn outlined color="primary" small dark>
-          <v-icon v-text="'mdi-paperclip'" small class="color-blue"></v-icon
-          >Upload Image
+        <v-btn
+          color="primary"
+          class="text-none"
+          outlined
+          small
+          dark
+          :loading="isSelecting"
+          @click="onButtonClick"
+        >
+          <v-icon
+            left
+            v-text="'mdi-paperclip'"
+            small
+            class="color-blue"
+          ></v-icon
+          >{{ buttonText }}
         </v-btn>
+        <input
+          ref="uploader"
+          class="d-none"
+          type="file"
+          accept="image/*"
+          @change="onFileChanged"
+        />
       </div>
 
       <v-row class="mt-7">
@@ -70,18 +99,27 @@
             :key="i"
             style="display: flex; justify-content: space-between;"
           >
-            <v-card
-              class="px-2 py-2"
-              style="min-width: 150px; border-radius: 20px;"
+            <v-checkbox
+              class="ma-0 mb-1"
+              hide-details
+              :value="choice.order"
+              v-model="answers"
+            ></v-checkbox>
+            <v-text-field
+              class="px-2 my-0"
+              background-color="white"
+              rounded
+              v-model="choices[i].choice"
+              outlined
+              filled
+              dense
             >
-              <v-checkbox
-                class="ma-0 mb-1"
-                hide-details
-                v-model="answer"
-                :label="choice"
-              ></v-checkbox>
-            </v-card>
-            <v-icon class="mr-5" v-text="'mdi-delete-outline'" small></v-icon>
+            </v-text-field>
+            <v-icon
+              class="mr-5"
+              v-text="'mdi-delete-outline'"
+              @click="subChoice(i)"
+            ></v-icon>
           </div>
         </v-col>
         <v-col
@@ -93,7 +131,7 @@
           class="px-10"
         >
           <div class="text-center">
-            <v-select
+            <!-- <v-select
               class="mb-3"
               solo
               rounded
@@ -101,16 +139,18 @@
               dense
               label="ข้อเดียว"
               hide-details
-            ></v-select>
+            ></v-select> -->
 
-            <v-select
+            <v-text-field
+              class="mx-8"
               solo
               rounded
               filled
               dense
-              label="ระดับคะแนน"
+              label="คะแนน"
+              v-model="score"
               hide-details
-            ></v-select>
+            ></v-text-field>
           </div>
         </v-col>
       </v-row>
@@ -127,7 +167,7 @@
         >
       </div>
 
-      <div class="mt-5">
+      <!-- <div class="mt-5">
         <v-card
           class="mx-auto color-dark-blue pa-4 text-center"
           style="font-size: 12px; border-radius: 20px; min-height: 220px; max-height: 220px;"
@@ -139,19 +179,21 @@
             style="margin-top: 66px;"
           />
         </v-card>
-      </div>
+      </div> -->
     </v-card>
   </div>
 </template>
 <script>
-import ListCode from "@/components/ListCode";
+// import ListCode from "@/components/ListCode";
+// import UploadButton from "vuetify-upload-button";
+import { mapState } from "vuex";
 export default {
   name: "addQuestion",
   components: {
-    ListCode,
+    // ListCode,
+    // "upload-btn": UploadButton,
   },
   data: () => ({
-    items: ["Test 1", "Test 2", "Test 3", "Test 4"],
     types: ["ปรนัย", "อัตนัย"],
     levelItems: [1, 2, 3, 4, 5],
     questionType: "",
@@ -159,29 +201,92 @@ export default {
     level: null,
     question: "",
     choices: [
-      { choice: "ตัวเลือกที่ 1" },
-      { choice: "ตัวเลือกที่ 2" },
-      { choice: "ตัวเลือกที่ 3" },
-      { choice: "ตัวเลือกที่ 4" },
+      { choice: "ตัวเลือกที่ 1", order: 1 },
+      { choice: "ตัวเลือกที่ 2", order: 2 },
+      { choice: "ตัวเลือกที่ 3", order: 3 },
+      { choice: "ตัวเลือกที่ 4", order: 4 },
     ],
+    selectedFile: null,
+    isSelecting: false,
+    defaultButtonText: "UPLOAD IMAGE",
+    score: null,
+    answers: [],
+    image: "",
   }),
   methods: {
     createQuestion() {
-      this.$store.dispatch("question/createQuestion", {
+      const response = this.$store.dispatch("question/createQuestion", {
         questionType: this.types,
         question: this.question,
         level: this.level,
       });
+      if (this.choices) {
+        this.createChoices(response.questionId);
+      } else {
+        this.createAnswers(response.questionId);
+      }
+    },
+    createChoices(questionId) {
+      let choices = this.choices.map((element) => ({
+        ...element,
+        questionId: questionId,
+      }));
+      this.$store.dispatch("choice/createChoices", choices);
+    },
+    createAnswers(questionId) {
+      let answers = this.answers.map((element) => ({
+        ...element,
+        questionId: questionId,
+        score: this.score,
+      }));
+      this.$store.dispatch("answer/createAnswers", answers);
+    },
+    createImageInQuestion(questionId) {
+      const formData = new FormData();
+      formData.append("file", this.selectedFile, this.selectedFile.name);
+      formData.append("questionId", questionId);
+
+      this.$store.dispatch("image/createImage", formData);
     },
     addChoice() {
       this.choices.push({
-        choice: `ตัวเลือกที่ ${this.choices.length}`,
+        choice: `ตัวเลือกที่ ${this.choices.length + 1}`,
+        order: this.choices.length + 1,
       });
     },
-    subChoice() {},
+    subChoice(index) {
+      this.choices.splice(index, 1);
+    },
+    onButtonClick() {
+      this.isSelecting = true;
+      window.addEventListener(
+        "focus",
+        () => {
+          this.isSelecting = false;
+        },
+        { once: true }
+      );
+
+      this.$refs.uploader.click();
+    },
+    onFileChanged(e) {
+      this.selectedFile = e.target.files[0];
+      this.image = URL.createObjectURL(this.selectedFile);
+    },
+    manageTag() {
+      console.log("this is plus");
+    },
   },
-  // created() {
-  //   this.$store.dispatch('tag/getTagsInQuestion')
-  // }
+  computed: {
+    ...mapState("tag", ["tags"]),
+    buttonText() {
+      return this.selectedFile
+        ? this.selectedFile.name
+        : this.defaultButtonText;
+    },
+  },
+  created() {
+    this.$store.dispatch("tag/getAllTags");
+  },
 };
 </script>

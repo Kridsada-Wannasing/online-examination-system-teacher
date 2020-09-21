@@ -39,15 +39,15 @@ export const mutations = {
 
 export const actions = {
   async createQuestion({ commit }, question) {
-    const response = await examServices.createExam(question);
+    const response = await questionServices.createExam(question);
     commit("ADD_QUESTION", response.data.newQuestion);
   },
   async getAllQuestions({ commit }) {
-    const response = await examServices.getAllExams();
+    const response = await questionServices.getAllExams();
     commit("SET_QUESTIONS", response.data.allQuestion);
   },
   async getQuestionsInExam({ commit }, examId) {
-    const response = await examServices.getQuestionsInExam(examId);
+    const response = await questionServices.getQuestionsInExam(examId);
 
     commit("SET_QUESTIONS_IN_EXAM", response.data.getQuestions);
   },

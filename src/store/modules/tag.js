@@ -32,7 +32,7 @@ export const mutations = {
 export const actions = {
   async createTag({ commit }, tag) {
     const response = await tagServices.createTag(tag);
-    commit("ADD_TAG", response.data);
+    commit("ADD_TAG", response.data.newTag);
     return response;
   },
   async getAllTags({ commit }) {
@@ -73,6 +73,6 @@ export const getters = {
   getByTagId: (state) => (tagId) => {
     if (tagId == state.tag.tagId) return state.tag;
 
-    return state.tags.find((tag) => tag.id === id);
+    return state.tags.find((tag) => tag.tagId === tagId);
   },
 };
