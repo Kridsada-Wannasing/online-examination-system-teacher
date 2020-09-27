@@ -12,7 +12,11 @@
           class="pt-10"
           style="height: 50%; min-height: 50%; max-height: 50%;"
         >
-          <v-card class="mx-auto pa-10 h-100" style="border-radius: 20px; overflow: auto;" outlined>
+          <v-card
+            class="mx-auto pa-10 h-100"
+            style="border-radius: 20px;"
+            outlined
+          >
             <h3 class="color-dark-blue pb-2">เพิ่มรายวิชา</h3>
             <hr class="mb-4" />
             <div>
@@ -41,7 +45,7 @@
                     hide-details
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" sm="6" md="4" lg="4">
+                <!-- <v-col cols="12" sm="6" md="4" lg="4">
                   <span class="color-dark-blue" style="font-size: 12px;"
                     >กลุ่มเรียน</span
                   >
@@ -52,11 +56,8 @@
                     dense
                     hide-details
                   ></v-text-field>
-                </v-col>
+                </v-col> -->
               </v-row>
-            </div>
-            <div>
-              <ListCode />
             </div>
             <div
               class="mt-15"
@@ -88,29 +89,28 @@
 <script>
 import ListClass from "@/components/ListClass";
 import ProfileMenu from "@/components/ProfileMenu";
-import ListCode from "@/components/ListCode";
+
 export default {
   name: "class",
   components: {
     ListClass,
-    ListCode,
-    ProfileMenu
+    ProfileMenu,
   },
   data: () => ({
-    items: [
-      {
-        code: "ENC 2001"
-      },
-      {
-        code: "ENC 2002"
-      },
-      {
-        code: "ENC 2003"
-      },
-      {
-        code: "ENC 2004"
-      }
-    ]
-  })
+    // items: [
+    //   {
+    //     code: "ENC 2001",
+    //   },
+    //   {
+    //     code: "ENC 2002",
+    //   },
+    //   {
+    //     code: "ENC 2003",
+    //   },
+    //   {
+    //     code: "ENC 2004",
+    //   },
+    // ],
+  }),
 };
 </script>

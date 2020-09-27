@@ -19,7 +19,7 @@ export const mutations = {
     state.question = question;
   },
   ADD_QUESTION(state, question) {
-    state.questions.unshift(question);
+    state.questions.push(question);
   },
   EDIT_QUESTION(state, question) {
     const target = state.questions.findIndex(
@@ -39,47 +39,45 @@ export const mutations = {
 
 export const actions = {
   async createQuestion({ commit }, question) {
-    const response = await questionServices.createExam(question);
+    const response = await questionServices.createQuestion(question);
     commit("ADD_QUESTION", response.data.newQuestion);
+    return response.data;
   },
   async getAllQuestions({ commit }) {
-    const response = await questionServices.getAllExams();
+    const response = await questionServices.getAllQuestions();
     commit("SET_QUESTIONS", response.data.allQuestion);
+    return response.data;
   },
   async getQuestionsInExam({ commit }, examId) {
     const response = await questionServices.getQuestionsInExam(examId);
-
     commit("SET_QUESTIONS_IN_EXAM", response.data.getQuestions);
+    return response.data;
   },
-  async getQuestion({ commit, getters }, question) {
-    const { subjectId, questionId } = question;
-
-    const target = getters.getByExamId(subjectId);
+  async getQuestion({ commit, getters }, questionId) {
+    const target = getters.getByExamId(questionId);
 
     if (target) {
       commit("SET_QUESTION", target);
       return target;
     }
 
-    const response = await questionServices.getExam(subjectId, questionId);
-    commit("SET_QUESTION", response.data.question);
+    const response = await questionServices.getQuestion(questionId);
+    commit("SET_QUESTION", response.data.target);
+    return response.data;
   },
   async editQuestion({ commit }, question) {
-    const { subjectId } = question;
-    const response = await questionServices.updateExam(subjectId, question);
-    commit("EDIT_QUESTION", response.data.updateExam);
+    const response = await questionServices.updateQuestion(question);
+    commit("EDIT_QUESTION", response.data.updateQuestion);
+    return response.data;
   },
   async deleteQuestion({ commit }, questionId) {
-    const { subjectId } = question;
-    await questionServices.deleteExam(subjectId, questionId);
+    await questionServices.deleteQuestion(questionId);
     commit("DELETE_QUESTION", questionId);
   },
 };
 
 export const getters = {
   getByQuestionId: (state) => (questionId) => {
-    if (questionId == state.question.questionId) return state.question;
-
     return state.questions.find(
       (question) => question.questionId == questionId
     );

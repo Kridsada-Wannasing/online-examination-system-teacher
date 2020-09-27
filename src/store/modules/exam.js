@@ -37,11 +37,17 @@ export const actions = {
   async createExam({ commit }, exam) {
     const response = await examServices.createExam(exam);
     commit("ADD_EXAM", response.data.newExam);
+    return response.data;
   },
-  async getAllExams({ commit }, subjectId) {
-    const response = await examServices.getAllExams(subjectId);
-    console.log(response.data.allExam);
+  async getAllExams({ commit }, { subjectId, query }) {
+    let response;
+    if (query) {
+      response = await examServices.getAllExams(subjectId, query);
+    } else {
+      response = await examServices.getAllExams(subjectId);
+    }
     commit("SET_EXAMS", response.data.allExam);
+    return response.data;
   },
   async getExam({ commit, state, getters }, exam) {
     if (exam.examId == state.exam.examId) return state.exam;
@@ -55,15 +61,15 @@ export const actions = {
 
     const response = await examServices.getExam(exam.subjectId, exam.examId);
     commit("SET_EXAM", response.data.target);
+    return response.data;
   },
   async editExam({ commit }, exam) {
-    const { subjectId } = exam;
-    const response = await examServices.updateExam(subjectId, exam);
+    const response = await examServices.updateExam(exam);
     commit("EDIT_EXAM", response.data.updateExam);
+    return response.data;
   },
-  async deleteExam({ commit }, exam) {
-    const { subjectId, examId } = exam;
-    await examServices.deleteExam(subjectId, examId);
+  async deleteExam({ commit }, examId) {
+    await examServices.deleteExam(examId);
     commit("DELETE_EXAM", examId);
   },
 };

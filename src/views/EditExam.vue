@@ -16,12 +16,25 @@
           <div class="mb-2">
             <Question
               :questions="questionsInExam"
-              @clickAddQuestion="showAddQuestion"
+              @clickAddQuestion="getAddQuestionClick"
+              @clickEditQuestion="getEditQuestionClick"
+              :addQuestion="addQuestion"
+              :editQuestion="editQuestion"
             />
           </div>
-          <div class="mb-2">
-            <AddQuestion v-if="addQuestion" />
-          </div>
+          <!-- <div class="mb-2">
+            <AddQuestion
+              v-if="addQuestion"
+              :examId="examId"
+              @cancel="getAddQuestionClick"
+              :addQuestion="addQuestion"
+            />
+            <EditQuestion
+              @cancel="getCancelEditQuestion"
+              v-if="editQuestion"
+              :editQuestion="editQuestion"
+            />
+          </div> -->
         </v-card>
       </v-col>
       <v-col lg="3" md="4" sm="12" xs="12" class="h-100 pl-5">
@@ -34,7 +47,6 @@
 import ShowEditExam from "@/components/ShowEditExam";
 import TypeExam from "@/components/TypeExam";
 import Question from "@/components/Question";
-import AddQuestion from "@/components/AddQuestion";
 import { mapState } from "vuex";
 
 export default {
@@ -44,10 +56,10 @@ export default {
     Question,
     ShowEditExam,
     TypeExam,
-    AddQuestion,
   },
   data: () => ({
     addQuestion: false,
+    editQuestion: false,
     // questions: [
     //   {
     //     title:
@@ -65,17 +77,21 @@ export default {
     ...mapState("exam", ["exam"]),
     ...mapState("question", ["questionsInExam"]),
   },
-  created() {
-    this.$store.dispatch("exam/getExam", {
-      examId: this.examId,
-      subjectId: this.subjectId,
-    });
-    this.$store.dispatch("question/getQuestionsInExam", this.examId);
-  },
+  // created() {
+  //   this.$store.dispatch("exam/getExam", {
+  //     examId: this.examId,
+  //     subjectId: this.subjectId,
+  //   });
+  //   this.$store.dispatch("question/getQuestionsInExam", this.examId);
+  // },
   methods: {
-    showAddQuestion(event) {
+    getAddQuestionClick(event) {
       console.log(event);
       this.addQuestion = event;
+    },
+    getEditQuestionClick(event) {
+      console.log(event);
+      this.editQuestion = event;
     },
   },
 };

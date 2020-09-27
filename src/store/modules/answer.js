@@ -31,13 +31,17 @@ export const mutations = {
 };
 
 export const actions = {
-  async createAnswer({ commit }, answer) {
-    const response = await answerServices.createAnswer(answer);
+  async createAnswers({ commit }, answer) {
+    const response = await answerServices.createAnswers(answer);
     commit("ADD_ANSWER", response.data.newAnswer);
   },
-  async getAllAnswers({ commit }, questionId) {
-    const response = await answerServices.getAllAnswers(questionId);
+  async getAllAnswers({ commit }) {
+    const response = await answerServices.getAllAnswers();
     commit("SET_ANSWERS", response.data.allAnswer);
+  },
+  async getAnswersQuestion({ commit }, questionId) {
+    const response = await answerServices.getAnswersInQuestion(questionId);
+    commit("SET_ANSWERS", response.data.answersInQuestion);
   },
   async editAnswer({ commit }, answer) {
     const response = await answerServices.updateAnswer(answer);

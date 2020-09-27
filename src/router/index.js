@@ -10,6 +10,8 @@ import Question from "../views/Question.vue";
 import EditExam from "../views/EditExam.vue";
 import Score from "../views/Score.vue";
 import Appointment from "../views/Appointment.vue";
+import Examination from "../views/Examination";
+import store from "@/store/index";
 
 Vue.use(VueRouter);
 
@@ -25,21 +27,49 @@ const routes = [
     component: Home,
     meta: { requiresAuth: true },
     children: [
-      { path: "/", name: "Welcome", component: Welcome },
-      { path: "welcome", component: Welcome },
+      { path: "/", component: Welcome },
+      { path: "welcome", name: "Welcome", component: Welcome },
       { path: "class", name: "Class", component: Class },
       { path: "study-group", name: "StudyGroup", component: StudyGroup },
       { path: "list-student", name: "ListStudent", component: ListStudent },
       { path: "exam", name: "Exam", component: Exam },
       {
-        path: "question",
+        path: "question/:subjectId/:examId",
         name: "Question",
         component: Question,
         props: true,
       },
-      { path: "edit-exam", name: "EditExam", component: EditExam, props: true },
+      {
+        path: "edit-exam/:subjectId/:examId",
+        name: "EditExam",
+        component: EditExam,
+        props: true,
+        async beforeEnter(routeTo, routeFrom, next) {
+          const exam = await store.dispatch("exam/getExam", {
+            subjectId: routeTo.params.subjectId,
+            examId: routeTo.params.examId,
+          });
+          console.log(exam);
+          routeTo.params.exam = exam;
+
+          const questions = await store.dispatch(
+            "question/getQuestionsInExam",
+            routeTo.params.examId
+          );
+          console.log(questions);
+          routeTo.params.questions = questions;
+          next();
+          // .then((exam) => {
+          //   console.log(exam);
+          //   routeTo.params.exam = exam;
+          //   next();
+          // })
+          // .catch((error) => alert(error));
+        },
+      },
       { path: "score", name: "Score", component: Score },
       { path: "appointment", name: "Appointment", component: Appointment },
+      { path: "examination", name: "Examination", component: Examination },
     ],
   },
   {

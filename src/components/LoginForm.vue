@@ -51,8 +51,8 @@ export default {
           email: this.email,
           password: this.password,
         })
-        .then(() => this.$router.push({ name: "Welcome" }))
-        .catch((error) => error);
+        .then(() => this.$router.push({ path: "/welcome" }))
+        .catch((error) => alert(error));
     },
   },
 };

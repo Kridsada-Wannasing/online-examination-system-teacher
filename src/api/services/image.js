@@ -3,6 +3,12 @@ import { apiClient } from "../axios";
 const endpoint = "image";
 
 export default {
+  getImage(questionId) {
+    return apiClient.get(`/${endpoint}/${questionId}`);
+  },
+  getAllImages() {
+    return apiClient.get(`/${endpoint}`);
+  },
   uploadImage(image) {
     return apiClient.post(`/${endpoint}`, image);
   },

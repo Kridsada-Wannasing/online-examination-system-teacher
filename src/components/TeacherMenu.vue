@@ -22,7 +22,7 @@
           <router-link
             v-for="(item, i) in items"
             :key="i"
-            :to="item.to"
+            :to="item.route"
             tag="div"
           >
             <v-list-item>
@@ -51,19 +51,28 @@ export default {
   data: () => ({
     item: 0,
     items: [
-      { text: "รายวิชา", icon: "mdi-star-outline", to: "/welcome" },
+      { text: "รายวิชา", icon: "mdi-star-outline", route: { name: "Welcome" } },
       {
         text: "ชุดข้อสอบ",
         icon: "mdi-file-document-outline",
-        to: "/exam",
+        route: { name: "Exam" },
       },
-      { text: "คะแนนสอบ", icon: "mdi-poll", to: "/score" },
+      { text: "คะแนนสอบ", icon: "mdi-poll", route: { name: "Score" } },
       {
         text: "การนัดหมาย",
         icon: "mdi-calendar-blank-outline",
-        to: "/appointment",
+        route: { name: "Appointment" },
       },
-      { text: "ห้องสอบ", icon: "mdi-cube-outline", to: "/welcome" },
+      {
+        text: "ห้องสอบ",
+        icon: "mdi-cube-outline",
+        route: { name: "Examination" },
+      },
+      {
+        text: "บัญชีนักศึกษา",
+        icon: "mdi-account-multiple-plus",
+        route: { name: "ListStudent" },
+      },
     ],
   }),
 };

@@ -20,15 +20,10 @@
             sm="6"
             xs="12"
             class="h-100 mb-5"
-            v-for="(item, i) in items"
+            v-for="(subject, i) in subjects"
             :key="i"
           >
-            <Folder
-              :color="item.color"
-              :title="item.title"
-              :classId="item.classId"
-              :code="item.code"
-            />
+            <Folder :subject="subject" :color="i % 2 == 0 ? 'green' : 'blue'" />
           </v-col>
           <v-col class="h-100 mb-5" cols="12" lg="4" md="6" sm="6" xs="12">
             <Folder color="plus" />
@@ -39,33 +34,40 @@
   </div>
 </template>
 <script>
+import { mapState } from "vuex";
 import Folder from "./Folder";
 export default {
   name: "listClass",
   components: {
-    Folder
+    Folder,
   },
   data: () => ({
-    items: [
-      {
-        color: "green",
-        classId: "1234567",
-        title: "วิศวกรรมคอมพิวเตอร์",
-        code: "ENC 2002"
-      },
-      {
-        color: "blue",
-        classId: "1234567",
-        title: "วิศวกรรมคอมพิวเตอร์",
-        code: "ENC 2002"
-      },
-      {
-        color: "green",
-        classId: "1234567",
-        title: "วิศวกรรมคอมพิวเตอร์",
-        code: "ENC 2002"
-      }
-    ]
-  })
+    // subjects: [
+    //   {
+    //     color: "green",
+    //     classId: "1234567",
+    //     title: "วิศวกรรมคอมพิวเตอร์",
+    //     code: "ENC 2002"
+    //   },
+    //   {
+    //     color: "blue",
+    //     classId: "1234567",
+    //     title: "วิศวกรรมคอมพิวเตอร์",
+    //     code: "ENC 2002"
+    //   },
+    //   {
+    //     color: "green",
+    //     classId: "1234567",
+    //     title: "วิศวกรรมคอมพิวเตอร์",
+    //     code: "ENC 2002"
+    //   }
+    // ]
+  }),
+  computed: {
+    ...mapState("subject", ["subjects"]),
+  },
+  mounted() {
+    this.$store.dispatch("subject/getAllSubjects");
+  },
 };
 </script>

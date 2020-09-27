@@ -35,15 +35,15 @@ export const actions = {
   async createMeeting({ commit }, meeting) {
     const response = await meetingServices.createMeeting(meeting);
     commit("ADD_MEETING", response.data.meeting);
-    return response.data.meeting;
+    return response.data;
   },
   async getAllMeetings({ commit }) {
     const response = await meetingServices.getAllMeetings();
     commit("SET_MEETINGS", response.data.allMeeting);
-    return response.data.allMeeting;
+    return response.data;
   },
   async getMeeting({ commit, getters, state }, meetingId) {
-    if (id == state.meeting.id) return state.meeting;
+    if (meetingId == state.meeting.meetingId) return state.meeting;
 
     const target = getters.getByMeetingId(meetingId);
 
@@ -54,22 +54,21 @@ export const actions = {
 
     const response = await meetingServices.getMeeting(meetingId);
     commit("SET_MEETING", response.data.target);
-    return response.data.target;
+    return response.data;
   },
   async updateMeeting({ commit }, meeting) {
     const response = await meetingServices.updateMeeting(meeting);
     commit("EDIT_MEETING", response.data.updatedMeeting);
-    return response.data.updatedMeeting;
+    return response.data;
   },
   async deleteMeeting({ commit }, meetingId) {
-    const response = await meetingServices.deleteMeeting(meetingId);
-    commit("DELETE_MEETING", response.data);
-    return response.data;
+    await meetingServices.deleteMeeting(meetingId);
+    commit("DELETE_MEETING", meetingId);
   },
 };
 
 export const getters = {
-  getByMeetingId: (state) => (id) => {
-    return state.meetings.find((meeting) => meeting.id === id);
+  getByMeetingId: (state) => (meetingId) => {
+    return state.meetings.find((meeting) => meeting.meetingId === meetingId);
   },
 };

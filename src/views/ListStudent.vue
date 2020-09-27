@@ -3,10 +3,14 @@
   <div class="h-100">
     <v-row no-gutters class="h-100" align="center">
       <v-col lg="9" md="8" sm="12" xs="12" class="h-100 pr-5">
-        <div style="height: 30%; min-height: 30%; max-height: 30%;">
+        <h1 class="color-white">บัญชีนักศึกษา</h1>
+        <!-- <div style="height: 30%; min-height: 30%; max-height: 30%;">
           <Group />
-        </div>
-        <div style="height: 70%; min-height: 70%; max-height:70%" class="pt-10">
+        </div> -->
+        <div
+          style="height: 50%; min-height: 50%; max-height:50% overflow:auto"
+          class="pt-8"
+        >
           <Students />
         </div>
       </v-col>
@@ -17,15 +21,15 @@
   </div>
 </template>
 <script>
-import Group from "@/components/Group";
+// import Group from "@/components/Group";
 import ProfileMenu from "@/components/ProfileMenu";
 import Students from "@/components/Students";
 export default {
   name: "listStudent",
   components: {
-    Group,
+    // Group,
     ProfileMenu,
-    Students
-  }
+    Students,
+  },
 };
 </script>

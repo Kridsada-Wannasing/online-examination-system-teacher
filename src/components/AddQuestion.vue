@@ -60,9 +60,6 @@
             class="pa-4 border-color-dark-blue mr-4"
             v-model="question"
           >
-            <!-- Lorem ipsum dolor sit amet, ... Lorem ipsum dolor sit amet, ...
-            Lorem ipsum dolor sit amet, ... Lorem ipsum dolor sit amet, ...
-            Lorem ipsum dolor sit amet, ... -->
           </v-textarea>
         </div>
         <v-btn
@@ -155,7 +152,14 @@
         </v-col>
       </v-row>
       <div class="mt-5" style="display: flex; justify-content: center;">
-        <v-btn rounded color="#6dc449" style="width: 150px" dark>บันทึก</v-btn>
+        <v-btn
+          rounded
+          color="#6dc449"
+          style="width: 150px"
+          @click="createQuestion"
+          dark
+          >บันทึก</v-btn
+        >
         <v-btn
           class="ml-4"
           outlined
@@ -163,7 +167,8 @@
           color="red"
           style="width: 150px"
           dark
-          >ลบข้อสอบ</v-btn
+          @click="cancel"
+          >ยกเลิก</v-btn
         >
       </div>
 
@@ -184,14 +189,13 @@
   </div>
 </template>
 <script>
-// import ListCode from "@/components/ListCode";
-// import UploadButton from "vuetify-upload-button";
 import { mapState } from "vuex";
+
 export default {
   name: "addQuestion",
-  components: {
-    // ListCode,
-    // "upload-btn": UploadButton,
+  props: {
+    examId: Number,
+    addQuestion: Boolean,
   },
   data: () => ({
     types: ["ปรนัย", "อัตนัย"],
@@ -214,39 +218,51 @@ export default {
     image: "",
   }),
   methods: {
-    createQuestion() {
-      const response = this.$store.dispatch("question/createQuestion", {
-        questionType: this.types,
+    async createQuestion() {
+      let question = {
+        questionType: this.questionType,
         question: this.question,
+        examId: this.examId,
         level: this.level,
+      };
+      let answers = await this.mapAnswers();
+      let choices = this.choices;
+      let tags = this.mapTags();
+
+      const response = await this.$store.dispatch("question/createQuestion", {
+        question,
+        answers,
+        choices,
+        tags,
       });
-      if (this.choices) {
-        this.createChoices(response.questionId);
-      } else {
-        this.createAnswers(response.questionId);
+
+      if (this.selectedFile) this.createImageInQuestion(response.questionId);
+      else {
+        if (response) alert("สร้างคำถามสำเร็จ");
+        this.cancel();
       }
     },
-    createChoices(questionId) {
-      let choices = this.choices.map((element) => ({
-        ...element,
-        questionId: questionId,
-      }));
-      this.$store.dispatch("choice/createChoices", choices);
-    },
-    createAnswers(questionId) {
+    mapAnswers() {
       let answers = this.answers.map((element) => ({
-        ...element,
-        questionId: questionId,
+        answer: element,
         score: this.score,
       }));
-      this.$store.dispatch("answer/createAnswers", answers);
+      return answers;
+    },
+    mapTags() {
+      let tags = this.tagOfQuestion.map((element) => ({
+        tagId: element,
+      }));
+      return tags;
     },
     createImageInQuestion(questionId) {
       const formData = new FormData();
       formData.append("file", this.selectedFile, this.selectedFile.name);
       formData.append("questionId", questionId);
 
-      this.$store.dispatch("image/createImage", formData);
+      this.$store
+        .dispatch("image/uploadImage", formData)
+        .then(() => alert("สร้างคำถามสำเร็จ"));
     },
     addChoice() {
       this.choices.push({
@@ -276,6 +292,9 @@ export default {
     manageTag() {
       console.log("this is plus");
     },
+    cancel() {
+      this.$emit("cancel", !this.addQuestion);
+    },
   },
   computed: {
     ...mapState("tag", ["tags"]),
@@ -287,6 +306,8 @@ export default {
   },
   created() {
     this.$store.dispatch("tag/getAllTags");
+    console.log(this.examId);
+    console.log(this.addQuestion);
   },
 };
 </script>

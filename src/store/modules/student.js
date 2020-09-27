@@ -18,12 +18,12 @@ export const mutations = {
 export const actions = {
   async registerStudents({ commit }, newStudents) {
     const response = await studentServices.registerStudents(newStudents);
-    commit("SET_TOKEN", response.data.newStudents);
+    commit("ADD_STUDENT", response.data.newStudents);
     return response.data.newStudents;
   },
   async getAllStudents({ commit }) {
-    const response = await studentServices.registerStudents();
-    commit("SET_TOKEN", response.data.allStudents);
+    const response = await studentServices.getAllStudents();
+    commit("SET_STUDENTS", response.data.allStudents);
     return response.data.newStudents;
   },
 };

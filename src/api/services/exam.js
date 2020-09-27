@@ -4,18 +4,20 @@ const endpoint = "exam";
 
 export default {
   createExam(exam) {
-    return apiClient.post(`/${endpoint}/login`, exam);
+    return apiClient.post(`/${endpoint}`, exam);
   },
-  getAllExams(subjectId) {
-    return apiClient.get(`/${endpoint}/${subjectId}`);
+  getAllExams(subjectId, queryString) {
+    if (queryString)
+      return apiClient.get(`/${endpoint}/${subjectId}?${queryString}`);
+    else return apiClient.get(`/${endpoint}/${subjectId}`);
   },
   getExam(subjectId, examId) {
-    return apiClient.get(`/${endpoint}/:${subjectId}/:${examId}`);
+    return apiClient.get(`/${endpoint}/${subjectId}/${examId}`);
   },
-  updateExam(subjectId, exam) {
-    return apiClient.patch(`/${endpoint}/${subjectId}/${exam.examId}`, exam);
+  updateExam(exam) {
+    return apiClient.patch(`/${endpoint}/${exam.examId}`, exam);
   },
-  deleteExam(subjectId, examId) {
-    return apiClient.delete(`${endpoint}/${subjectId}/${examId}`);
+  deleteExam(examId) {
+    return apiClient.delete(`${endpoint}/${examId}`);
   },
 };

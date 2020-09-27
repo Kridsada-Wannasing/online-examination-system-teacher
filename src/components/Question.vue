@@ -16,20 +16,24 @@
           class="mx-auto color-dark-blue pa-4"
           style="font-size: 12px; border-radius: 20px; min-height: 220px; max-height: 220px;"
           outlined
+          @click="editQuestion(question.questionId)"
+          v-if="!editQuestion"
+          v-model="editClick"
         >
           <p>{{ question.question }}</p>
           <p class="my-1" v-for="(choice, j) in question.Choices" :key="j">
             {{ choice.choice }}
           </p>
         </v-card>
+        <EditQuestion v-else :question="question" :index="i" />
       </v-col>
       <v-col cols="12" md="4" lg="4">
         <v-card
           class="mx-auto color-dark-blue pa-4 text-center"
           style="font-size: 12px; border-radius: 20px; min-height: 220px; max-height: 220px;"
           outlined
+          v-if="!addQuestion"
           @click="addQuestionClick"
-          v-model="click"
         >
           <img
             src="@/assets/icon/plus.svg"
@@ -37,44 +41,56 @@
             style="margin-top: 66px;"
           />
         </v-card>
+        <AddQuestion
+          v-else
+          :addQuestion="addQuestion"
+          @cancel="addQuestionClick"
+        />
       </v-col>
     </v-row>
   </div>
 </template>
 <script>
+import AddQuestion from "../components/AddQuestion";
+import EditQuestion from "../components/EditQuestion";
 export default {
   name: "question",
-  props: ["questions"],
+  components: {
+    AddQuestion,
+    EditQuestion,
+  },
+  props: ["questions", "addQuestion", "editQuestion"],
   data() {
     return {
-      click: false,
+      editClick: false,
+      questionId: 0,
     };
   },
   // Example
   //   data: () => ({
-  //     questions: [
-  //       {
-  //         title:
-  //           "1.) Lorem ipsum dolor sit amet, consetetur sedipscing elitr, sed diam noumy",
-  //         answer: [
-  //           "A.) Lorem ipsum dolor sit amet.",
-  //           "B.) Lorem ipsum dolor sit amet.",
-  //           "C.) Lorem ipsum dolor sit amet.",
-  //           "D.) Lorem ipsum dolor sit amet."
-  //         ]
-  //       }
-  //     ]
   //   })
-  watch: {
-    click() {
-      console.log(this.click);
-      this.$emit("clickAddQuestion", this.click);
-    },
-  },
+  // watch: {
+  //   addClick() {
+  //     this.$emit("clickAddQuestion", !this.addQuestion);
+  //   },
+  //   editClick() {
+  //     this.$emit("clickEditQuestion", {
+  //       editClick: this.editClick,
+  //       questionId: this.questionId,
+  //     });
+  //   },
+  // },
   methods: {
     addQuestionClick() {
-      this.click = !this.click;
+      this.$emit("clickAddQuestion", !this.addQuestion);
     },
+    editQuestionClick(questionId) {
+      this.questionId = questionId;
+      this.editClick = !this.editClick;
+    },
+  },
+  created() {
+    console.log(this.addQuestion);
   },
 };
 </script>

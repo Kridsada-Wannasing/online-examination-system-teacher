@@ -3,10 +3,13 @@ import { apiClient } from "../axios";
 const endpoint = "answer";
 
 export default {
-  createAnswer(answer) {
+  createAnswers(answer) {
     return apiClient.post(`/${endpoint}`, answer);
   },
-  getAllAnswers(questionId) {
+  getAllAnswers() {
+    return apiClient.get(`/${endpoint}`);
+  },
+  getAnswersInQuestion(questionId) {
     return apiClient.get(`/${endpoint}/${questionId}`);
   },
   updateAnswer(answer) {

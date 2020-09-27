@@ -3,20 +3,23 @@ import { apiClient } from "../axios";
 const endpoint = "question";
 
 export default {
-  createQuestion(exam) {
-    return apiClient.post(`/${endpoint}/login`, exam);
+  createQuestion(question) {
+    return apiClient.post(`/${endpoint}`, question);
   },
-  getAllQuestions(examId) {
-    return apiClient.get(`/${endpoint}/${examId}`);
+  getAllQuestions() {
+    return apiClient.get(`/${endpoint}`);
   },
   getQuestionsInExam(examId) {
     return apiClient.get(`/question-exam/${examId}`);
   },
-  getQuestion(subjectId, examId) {
-    return apiClient.get(`/${endpoint}/${subjectId}/${examId}`);
+  getQuestion(examId) {
+    return apiClient.get(`/${endpoint}/${examId}`);
   },
-  updateQuestion(questionId, updateQuestion) {
-    return apiClient.patch(`/${endpoint}/${questionId}`, updateQuestion);
+  updateQuestion(updateQuestion) {
+    return apiClient.patch(
+      `/${endpoint}/${updateQuestion.questionId}`,
+      updateQuestion
+    );
   },
   deleteQuestion(questionId) {
     return apiClient.delete(`${endpoint}/${questionId}`);

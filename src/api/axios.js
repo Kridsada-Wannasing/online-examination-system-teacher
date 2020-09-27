@@ -25,7 +25,7 @@ apiClient.interceptors.request.use(
     }
 
     if (config.data instanceof FormData) {
-      Object.assign(config.headers, config.data.getHeaders());
+      config.headers.post["Content-Type"] = "multipart/form-data";
     }
 
     return config;

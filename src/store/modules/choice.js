@@ -10,8 +10,8 @@ export const mutations = {
   SET_CHOICES(state, choices) {
     state.choices = choices;
   },
-  ADD_CHOICE(state, choice) {
-    state.choices.unshift(choice);
+  ADD_CHOICE(state, choices) {
+    state.choices.push(choices);
   },
   EDIT_CHOICE(state, choice) {
     const target = state.choices.findIndex(
@@ -30,13 +30,17 @@ export const mutations = {
 };
 
 export const actions = {
-  async createChoice({ commit }, choice) {
-    const response = await choiceServices.createChoice(choice);
+  async createChoices({ commit }, choices) {
+    const response = await choiceServices.createChoices(choices);
     commit("ADD_CHOICE", response.data.newChoice);
   },
-  async getAllChoices({ commit }, questionId) {
-    const response = await choiceServices.getAllChoices(questionId);
-    commit("SET_CHOICES", response.data.choices);
+  async getAllChoices({ commit }) {
+    const response = await choiceServices.getAllChoices();
+    commit("SET_CHOICES", response.data.allChoice);
+  },
+  async getChoicesInQuestion({ commit }, questionId) {
+    const response = await choiceServices.getChoicesInQuestion(questionId);
+    commit("SET_CHOICES", response.data.allChoice);
   },
   async editChoice({ commit }, choice) {
     const response = await choiceServices.updateChoices(choice);

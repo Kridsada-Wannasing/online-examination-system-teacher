@@ -6,7 +6,10 @@ export default {
   createChoices(choices) {
     return apiClient.post(`/${endpoint}`, choices);
   },
-  getAllChoices(questionId) {
+  getAllChoices() {
+    return apiClient.get(`/${endpoint}`);
+  },
+  getChoicesInQuestion(questionId) {
     return apiClient.get(`/${endpoint}/${questionId}`);
   },
   updateChoices(choices) {

@@ -8,9 +8,11 @@
           style="border-radius: 20px;"
           outlined
         >
-          <router-link :to="{ name: 'EditExam', params: { examId: examId } }">
-            <Question :questions="questionsInExam" />
-          </router-link>
+          <Question
+            :questions="questionsInExam"
+            :addQuestion="addQuestion"
+            :editQuestion="editQuestion"
+          />
         </v-card>
       </v-col>
       <v-col lg="4" md="4" sm="12" xs="12" class="h-100">
@@ -32,34 +34,24 @@ export default {
     ShowEditExam,
   },
   data: () => ({
-    // questions: [
-    //   {
-    //     title:
-    //       "1.) Lorem ipsum dolor sit amet, consetetur sedipscing elitr, sed diam noumy",
-    //     answer: [
-    //       "A.) Lorem ipsum dolor sit amet.",
-    //       "B.) Lorem ipsum dolor sit amet.",
-    //       "C.) Lorem ipsum dolor sit amet.",
-    //       "D.) Lorem ipsum dolor sit amet.",
-    //     ],
-    //   },
-    //   {
-    //     title:
-    //       "2.) Lorem ipsum dolor sit amet, consetetur sedipscing elitr, sed diam noumy",
-    //     answer: [
-    //       "A.) Lorem ipsum dolor sit amet.",
-    //       "B.) Lorem ipsum dolor sit amet.",
-    //       "C.) Lorem ipsum dolor sit amet.",
-    //       "D.) Lorem ipsum dolor sit amet.",
-    //     ],
-    //   },
-    // ],
+    addQuestion: false,
+    editQuestion: false,
   }),
   created() {
     this.$store.dispatch("question/getQuestionsInExam", this.examId);
   },
   computed: {
     ...mapState("question", ["questionsInExam"]),
+  },
+  methods: {
+    getAddQuestionClick(event) {
+      console.log(event);
+      this.addQuestion = event;
+    },
+    getCancelEditQuestion(event) {
+      console.log(event);
+      this.editQuestion = event;
+    },
   },
 };
 </script>

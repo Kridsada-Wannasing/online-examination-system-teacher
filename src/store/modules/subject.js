@@ -14,16 +14,16 @@ export const mutations = {
   SET_SUBJECT(state, subject) {
     state.subject = subject;
   },
-  ADD_SUBJECT(subject) {
+  ADD_SUBJECT(state, subject) {
     state.subjects.unshift(subject);
   },
-  EDIT_SUBJECT(subject) {
+  EDIT_SUBJECT(state, subject) {
     const target = state.subjects.findIndex(
       (element) => element.subjectId === subject.subjectId
     );
     state.subjects.splice(target, 1, subject);
   },
-  DELETE_SUBJECT(subjectId) {
+  DELETE_SUBJECT(state, subjectId) {
     const target = state.subjects.findIndex(
       (element) => element.subjectId === subjectId
     );

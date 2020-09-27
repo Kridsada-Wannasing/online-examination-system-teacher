@@ -28,30 +28,40 @@
             label="การสอบ"
           ></v-select>
         </v-col>
+        <v-col cols="12" sm="6" md="4" lg="4">
+          <v-select
+            solo
+            rounded
+            filled
+            dense
+            :items="years"
+            v-model="year"
+            label="ปีการศึกษา"
+          ></v-select>
+        </v-col>
       </v-row>
     </div>
 
-    <div class="w-100" style="height: 40%; min-height: 40%; max-height: 40%;">
+    <div v-if="!status" class="w-100" style="height: 80%; max-height: 80%;">
       <v-card
-        class="pa-10 h-100 w-100"
+        class="pt-8 px-8 h-100 w-100"
         style="border-radius: 20px; display: inline-table;"
         outlined
       >
         <div
-          style="display: flex; justify-content: space-between; height: 20%; min-height: 20%; max-height: 20%;"
+          style="display: flex; justify-content: space-between; height: 12%; min-height: 12%; max-height: 12%;"
         >
           <h3 class="color-dark-blue">ชุดข้อสอบ</h3>
-          <v-btn small outlined color="primary" @click="status = !status">
+          <v-btn small outlined color="primary" @click="showCreateExam">
             <v-icon left>mdi-plus</v-icon>เพิ่มชุดข้อสอบ
           </v-btn>
         </div>
         <div
-          class="mt-5"
           style="height: 80%; min-height: 80%; max-height: 80%; overflow: auto;"
         >
           <v-row no-gutters>
             <v-col
-              class="h-100 mb-5"
+              class="h-100 mb-9"
               cols="12"
               lg="4"
               md="6"
@@ -73,7 +83,7 @@
                 />
               </router-link>
             </v-col>
-            <v-col cols="12" lg="4" md="6" sm="6" xs="12" class="h-100 mb-5">
+            <v-col cols="12" lg="4" md="6" sm="6" xs="12" class="h-100 mb-9">
               <Folder class="mr-2" color="plus" />
             </v-col>
           </v-row>
@@ -81,11 +91,7 @@
       </v-card>
     </div>
 
-    <div
-      v-if="status"
-      class="pt-5"
-      style="height: 40%; min-height: 40%; max-height: 40%;"
-    >
+    <div v-else class="pt-5" style="height: 80%; max-height: 80%;">
       <v-card
         class="pa-10 h-100 w-100"
         style="border-radius: 20px; display: inline-table;"
@@ -99,7 +105,11 @@
           class="mt-5"
           style="overflow-y: auto; height: 80%; min-height: 80%; max-height: 80%;"
         >
-          <TypeExam />
+          <TypeExam
+            :status="status"
+            @statusChange="getStatusChange"
+            :subject="subject"
+          />
         </div>
       </v-card>
     </div>
@@ -109,6 +119,8 @@
 import Folder from "./Folder";
 import TypeExam from "./TypeExam";
 import { mapState } from "vuex";
+import qs from "qs";
+import range from "lodash/range";
 
 export default {
   name: "listExam",
@@ -117,14 +129,22 @@ export default {
     TypeExam,
   },
   data: () => ({
-    types: ["กลางภาค", "ปลายภาค"],
+    types: ["กลางภาค", "ปลายภาค", "objective", "subjective"],
     status: false,
     examType: "",
-    semester: "",
+    years: [],
+    year: "",
     subject: null,
+    query: {},
   }),
   created() {
     this.$store.dispatch("subject/getAllSubjects");
+  },
+  mounted() {
+    const currentYear = new Date().getFullYear() + 544;
+    const startYear = currentYear - 20;
+
+    this.years = range(startYear, currentYear);
   },
   computed: {
     ...mapState("subject", ["subjects"]),
@@ -132,8 +152,22 @@ export default {
   },
   watch: {
     subject() {
-      this.$store.dispatch("exam/getAllExams", this.subject);
+      this.$store.dispatch("exam/getAllExams", { subjectId: this.subject });
       console.log(this.subject);
+    },
+    examType() {
+      this.query.examType = this.examType;
+      this.$store.dispatch("exam/getAllExams", {
+        subjectId: this.subject,
+        query: qs.stringify(this.query),
+      });
+    },
+    year() {
+      this.query.year = this.year;
+      this.$store.dispatch("exam/getAllExams", {
+        subjectId: this.subject,
+        query: qs.stringify(this.query),
+      });
     },
   },
   methods: {
@@ -145,6 +179,12 @@ export default {
     },
     getAllExams(subject) {
       this.$store.dispatch("exam/getAllExams", subject);
+    },
+    getStatusChange(status) {
+      this.status = status;
+    },
+    showCreateExam() {
+      this.status = !this.status;
     },
   },
 };

@@ -35,12 +35,12 @@ export const mutations = {
 
 export const actions = {
   async createExamination({ commit }, examination) {
-    const response = await examServices.createExamination(examination);
+    const response = await examinationServices.createExamination(examination);
     commit("ADD_EXAMINATION", response.data.newExamination);
     return response.data;
   },
   async getAllExaminations({ commit }) {
-    const response = await examServices.getAllExaminations();
+    const response = await examinationServices.getAllExaminations();
 
     commit("SET_EXAMINATIONS", response.data.allExamination);
     return response.data;
@@ -56,10 +56,7 @@ export const actions = {
       return target;
     }
 
-    const response = await examinationServices.getExamination(
-      subjectId,
-      examinationId
-    );
+    const response = await examinationServices.getExamination(examinationId);
     commit("SET_EXAMINATION", response.data.examination);
   },
   async editExamination({ commit }, examination) {
@@ -68,8 +65,7 @@ export const actions = {
     return response.data;
   },
   async deleteExamination({ commit }, examinationId) {
-    const { subjectId } = examination;
-    await examinationServices.deleteExamination(subjectId, examinationId);
+    await examinationServices.deleteExamination(examinationId);
     commit("DELETE_EXAMINATION", examinationId);
   },
 };

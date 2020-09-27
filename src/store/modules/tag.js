@@ -14,16 +14,16 @@ export const mutations = {
   SET_TAGS_OF_QUESTION(state, tags) {
     state.tagsOfQuestion = tags;
   },
-  ADD_TAG(tag) {
+  ADD_TAG(state, tag) {
     state.tags.unshift(tag);
   },
-  EDIT_TAG(tag) {
+  EDIT_TAG(state, tag) {
     const target = state.tags.findIndex(
       (element) => element.tagId === tag.tagId
     );
     state.tags.splice(target, 1, tag);
   },
-  DELETE_TAG(tagId) {
+  DELETE_TAG(state, tagId) {
     const target = state.tags.findIndex((element) => element.tagId === tagId);
     state.tags.splice(target, 1);
   },

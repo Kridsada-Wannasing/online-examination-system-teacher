@@ -23,7 +23,7 @@
           rounded
           filled
           dense
-          :items="type"
+          :items="types"
           label="เลือกประเภท"
           hide-details
           v-model="examData.examType"
@@ -31,15 +31,16 @@
       </v-col>
       <v-col cols="12" sm="6" md="4" lg="4">
         <span class="color-dark-blue" style="font-size: 12px;">ปีการศึกษา</span>
-        <v-text-field
+        <v-select
           solo
           placeholder="ex. 1234567"
           filled
           rounded
           dense
           hide-details
+          :items="years"
           v-model="examData.year"
-        ></v-text-field>
+        ></v-select>
       </v-col>
     </v-row>
     <v-row>
@@ -47,15 +48,16 @@
         <span class="color-dark-blue" style="font-size: 12px;"
           >ภาคการศึกษา</span
         >
-        <v-text-field
+        <v-select
           solo
           placeholder="ex. 1234567"
           filled
           rounded
           dense
           hide-details
+          :items="terms"
           v-model="examData.term"
-        ></v-text-field>
+        ></v-select>
       </v-col>
       <v-col cols="12" sm="6" md="4" lg="4">
         <span class="color-dark-blue" style="font-size: 12px;"
@@ -70,7 +72,7 @@
           item-text="text"
           item-value="format"
           label="เลือกรูปแบบ"
-          :v-model="examData.format"
+          v-model="examData.format"
         ></v-select>
       </v-col>
       <v-col cols="12" sm="6" md="4" lg="4">
@@ -92,13 +94,24 @@
     </v-row>
     <div class="mt-5 mb-10" style="display: flex; justify-content: flex-end;">
       <v-btn
+        v-if="exam"
+        rounded
+        color="#6dc449"
+        small
+        style="width: 150px"
+        dark
+        @click="editExam"
+        >บันทึก</v-btn
+      >
+      <v-btn
+        v-else
         rounded
         color="#6dc449"
         small
         style="width: 150px"
         dark
         @click="createExam"
-        >บันทึก</v-btn
+        >สร้างชุดข้อสอบ</v-btn
       >
       <v-btn
         class="ml-4"
@@ -108,56 +121,80 @@
         small
         style="width: 150px"
         dark
+        @click="cancel"
         >ยกเลิก</v-btn
       >
     </div>
   </div>
 </template>
 <script>
+import range from "lodash/range";
+
 export default {
   name: "typeExam",
   components: {},
   props: {
     exam: Object,
+    status: Boolean,
+    subject: [Number, String],
   },
-  data: () => ({
-    type: ["กลางภาค", "ปลายภาค", "สอบย่อย"],
-    formatOfAnswer: [
-      { text: "แก้ไขคำตอบได้", format: true },
-      { text: "แก้ไขคำตอบไม่ได้", format: false },
-    ],
-    authorityOfExam: [
-      { text: "public", authority: true },
-      { text: "private", authority: false },
-    ],
-    examData: {
-      format: null,
-      authority: null,
-      examName: "",
-      examType: "",
-      term: null,
-      year: null,
-    },
-  }),
+  data() {
+    return {
+      types: ["กลางภาค", "ปลายภาค", "objective", "subjective"],
+      formatOfAnswer: [
+        { text: "แก้ไขคำตอบได้", format: true },
+        { text: "แก้ไขคำตอบไม่ได้", format: false },
+      ],
+      authorityOfExam: [
+        { text: "public", authority: true },
+        { text: "private", authority: false },
+      ],
+      years: [],
+      terms: [1, 2, 3],
+      examData: {
+        format: null,
+        authority: null,
+        examName: "",
+        examType: "",
+        term: null,
+        year: null,
+        subjectId: this.subject,
+      },
+    };
+  },
   methods: {
-    createExam() {
-      this.$store
-        .dispatch("exam/createExam", this.exam)
-        .then((response) =>
-          this.$router.push({
-            name: "EditExam",
-            params: { examId: response.examId },
-          })
-        )
-        .catch((error) => console.log(error));
+    async createExam() {
+      const response = await this.$store.dispatch(
+        "exam/createExam",
+        this.examData
+      );
+
+      alert(`${response.status}: ${response.message}`);
+
+      this.$emit("statusChange", status);
     },
     cancel() {
-      this.examData = this.cachedExam;
+      if (this.exam) this.examData = this.cachedExam;
+      else this.$emit("statusChange", status);
+    },
+    async editExam() {
+      const response = await this.$store.dispatch(
+        "exam/editExam",
+        this.examData
+      );
+      alert(`${response.status}: ${response.message}`);
+      this.$emit("statusChange", status);
     },
   },
   created() {
-    this.examData = this.exam;
-    this.cachedExam = Object.assign({}, this.exam);
+    if (this.exam) {
+      this.examData = this.exam;
+      this.cachedExam = Object.assign({}, this.exam);
+    }
+    const currentYear = new Date().getFullYear() + 544;
+    const startYear = currentYear - 20;
+
+    this.years = range(startYear, currentYear);
   },
 };
 </script>
