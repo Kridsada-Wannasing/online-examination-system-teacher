@@ -14,11 +14,20 @@
 <script>
 // @ is an alias to /src
 import TeacherMenu from "@/components/TeacherMenu.vue";
+import io from "socket.io-client";
 
 export default {
   name: "Home",
   components: {
-    TeacherMenu
-  }
+    TeacherMenu,
+  },
+  data() {
+    return {
+      socket: {},
+    };
+  },
+  created() {
+    this.socket = io("http://localhost:8000");
+  },
 };
 </script>

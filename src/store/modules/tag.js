@@ -17,6 +17,9 @@ export const mutations = {
   ADD_TAG(state, tag) {
     state.tags.unshift(tag);
   },
+  ADD_TAG_OF_QUESTION(state, tag) {
+    state.tagsOfQuestion.push(tag);
+  },
   EDIT_TAG(state, tag) {
     const target = state.tags.findIndex(
       (element) => element.tagId === tag.tagId
@@ -30,9 +33,14 @@ export const mutations = {
 };
 
 export const actions = {
-  async createTag({ commit }, tag) {
+  async createTags({ commit }, tag) {
     const response = await tagServices.createTag(tag);
     commit("ADD_TAG", response.data.newTag);
+    return response;
+  },
+  async addTagToQuestion({ commit }, tag) {
+    const response = await tagServices.addTagToQuestion(tag);
+    commit("ADD_TAG_OF_QUESTION", response.data.newTagsInQuestion);
     return response;
   },
   async getAllTags({ commit }) {

@@ -49,22 +49,14 @@ const routes = [
             subjectId: routeTo.params.subjectId,
             examId: routeTo.params.examId,
           });
-          console.log(exam);
           routeTo.params.exam = exam;
 
           const questions = await store.dispatch(
             "question/getQuestionsInExam",
             routeTo.params.examId
           );
-          console.log(questions);
           routeTo.params.questions = questions;
           next();
-          // .then((exam) => {
-          //   console.log(exam);
-          //   routeTo.params.exam = exam;
-          //   next();
-          // })
-          // .catch((error) => alert(error));
         },
       },
       { path: "score", name: "Score", component: Score },

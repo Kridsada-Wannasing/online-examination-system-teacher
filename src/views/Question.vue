@@ -12,6 +12,8 @@
             :questions="questionsInExam"
             :addQuestion="addQuestion"
             :editQuestion="editQuestion"
+            @clickAddQuestion="getAddQuestionClick"
+            @clickEditQuestion="getEditQuestionClick"
           />
         </v-card>
       </v-col>
@@ -48,7 +50,7 @@ export default {
       console.log(event);
       this.addQuestion = event;
     },
-    getCancelEditQuestion(event) {
+    getEditQuestionClick(event) {
       console.log(event);
       this.editQuestion = event;
     },

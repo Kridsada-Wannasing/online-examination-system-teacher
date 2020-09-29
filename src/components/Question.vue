@@ -16,7 +16,7 @@
           class="mx-auto color-dark-blue pa-4"
           style="font-size: 12px; border-radius: 20px; min-height: 220px; max-height: 220px;"
           outlined
-          @click="editQuestion(question.questionId)"
+          @click="editQuestionClick(question.questionId)"
           v-if="!editQuestion"
           v-model="editClick"
         >
@@ -25,14 +25,18 @@
             {{ choice.choice }}
           </p>
         </v-card>
-        <EditQuestion v-else :question="question" :index="i" />
+        <EditQuestion
+          v-else
+          :editQuestion="editQuestion"
+          :question="question"
+          :index="i"
+        />
       </v-col>
-      <v-col cols="12" md="4" lg="4">
+      <v-col cols="12" md="4" lg="4" v-if="!addQuestion">
         <v-card
           class="mx-auto color-dark-blue pa-4 text-center"
           style="font-size: 12px; border-radius: 20px; min-height: 220px; max-height: 220px;"
           outlined
-          v-if="!addQuestion"
           @click="addQuestionClick"
         >
           <img
@@ -41,11 +45,9 @@
             style="margin-top: 66px;"
           />
         </v-card>
-        <AddQuestion
-          v-else
-          :addQuestion="addQuestion"
-          @cancel="addQuestionClick"
-        />
+      </v-col>
+      <v-col cols="12" v-else>
+        <AddQuestion :addQuestion="addQuestion" @cancel="addQuestionClick" />
       </v-col>
     </v-row>
   </div>
@@ -86,7 +88,7 @@ export default {
     },
     editQuestionClick(questionId) {
       this.questionId = questionId;
-      this.editClick = !this.editClick;
+      this.$emit("clickEditQuestion", !this.editQuestion);
     },
   },
   created() {

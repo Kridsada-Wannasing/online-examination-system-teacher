@@ -12,6 +12,9 @@ export default {
   getTagsInQuestion(questionId) {
     return apiClient.get(`/question-tag/${questionId}`);
   },
+  addTagToQuestion(tag) {
+    return apiClient.post(`/question-tag/${tag[0].questionId}`, tag);
+  },
   updateTag(tag) {
     return apiClient.patch(`/${endpoint}/:${tag.tagId}`, tag);
   },

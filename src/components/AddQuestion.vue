@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card class="mx-auto pa-5" style="border-radius: 20px;" outlined>
-      <h4 class="color-dark-blue">เพิ่มข้อสอบ</h4>
+      <h4 class="color-dark-blue">เพิ่มคำถาม</h4>
       <v-row>
         <v-col cols="12" sm="6" md="4" lg="4">
           <v-select
@@ -25,7 +25,7 @@
             :items="tags"
             :item-text="'tagName'"
             :item-value="'tagId'"
-            v-model="tagOfQuestion"
+            v-model="tagsOfQuestion"
             label="Tag"
             append-icon="mdi-plus"
             hide-details
@@ -88,8 +88,8 @@
         />
       </div>
 
-      <v-row class="mt-7">
-        <v-col cols="12" sm="12" md="6" lg="6">
+      <v-row class="mt-7" v-if="questionType !== ''">
+        <v-col cols="12" sm="12" md="6" lg="6" v-if="questionType === 'ปรนัย'">
           <div
             class="mb-4"
             v-for="(choice, i) in choices"
@@ -99,7 +99,7 @@
             <v-checkbox
               class="ma-0 mb-1"
               hide-details
-              :value="choice.order"
+              :value="(choice.order = i + 1)"
               v-model="answers"
             ></v-checkbox>
             <v-text-field
@@ -107,6 +107,36 @@
               background-color="white"
               rounded
               v-model="choices[i].choice"
+              outlined
+              filled
+              dense
+            >
+            </v-text-field>
+            <v-icon
+              class="mr-5"
+              v-text="'mdi-delete-outline'"
+              @click="subChoice(i)"
+            ></v-icon>
+          </div>
+        </v-col>
+        <v-col
+          cols="12"
+          sm="12"
+          md="6"
+          lg="6"
+          v-else-if="questionType === 'อัตนัย'"
+        >
+          <div
+            class="mb-4"
+            v-for="(answer, i) in subjectiveAnswers"
+            :key="i"
+            style="display: flex; justify-content: space-between;"
+          >
+            <v-text-field
+              class="px-2 my-0"
+              background-color="white"
+              rounded
+              v-model="answer.answer"
               outlined
               filled
               dense
@@ -171,20 +201,6 @@
           >ยกเลิก</v-btn
         >
       </div>
-
-      <!-- <div class="mt-5">
-        <v-card
-          class="mx-auto color-dark-blue pa-4 text-center"
-          style="font-size: 12px; border-radius: 20px; min-height: 220px; max-height: 220px;"
-          outlined
-        >
-          <img
-            src="@/assets/icon/plus.svg"
-            width="50px"
-            style="margin-top: 66px;"
-          />
-        </v-card>
-      </div> -->
     </v-card>
   </div>
 </template>
@@ -201,77 +217,141 @@ export default {
     types: ["ปรนัย", "อัตนัย"],
     levelItems: [1, 2, 3, 4, 5],
     questionType: "",
-    tagOfQuestion: [],
+    tagsOfQuestion: [],
     level: null,
     question: "",
     choices: [
-      { choice: "ตัวเลือกที่ 1", order: 1 },
-      { choice: "ตัวเลือกที่ 2", order: 2 },
-      { choice: "ตัวเลือกที่ 3", order: 3 },
-      { choice: "ตัวเลือกที่ 4", order: 4 },
+      { choice: "ตัวเลือกที่ 1", order: 0 },
+      { choice: "ตัวเลือกที่ 2", order: 0 },
+      { choice: "ตัวเลือกที่ 3", order: 0 },
+      { choice: "ตัวเลือกที่ 4", order: 0 },
     ],
     selectedFile: null,
     isSelecting: false,
     defaultButtonText: "UPLOAD IMAGE",
     score: null,
+    subjectiveAnswers: [{ answer: "คำตอบที่ 1" }, { answer: "คำตอบที่ 2" }],
     answers: [],
     image: "",
   }),
+  watch: {
+    answers() {
+      console.log(this.answers);
+    },
+    subjectiveAnswers() {
+      console.log(this.subjectiveAnswers);
+    },
+  },
   methods: {
     async createQuestion() {
-      let question = {
+      if (this.answers === undefined || this.answers.length == 0) {
+        return alert("กรูณาใส่คำตอบ");
+      }
+      console.log(this.answers);
+      if (
+        this.questionType == "ปรนัย" &&
+        (this.choices == undefined || this.choices.length == 0)
+      ) {
+        return alert("กรุณาใส่ตัวเลือก");
+      }
+      console.log(this.choices);
+
+      if (
+        this.tagsOfQuestion === undefined ||
+        this.tagsOfQuestion.length == 0
+      ) {
+        return alert("กรูณาใส่ป้ายระบุ(tag)");
+      }
+
+      console.log(this.tagsOfQuestion);
+
+      console.log(this.subjectiveAnswers);
+      const response = await this.$store.dispatch("question/createQuestion", {
         questionType: this.questionType,
         question: this.question,
-        examId: this.examId,
+        examId: this.$route.params.examId,
         level: this.level,
-      };
-      let answers = await this.mapAnswers();
-      let choices = this.choices;
-      let tags = this.mapTags();
-
-      const response = await this.$store.dispatch("question/createQuestion", {
-        question,
-        answers,
-        choices,
-        tags,
       });
 
-      if (this.selectedFile) this.createImageInQuestion(response.questionId);
+      if (this.questionType == "อัตนัย") {
+        this.createAnswers(response.data.newQuestion.questionId);
+      } else {
+        this.createChoices(response.data.newQuestion.questionId);
+        this.createAnswers(response.data.newQuestion.questionId);
+      }
+
+      this.addTagToQuestion(response.data.newQuestion.questionId);
+
+      console.log(response);
+
+      if (this.selectedFile)
+        this.createImageInQuestion(response.data.newQuestion.questionId);
       else {
-        if (response) alert("สร้างคำถามสำเร็จ");
+        if (response) alert(`${response.status}: ${response.data.message}`);
         this.cancel();
       }
     },
-    mapAnswers() {
-      let answers = this.answers.map((element) => ({
-        answer: element,
-        score: this.score,
-      }));
-      return answers;
+    createAnswers(questionId) {
+      if (this.questionType == "ปรนัย") {
+        this.$store.dispatch(
+          "answer/createAnswers",
+          this.answers.map((element) => ({
+            answer: element,
+            score: this.score / this.answers.length,
+            questionId,
+          }))
+        );
+      } else {
+        this.$store.dispatch(
+          "answer/createAnswers",
+          this.answers.map((element) => ({
+            ...element,
+            score: this.score / this.answers.length,
+            questionId,
+          }))
+        );
+      }
     },
-    mapTags() {
-      let tags = this.tagOfQuestion.map((element) => ({
-        tagId: element,
-      }));
-      return tags;
+    addTagToQuestion(questionId) {
+      this.$store.dispatch(
+        "tag/addTagToQuestion",
+        this.tagsOfQuestion.map((element) => ({
+          tagId: element,
+          questionId,
+        }))
+      );
+    },
+    createChoices(questionId) {
+      this.$store.dispatch(
+        "choice/createChoices",
+        this.choices.map((element) => {
+          return { ...element, questionId };
+        })
+      );
     },
     createImageInQuestion(questionId) {
       const formData = new FormData();
       formData.append("file", this.selectedFile, this.selectedFile.name);
       formData.append("questionId", questionId);
 
-      this.$store
-        .dispatch("image/uploadImage", formData)
-        .then(() => alert("สร้างคำถามสำเร็จ"));
+      this.$store.dispatch("image/uploadImage", formData);
     },
     addChoice() {
-      this.choices.push({
-        choice: `ตัวเลือกที่ ${this.choices.length + 1}`,
-        order: this.choices.length + 1,
-      });
+      if (this.questionType == "ปรนัย") {
+        this.choices.push({
+          choice: `ตัวเลือกที่ ${this.choices.length + 1}`,
+        });
+      } else {
+        this.subjectiveAnswers.push({
+          answer: `คำตอบที่ ${this.choices.length + 1}`,
+        });
+      }
     },
     subChoice(index) {
-      this.choices.splice(index, 1);
+      if (this.questionType == "ปรนัย") {
+        this.choices.splice(index, 1);
+        this.answers = [];
+      } else this.subjectiveAnswers.splice(index, 1);
     },
     onButtonClick() {
       this.isSelecting = true;

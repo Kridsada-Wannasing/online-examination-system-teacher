@@ -48,9 +48,7 @@
       <div v-if="image">
         <v-img
           :src="
-            image.filename
-              ? `http://localhost:8000/static/${image.filename}`
-              : image
+            image.name ? `http://localhost:8000/static/${image.name}` : image
           "
         ></v-img>
       </div>
@@ -195,7 +193,7 @@ export default {
       level: null,
     },
     choices: [],
-    newChoices: [],
+    // newChoices: [],
     deletedChoices: [],
     deletedTagsInQuestion: [],
     deletedAnswer: [],
@@ -324,11 +322,26 @@ export default {
   },
   created() {
     this.$store.dispatch("tag/getAllTags");
-    this.question = this.$store.dispatch("question/questionsInExam");
-    this.tagOfQuestion = this.$store.dispatch("tag/getTagsInQuestion");
-    this.answers = this.$store.dispatch("answer/getAnswersInQuestion");
-    this.choices = this.$store.dispatch("choice/getChoicesInQuestion");
-    this.image = this.$store.dispatch("image/getImageInQuestion");
+    this.question = this.$store.dispatch(
+      "question/questionsInExam",
+      this.$route.params.examId
+    );
+    this.tagOfQuestion = this.$store.dispatch(
+      "tag/getTagsInQuestion",
+      this.$route.params.questionId
+    );
+    this.answers = this.$store.dispatch(
+      "answer/getAnswersInQuestion",
+      this.$route.params.questionId
+    );
+    this.choices = this.$store.dispatch(
+      "choice/getChoicesInQuestion",
+      this.$route.params.questionId
+    );
+    this.image = this.$store.dispatch(
+      "image/getImageInQuestion",
+      this.$route.params.questionId
+    );
   },
 };
 </script>

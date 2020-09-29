@@ -22,19 +22,6 @@
               :editQuestion="editQuestion"
             />
           </div>
-          <!-- <div class="mb-2">
-            <AddQuestion
-              v-if="addQuestion"
-              :examId="examId"
-              @cancel="getAddQuestionClick"
-              :addQuestion="addQuestion"
-            />
-            <EditQuestion
-              @cancel="getCancelEditQuestion"
-              v-if="editQuestion"
-              :editQuestion="editQuestion"
-            />
-          </div> -->
         </v-card>
       </v-col>
       <v-col lg="3" md="4" sm="12" xs="12" class="h-100 pl-5">
@@ -60,18 +47,6 @@ export default {
   data: () => ({
     addQuestion: false,
     editQuestion: false,
-    // questions: [
-    //   {
-    //     title:
-    //       "1.) Lorem ipsum dolor sit amet, consetetur sedipscing elitr, sed diam noumy",
-    //     answer: [
-    //       "A.) Lorem ipsum dolor sit amet.",
-    //       "B.) Lorem ipsum dolor sit amet.",
-    //       "C.) Lorem ipsum dolor sit amet.",
-    //       "D.) Lorem ipsum dolor sit amet.",
-    //     ],
-    //   },
-    // ],
   }),
   computed: {
     ...mapState("exam", ["exam"]),

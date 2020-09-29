@@ -41,7 +41,7 @@ export const actions = {
   async createQuestion({ commit }, question) {
     const response = await questionServices.createQuestion(question);
     commit("ADD_QUESTION", response.data.newQuestion);
-    return response.data;
+    return response;
   },
   async getAllQuestions({ commit }) {
     const response = await questionServices.getAllQuestions();

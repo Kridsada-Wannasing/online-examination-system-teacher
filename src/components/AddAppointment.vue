@@ -149,23 +149,25 @@ export default {
         year: this.year,
       });
 
-      // if (this.invitedStudent) {
-      //   this.mapInvitedStudent(this.invitedStudent, response.meetingId);
-      //   this.addInvitedStudent();
-      // }
-      alert(response);
+      if (this.invitedStudent) {
+        this.addInvitedStudent(
+          this.mapInvitedStudent(this.invitedStudent, response.data.meetingId)
+        );
+      }
+      console.log(response);
     },
-    async addInvitedStudent() {
+    async addInvitedStudent(invitedStudent) {
+      if (!invitedStudent) invitedStudent = this.invitedStudent;
       const response = await this.$store.dispatch(
         "meeting/addInvitedStudent",
-        this.invitedStudent
+        invitedStudent
       );
 
-      alert(response);
+      console.log(response);
       // this.invitedStudent = response;
     },
     cancel() {
-      this.$emit("statusChange", false);
+      this.$emit("statusChange", !this.status);
     },
     mapInvitedStudent(invitedStudent, meetingId) {
       return invitedStudent.map((element) => ({

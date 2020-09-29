@@ -46,45 +46,45 @@ export default {
           name: "Inverness McKenzie1",
           studentNumber: "110011111-1",
           email: "Dr.Lance@gmail.com",
-          score: "20"
+          score: "20",
         },
         {
           no: "102",
           name: "Inverness McKenzie2",
           studentNumber: "110011111-1",
           email: "Dr.Lance@gmail.com",
-          score: "50"
+          score: "50",
         },
         {
           no: "103",
           name: "Inverness McKenzie3",
           studentNumber: "110011111-1",
           email: "Dr.Lance@gmail.com",
-          score: "20"
+          score: "20",
         },
         {
           no: "104",
           name: "Inverness McKenzie4",
           studentNumber: "110011111-1",
           email: "Dr.Lance@gmail.com",
-          score: "20"
+          score: "20",
         },
         {
           no: "105",
           name: "Inverness McKenzie5",
           studentNumber: "110011111-1",
           email: "Dr.Lance@gmail.com",
-          score: "20"
+          score: "20",
         },
         {
           no: "106",
           name: "Inverness McKenzie6",
           studentNumber: "110011111-1",
           email: "Dr.Lance@gmail.com",
-          score: "20"
-        }
-      ]
+          score: "20",
+        },
+      ],
     };
-  }
+  },
 };
 </script>

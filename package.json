@@ -11,8 +11,10 @@
     "axios": "^0.20.0",
     "core-js": "^3.6.5",
     "qs": "^6.9.4",
+    "socket.io-client": "^2.3.0",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
+    "vue-socket.io": "^3.0.10",
     "vuetify": "^2.2.11",
     "vuetify-upload-button": "^2.0.2",
     "vuex": "^3.4.0"

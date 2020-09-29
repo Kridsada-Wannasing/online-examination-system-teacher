@@ -1,7 +1,15 @@
 <template>
   <div>
-    <v-card></v-card>
-    <v-card v-if="true"></v-card>
+    <v-row>
+      <v-col>
+        <v-card></v-card>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-card v-if="true"></v-card>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
