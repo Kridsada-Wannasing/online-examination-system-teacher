@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card class="mx-auto pa-10" style="border-radius: 20px;" outlined>
+    <v-card class="mx-auto pa-6" style="border-radius: 20px;" outlined>
       <h4 class="color-dark-blue">เพิ่มการนัดหมาย</h4>
       <v-row>
         <v-col cols="12" sm="6" md="3" lg="3">
@@ -89,15 +89,17 @@
         </v-col>
       </v-row>
       <v-row>
+        <v-spacer></v-spacer>
         <v-col cols="12" sm="6" md="3" lg="3">
           <v-btn
+            class="ml-8"
             rounded
             color="#6dc449"
             small
             style="width: 150px"
             dark
             @click="createMeeting"
-            >สร้างชุดข้อสอบ</v-btn
+            >สร้างการนัดหมาย</v-btn
           >
         </v-col>
         <v-col cols="12" sm="6" md="3" lg="3">
@@ -118,14 +120,10 @@
   </div>
 </template>
 <script>
-// import ListCode from "@/components/ListCode";
 import { mapState } from "vuex";
 export default {
   name: "addAppointment",
-  props: ["status"],
-  components: {
-    // ListCode,
-  },
+  props: { status: Boolean },
   data: () => ({
     types: ["กลางภาค", "ปลายภาค", "สอบย่อย"],
     subjectId: null,
@@ -167,6 +165,7 @@ export default {
       // this.invitedStudent = response;
     },
     cancel() {
+      console.log(this.status);
       this.$emit("statusChange", !this.status);
     },
     mapInvitedStudent(invitedStudent, meetingId) {

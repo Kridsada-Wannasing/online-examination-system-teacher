@@ -1,6 +1,10 @@
 <template>
   <div>
-    <v-card class="mx-auto pa-5" style="border-radius: 20px;" outlined>
+    <v-card
+      class="mx-auto pa-5"
+      style="border-radius: 20px; height:40% max-height:40%"
+      outlined
+    >
       <div
         class="pl-3 pr-3 color-dark-blue"
         style="display: flex; justify-content: space-between;"
@@ -14,20 +18,24 @@
         <template v-slot:default>
           <thead>
             <tr>
-              <th class="text-left">NO</th>
+              <th class="text-left">STUDENTID</th>
               <th class="text-left">NAME</th>
-              <th class="text-left">STUDENT NUMBER</th>
-              <th class="text-left">E-MAIL</th>
+              <th class="text-left">SUBJECT</th>
+              <th class="text-left">EXAM</th>
+              <th class="text-left">SUM</th>
               <th class="text-left">SCORE</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in items" :key="item.no">
-              <td class="color-dark-blue">{{ item.no }}</td>
-              <td class="color-dark-blue">{{ item.name }}</td>
-              <td class="color-dark-blue">{{ item.studentNumber }}</td>
-              <td class="color-dark-blue">{{ item.email }}</td>
-              <td class="color-dark-blue">{{ item.score }}</td>
+            <tr v-for="(score, index) in scores" :key="index">
+              <td class="color-dark-blue">{{ score.student.studentId }}</td>
+              <td class="color-dark-blue">
+                {{ score.student.firstName }} {{ score.student.lastName }}
+              </td>
+              <td class="color-dark-blue">{{ score.subject.subjectName }}</td>
+              <td class="color-dark-blue">{{ score.exam }}</td>
+              <td class="color-dark-blue">{{ score.sum }}</td>
+              <td class="color-dark-blue">{{ score.score }}</td>
             </tr>
           </tbody>
         </template>
@@ -36,55 +44,11 @@
   </div>
 </template>
 <script>
+import { mapState } from "vuex";
 export default {
   name: "scoreTable",
-  data() {
-    return {
-      items: [
-        {
-          no: "101",
-          name: "Inverness McKenzie1",
-          studentNumber: "110011111-1",
-          email: "Dr.Lance@gmail.com",
-          score: "20",
-        },
-        {
-          no: "102",
-          name: "Inverness McKenzie2",
-          studentNumber: "110011111-1",
-          email: "Dr.Lance@gmail.com",
-          score: "50",
-        },
-        {
-          no: "103",
-          name: "Inverness McKenzie3",
-          studentNumber: "110011111-1",
-          email: "Dr.Lance@gmail.com",
-          score: "20",
-        },
-        {
-          no: "104",
-          name: "Inverness McKenzie4",
-          studentNumber: "110011111-1",
-          email: "Dr.Lance@gmail.com",
-          score: "20",
-        },
-        {
-          no: "105",
-          name: "Inverness McKenzie5",
-          studentNumber: "110011111-1",
-          email: "Dr.Lance@gmail.com",
-          score: "20",
-        },
-        {
-          no: "106",
-          name: "Inverness McKenzie6",
-          studentNumber: "110011111-1",
-          email: "Dr.Lance@gmail.com",
-          score: "20",
-        },
-      ],
-    };
+  computed: {
+    ...mapState("score", ["scores"]),
   },
 };
 </script>

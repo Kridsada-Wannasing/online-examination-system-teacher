@@ -39,18 +39,18 @@ export const mutations = {
 
 export const actions = {
   async createScore({ commit }, score) {
-    const response = await examServices.createScore(score);
+    const response = await scoreServices.createScore(score);
     commit("ADD_SCORE", response.data.newScore);
   },
   async getAllScores({ commit }, queryString) {
     if (Object.keys(queryString).length !== 0) queryString = `?${queryString}`;
 
-    const response = await examServices.getAllScores(queryString);
+    const response = await scoreServices.getAllScores(queryString);
 
     commit("SET_SCORES", response.data.scores);
   },
-  async getScoresInExam({ commit }, examId) {
-    const response = await examServices.getScoresInScore(examId);
+  async getScoresInExam({ commit }, scoreId) {
+    const response = await scoreServices.getScoresInScore(scoreId);
 
     commit("SET_SCORES_IN_EXAM", response.data.getScores);
   },
@@ -73,9 +73,8 @@ export const actions = {
     commit("EDIT_SCORE", response.data.updateScore);
   },
   async deleteScore({ commit }, scoreId) {
-    const { subjectId } = score;
-    await scoreServices.deleteScore(subjectId, scoreId);
-    commit("DELETE_SCORE", scoreId);
+    await scoreServices.deleteScore(scoreId);
+    commit("DELETE_SCORE");
   },
 };
 

@@ -25,6 +25,10 @@ export const actions = {
     const response = await imageServices.getAllImages();
     commit("SET_IMAGES", response.data.allImages);
   },
+  async getImageInQuestion({ commit }, questionId) {
+    const response = await imageServices.getImageInQuestion(questionId);
+    commit("SET_IMAGE", response.data.image);
+  },
   async uploadImage({ commit }, image) {
     const response = await imageServices.uploadImage(image);
     commit("SET_IMAGE", response.data.newImage);

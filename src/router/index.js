@@ -11,6 +11,9 @@ import EditExam from "../views/EditExam.vue";
 import Score from "../views/Score.vue";
 import Appointment from "../views/Appointment.vue";
 import Examination from "../views/Examination";
+import SelectMeeting from "../views/SelectMeeting";
+import CreateExamination from "../views/CreateExamination";
+import ShowAppointment from "../views/ShowAppointment";
 import store from "@/store/index";
 
 Vue.use(VueRouter);
@@ -38,6 +41,15 @@ const routes = [
         name: "Question",
         component: Question,
         props: true,
+        async beforeEnter(routeTo, routeFrom, next) {
+          const questions = await store.dispatch(
+            "question/getQuestionsInExam",
+            routeTo.params.examId
+          );
+
+          routeTo.params.questions = questions;
+          next();
+        },
       },
       {
         path: "edit-exam/:subjectId/:examId",
@@ -62,16 +74,37 @@ const routes = [
       { path: "score", name: "Score", component: Score },
       { path: "appointment", name: "Appointment", component: Appointment },
       { path: "examination", name: "Examination", component: Examination },
+      {
+        path: "select-meeting",
+        name: "SelectMeeting",
+        component: SelectMeeting,
+      },
+      {
+        path: "create-examination/:meetingId",
+        name: "CreateExamination",
+        component: CreateExamination,
+        props: true,
+      },
+      {
+        path: "appointment/:meetingId",
+        name: "ShowAppointment",
+        component: ShowAppointment,
+        props: true,
+        async beforeEnter(routeTo, routeFrom, next) {
+          const meeting = await store.dispatch(
+            "meeting/getMeeting",
+            routeTo.params.meetingId
+          );
+          routeTo.params.meeting = meeting;
+          const students = await store.dispatch(
+            "meeting/getAllStudentInMeeting",
+            routeTo.params.meetingId
+          );
+          routeTo.params.students = students;
+          next();
+        },
+      },
     ],
-  },
-  {
-    path: "/about",
-    name: "About",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue"),
   },
 ];
 
@@ -82,7 +115,7 @@ const router = new VueRouter({
 });
 
 // router.beforeEach((to, from, next) => {
-//   const loggedIn = localStorage.getItem("teacher");
+//   const loggedIn = localStorage.getItem("teacher-token");
 
 //   if (to.matched.some((record) => record.meta.requiresAuth) && !loggedIn) {
 //     next("/");

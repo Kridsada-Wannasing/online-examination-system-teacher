@@ -31,6 +31,7 @@
                     rounded
                     dense
                     hide-details
+                    v-model="subjectId"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="4" lg="4">
@@ -43,27 +44,22 @@
                     rounded
                     dense
                     hide-details
+                    v-model="subjectName"
                   ></v-text-field>
                 </v-col>
-                <!-- <v-col cols="12" sm="6" md="4" lg="4">
-                  <span class="color-dark-blue" style="font-size: 12px;"
-                    >กลุ่มเรียน</span
-                  >
-                  <v-text-field
-                    placeholder="ex. 1234"
-                    filled
-                    rounded
-                    dense
-                    hide-details
-                  ></v-text-field>
-                </v-col> -->
               </v-row>
             </div>
             <div
               class="mt-15"
               style="display: flex; justify-content: flex-end;"
             >
-              <v-btn rounded color="#6dc449" small style="width: 150px" dark
+              <v-btn
+                rounded
+                color="#6dc449"
+                small
+                style="width: 150px"
+                dark
+                @click="createSubject"
                 >บันทึก</v-btn
               >
               <v-btn
@@ -74,6 +70,7 @@
                 small
                 style="width: 150px"
                 dark
+                @click="cancel"
                 >ยกเลิก</v-btn
               >
             </div>
@@ -97,20 +94,21 @@ export default {
     ProfileMenu,
   },
   data: () => ({
-    // items: [
-    //   {
-    //     code: "ENC 2001",
-    //   },
-    //   {
-    //     code: "ENC 2002",
-    //   },
-    //   {
-    //     code: "ENC 2003",
-    //   },
-    //   {
-    //     code: "ENC 2004",
-    //   },
-    // ],
+    subjectId: null,
+    subjectName: "",
   }),
+  methods: {
+    async createSubject() {
+      const response = await this.$store.dispatch("subject/createSubject", {
+        subjectId: this.subjectId,
+        subjectName: this.subjectName,
+      });
+
+      alert(`${response.status}: ${response.message}`);
+    },
+    cancel() {
+      this.$router.push({ name: "Welcome" });
+    },
+  },
 };
 </script>

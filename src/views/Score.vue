@@ -4,13 +4,9 @@
     <v-row no-gutters class="h-100" align="center">
       <v-col lg="9" md="8" sm="12" xs="12" class="h-100">
         <h1 class="color-white">คะแนนสอบ</h1>
-        <FilterClass
-          :subjects="subjects"
-          :exams="exams"
-          @selectedSubject="getSelectedSubject"
-        />
+        <FilterClass />
         <div class="pt-10">
-          <ScoreTable :scores="scores" />
+          <ScoreTable />
         </div>
       </v-col>
       <v-col lg="3" md="4" sm="12" xs="12" class="h-100 pl-5">
@@ -35,6 +31,7 @@ export default {
   data() {
     return {
       subject: null,
+      status: false,
       query: {},
     };
   },
@@ -45,10 +42,6 @@ export default {
     getSelectedSubject(event) {
       this.query.subject = event;
     },
-  },
-  created() {
-    this.$store.dispatch("subject/getAllSubjects");
-    this.$store.dispatch("exam/getAllExams");
   },
 };
 </script>

@@ -1,20 +1,21 @@
 <style lang="scss"></style>
 <template id="question">
-  <div class="h-100">
+  <div style="height:80vh; max-height:80vh;">
     <v-row no-gutters class="h-100" align="center">
       <v-col lg="8" md="8" sm="12" xs="12" class="h-100">
         <v-card
-          class="mx-auto pa-5 h-100"
-          style="border-radius: 20px;"
+          class="mx-auto pa-5"
+          style="border-radius: 20px; height:89vh; max-height:89vh; overflow-y:auto"
           outlined
         >
-          <Question
-            :questions="questionsInExam"
-            :addQuestion="addQuestion"
-            :editQuestion="editQuestion"
-            @clickAddQuestion="getAddQuestionClick"
-            @clickEditQuestion="getEditQuestionClick"
-          />
+          <div>
+            <Question
+              :addQuestion="addQuestion"
+              :editQuestion="editQuestion"
+              @clickAddQuestion="getAddQuestionClick"
+              @clickEditQuestion="getEditQuestionClick"
+            />
+          </div>
         </v-card>
       </v-col>
       <v-col lg="4" md="4" sm="12" xs="12" class="h-100">
@@ -26,7 +27,6 @@
 <script>
 import Question from "@/components/Question";
 import ShowEditExam from "@/components/ShowEditExam";
-import { mapState } from "vuex";
 
 export default {
   name: "question",
@@ -39,12 +39,6 @@ export default {
     addQuestion: false,
     editQuestion: false,
   }),
-  created() {
-    this.$store.dispatch("question/getQuestionsInExam", this.examId);
-  },
-  computed: {
-    ...mapState("question", ["questionsInExam"]),
-  },
   methods: {
     getAddQuestionClick(event) {
       console.log(event);

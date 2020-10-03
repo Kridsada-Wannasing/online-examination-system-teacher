@@ -22,7 +22,7 @@ export const mutations = {
     state.meetings.unshift(meeting);
   },
   ADD_STUDENT_IN_MEETING(state, student) {
-    state.students.push(student);
+    state.meeting.Student.push(student);
   },
   EDIT_MEETING(state, meeting) {
     const target = state.meetings.findIndex(
@@ -39,6 +39,12 @@ export const mutations = {
     );
     state.meetings.splice(target, 1);
   },
+  DELETE_STUDENT_IN_MEETING(state, studentId) {
+    const target = state.students.findIndex(
+      (element) => element.studentId == studentId
+    );
+    state.students.splice(target, 1);
+  },
 };
 
 export const actions = {
@@ -47,8 +53,13 @@ export const actions = {
     commit("ADD_MEETING", response.data.meeting);
     return response.data;
   },
-  async getAllMeetings({ commit }) {
-    const response = await meetingServices.getAllMeetings();
+  async getAllMeetings({ commit }, query) {
+    let response;
+    if (query) {
+      response = await meetingServices.getAllMeetings(query);
+    } else {
+      response = await meetingServices.getAllMeetings();
+    }
     commit("SET_MEETINGS", response.data.allMeeting);
     return response;
   },
@@ -57,10 +68,21 @@ export const actions = {
     commit("ADD_STUDENT_IN_MEETING", response.data.studentMeeting);
     return response;
   },
-  async getMeeting({ commit }, meetingId) {
+  async getAllStudentInMeeting({ commit }, meetingId) {
+    const response = await meetingServices.getAllStudentInMeeting(meetingId);
+    commit("SET_STUDENT_IN_MEETING", response.data.students);
+    return response;
+  },
+  async getMeeting({ commit, getters }, meetingId) {
+    const target = getters.getByMeetingId(meetingId);
+
+    if (target) {
+      commit("SET_MEETING", target);
+      return target;
+    }
+
     const response = await meetingServices.getMeeting(meetingId);
     commit("SET_MEETING", response.data.target);
-    commit("SET_STUDENT_IN_MEETING", response.data.target.StudentMeeting);
     return response;
   },
   async updateMeeting({ commit }, meeting) {
@@ -72,13 +94,17 @@ export const actions = {
     await meetingServices.deleteMeeting(meetingId);
     commit("DELETE_MEETING", meetingId);
   },
+  async deleteStudentInMeeting({ commit }, studentId) {
+    // await meetingServices.deleteStudentInMeeting(studentId);
+    commit("DELETE_STUDENT_IN_MEETING", studentId);
+  },
 };
 
 export const getters = {
   getByMeetingId: (state) => (meetingId) => {
-    return state.meetings.find((meeting) => meeting.meetingId === meetingId);
+    return state.meetings.find((meeting) => meeting.meetingId == meetingId);
   },
   getInvitedStudentByMeetingId: (state) => (meetingId) => {
-    return state.students.filter((student) => student.meetingId === meetingId);
+    return state.students.filter((student) => student.meetingId == meetingId);
   },
 };

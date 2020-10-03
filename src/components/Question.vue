@@ -1,38 +1,14 @@
 <template>
-  <div>
+  <div class="pa-1" style="overflow-y:auto;">
     <div style="display: flex; justify-content: space-between;">
       <h4 class="color-dark-blue">คำถาม</h4>
-      <h5 class="color-dark-blue">{{ questions.length }} ข้อ</h5>
+      <h5 class="color-dark-blue">{{ questionsInExam.length }} ข้อ</h5>
     </div>
     <v-row>
-      <v-col
-        cols="12"
-        md="4"
-        lg="4"
-        v-for="(question, i) in questions"
-        :key="i"
-      >
-        <v-card
-          class="mx-auto color-dark-blue pa-4"
-          style="font-size: 12px; border-radius: 20px; min-height: 220px; max-height: 220px;"
-          outlined
-          @click="editQuestionClick(question.questionId)"
-          v-if="!editQuestion"
-          v-model="editClick"
-        >
-          <p>{{ question.question }}</p>
-          <p class="my-1" v-for="(choice, j) in question.Choices" :key="j">
-            {{ choice.choice }}
-          </p>
-        </v-card>
-        <EditQuestion
-          v-else
-          :editQuestion="editQuestion"
-          :question="question"
-          :index="i"
-        />
+      <v-col cols="12" v-for="(question, i) in questionsInExam" :key="i">
+        <EditQuestion :question="question" :index="i + 1" />
       </v-col>
-      <v-col cols="12" md="4" lg="4" v-if="!addQuestion">
+      <v-col cols="12" v-if="!addQuestion">
         <v-card
           class="mx-auto color-dark-blue pa-4 text-center"
           style="font-size: 12px; border-radius: 20px; min-height: 220px; max-height: 220px;"
@@ -47,7 +23,11 @@
         </v-card>
       </v-col>
       <v-col cols="12" v-else>
-        <AddQuestion :addQuestion="addQuestion" @cancel="addQuestionClick" />
+        <AddQuestion
+          :addQuestion="addQuestion"
+          @cancel="addQuestionClick"
+          :countQuestions="questionsInExam.length"
+        />
       </v-col>
     </v-row>
   </div>
@@ -55,6 +35,7 @@
 <script>
 import AddQuestion from "../components/AddQuestion";
 import EditQuestion from "../components/EditQuestion";
+import { mapState } from "vuex";
 export default {
   name: "question",
   components: {
@@ -68,20 +49,6 @@ export default {
       questionId: 0,
     };
   },
-  // Example
-  //   data: () => ({
-  //   })
-  // watch: {
-  //   addClick() {
-  //     this.$emit("clickAddQuestion", !this.addQuestion);
-  //   },
-  //   editClick() {
-  //     this.$emit("clickEditQuestion", {
-  //       editClick: this.editClick,
-  //       questionId: this.questionId,
-  //     });
-  //   },
-  // },
   methods: {
     addQuestionClick() {
       this.$emit("clickAddQuestion", !this.addQuestion);
@@ -91,8 +58,8 @@ export default {
       this.$emit("clickEditQuestion", !this.editQuestion);
     },
   },
-  created() {
-    console.log(this.addQuestion);
+  computed: {
+    ...mapState("question", ["questionsInExam"]),
   },
 };
 </script>

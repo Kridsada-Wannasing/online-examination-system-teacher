@@ -52,13 +52,6 @@ export default {
     ...mapState("exam", ["exam"]),
     ...mapState("question", ["questionsInExam"]),
   },
-  // created() {
-  //   this.$store.dispatch("exam/getExam", {
-  //     examId: this.examId,
-  //     subjectId: this.subjectId,
-  //   });
-  //   this.$store.dispatch("question/getQuestionsInExam", this.examId);
-  // },
   methods: {
     getAddQuestionClick(event) {
       console.log(event);

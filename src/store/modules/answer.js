@@ -15,11 +15,7 @@ export const mutations = {
     state.answers.unshift(answer);
   },
   EDIT_ANSWER(state, answer) {
-    const target = state.answers.findIndex(
-      (element) => element.answerId === answer.answerId
-    );
-
-    state.answers.splice(target, 1, answer);
+    state.answers = answer;
   },
   DELETE_ANSWER(state, answerId) {
     const target = state.answers.findIndex(
@@ -39,7 +35,7 @@ export const actions = {
     const response = await answerServices.getAllAnswers();
     commit("SET_ANSWERS", response.data.allAnswer);
   },
-  async getAnswersQuestion({ commit }, questionId) {
+  async getAnswersInQuestion({ commit }, questionId) {
     const response = await answerServices.getAnswersInQuestion(questionId);
     commit("SET_ANSWERS", response.data.answersInQuestion);
   },

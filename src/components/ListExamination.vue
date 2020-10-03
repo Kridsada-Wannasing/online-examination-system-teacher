@@ -1,10 +1,6 @@
 <template>
   <div class="h-100 w-100">
-    <div
-      v-if="status"
-      class="w-100"
-      style="height: 40%; min-height: 90%; max-height: 90%;"
-    >
+    <div class="w-100" style="height: 40%; min-height: 90%; max-height: 90%;">
       <v-card
         class="pa-10 h-100 w-100"
         style="border-radius: 20px; display: inline-table;"
@@ -14,7 +10,7 @@
           style="display: flex; justify-content: space-between; height: 20%; min-height: 20%; max-height: 20%;"
         >
           <h3 class="color-dark-blue">ห้องสอบทั้งหมด</h3>
-          <v-btn small outlined color="primary" @click="status = !status">
+          <v-btn small outlined color="primary" @click="selectMeeting">
             <v-icon left>mdi-plus</v-icon>สร้างห้องสอบ
           </v-btn>
         </div>
@@ -94,6 +90,9 @@ export default {
     //     this.invitedStudents
     //   );
     // },
+    selectMeeting() {
+      this.$router.push({ name: "SelectMeeting" });
+    },
   },
 };
 </script>

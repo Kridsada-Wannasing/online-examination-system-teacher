@@ -9,8 +9,12 @@ export default {
   addInvitedStudent(meeting) {
     return apiClient.post(`/${endpoint}`, meeting);
   },
-  getAllMeetings() {
-    return apiClient.get(`/${endpoint}`);
+  getAllStudentInMeeting(meetingId) {
+    return apiClient.get(`/student-meeting/${meetingId}`);
+  },
+  getAllMeetings(query) {
+    if (query) return apiClient.get(`/${endpoint}?${query}`);
+    else return apiClient.get(`/${endpoint}`);
   },
   getMeeting(meetingId) {
     return apiClient.get(`/${endpoint}/${meetingId}`);
@@ -20,5 +24,8 @@ export default {
   },
   deleteMeeting(meetingId) {
     return apiClient.delete(`/${endpoint}/${meetingId}`);
+  },
+  deleteStudentInMeeting(meetingId, studentId) {
+    return apiClient.delete(`/${endpoint}/${meetingId}/${studentId}`);
   },
 };

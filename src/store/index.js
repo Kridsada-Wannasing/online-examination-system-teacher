@@ -11,6 +11,7 @@ import * as image from "../store/modules/image";
 import * as meeting from "../store/modules/meeting";
 import * as examination from "../store/modules/examination";
 import * as student from "../store/modules/student";
+import * as score from "../store/modules/score";
 
 Vue.use(Vuex);
 
@@ -27,6 +28,7 @@ export default new Vuex.Store({
     meeting,
     examination,
     student,
+    score,
   },
   state: {},
   mutations: {},

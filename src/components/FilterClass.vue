@@ -24,17 +24,8 @@
           :items="exams"
           :item-text="'examName'"
           :item-value="'examId'"
+          v-model="exam"
           label="ชุดข้อสอบ"
-          hide-details
-        ></v-select>
-      </v-col>
-      <v-col cols="12" sm="6" md="4" lg="4">
-        <v-select
-          solo
-          rounded
-          filled
-          dense
-          label="กลุ่มเรียน"
           hide-details
         ></v-select>
       </v-col>
@@ -56,8 +47,7 @@ export default {
   watch: {
     subject() {
       this.query.subjectId = this.subject;
-      this.$store.dispatch("exam/getAllExams", this.subject);
-      this.$store.dispatch("score/getAllScores", qs.stringify(this.query));
+      this.$store.dispatch("exam/getAllExams", { subjectId: this.subject });
     },
     exam() {
       this.query.examId = this.exam;

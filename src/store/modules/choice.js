@@ -40,7 +40,7 @@ export const actions = {
   },
   async getChoicesInQuestion({ commit }, questionId) {
     const response = await choiceServices.getChoicesInQuestion(questionId);
-    commit("SET_CHOICES", response.data.allChoice);
+    commit("SET_CHOICES", response.data.choicesInQuestion);
   },
   async editChoice({ commit }, choice) {
     const response = await choiceServices.updateChoices(choice);

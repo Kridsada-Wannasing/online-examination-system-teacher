@@ -15,7 +15,7 @@ export const mutations = {
     state.tagsOfQuestion = tags;
   },
   ADD_TAG(state, tag) {
-    state.tags.unshift(tag);
+    state.tags.push(tag);
   },
   ADD_TAG_OF_QUESTION(state, tag) {
     state.tagsOfQuestion.push(tag);
@@ -33,10 +33,10 @@ export const mutations = {
 };
 
 export const actions = {
-  async createTags({ commit }, tag) {
+  async createTag({ commit }, tag) {
     const response = await tagServices.createTag(tag);
     commit("ADD_TAG", response.data.newTag);
-    return response;
+    return response.data;
   },
   async addTagToQuestion({ commit }, tag) {
     const response = await tagServices.addTagToQuestion(tag);
@@ -50,7 +50,7 @@ export const actions = {
   },
   async getTagsInQuestion({ commit }, questionId) {
     const response = await tagServices.getTagsInQuestion(questionId);
-    commit("SET_TAGS", response.data.tagsOfQuestion);
+    commit("SET_TAGS_OF_QUESTION", response.data.tagsOfQuestion);
     return response;
   },
   async getTag({ commit, getters }, tagId) {

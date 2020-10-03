@@ -4,8 +4,23 @@
     <v-row no-gutters class="h-100" align="center">
       <v-col lg="9" md="8" sm="12" xs="12" class="h-100 pr-5">
         <h1 class="color-white">การนัดหมาย</h1>
-        <FilterClass />
-        <div class="pt-8" style="max-height: 400px; overflow:auto">
+        <v-row>
+          <v-col cols="12" sm="6" md="4" lg="4">
+            <v-select
+              solo
+              rounded
+              filled
+              dense
+              :items="subjects"
+              :item-text="'subjectName'"
+              :item-value="'subjectId'"
+              @change="getMeetings"
+              label="วิชา"
+              hide-details
+            ></v-select>
+          </v-col>
+        </v-row>
+        <div class="pt-8" style="max-height: 400px;">
           <v-card v-if="!status" class="pa-10" style="border-radius: 20px">
             <div
               class="pb-5"
@@ -19,8 +34,8 @@
             <ListAppointment />
           </v-card>
 
-          <div v-else :status="status" @statusChange="getStatusChange">
-            <AddAppointment />
+          <div v-else>
+            <AddAppointment :status="status" @statusChange="getStatusChange" />
           </div>
         </div>
       </v-col>
@@ -33,23 +48,35 @@
 <script>
 import ProfileMenu from "@/components/ProfileMenu";
 import ListAppointment from "@/components/ListAppointment";
-import FilterClass from "@/components/FilterClass";
 import AddAppointment from "@/components/AddAppointment";
+import { mapState } from "vuex";
+import qs from "qs";
 export default {
   name: "appointment",
   components: {
     ProfileMenu,
-    FilterClass,
     ListAppointment,
     AddAppointment,
   },
   data: () => ({
     status: false,
+    query: {},
   }),
   methods: {
     getStatusChange(event) {
       this.status = event;
     },
+    getMeetings(event) {
+      console.log(event);
+      this.query.subjectId = event;
+      this.$store.dispatch("meeting/getAllMeetings", qs.stringify(this.query));
+    },
+  },
+  computed: {
+    ...mapState("subject", ["subjects"]),
+  },
+  mounted() {
+    this.$store.dispatch("subject/getAllSubjects");
   },
 };
 </script>

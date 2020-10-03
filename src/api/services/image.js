@@ -3,7 +3,7 @@ import { apiClient } from "../axios";
 const endpoint = "image";
 
 export default {
-  getImage(questionId) {
+  getImageInQuestion(questionId) {
     return apiClient.get(`/${endpoint}/${questionId}`);
   },
   getAllImages() {

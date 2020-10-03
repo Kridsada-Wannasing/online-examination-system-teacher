@@ -29,8 +29,9 @@
             label="Tag"
             append-icon="mdi-plus"
             hide-details
-            @click:append-icon="manageTag"
-          ></v-select>
+            @click:append="manageTag"
+          >
+          </v-select>
         </v-col>
         <v-col cols="12" sm="6" md="4" lg="4">
           <v-select
@@ -45,19 +46,17 @@
           ></v-select>
         </v-col>
       </v-row>
-      <!-- <div>
-        <ListCode />
-      </div> -->
       <div v-if="image">
-        <v-img :src="image"></v-img>
+        <v-img :src="image" max-width="700"></v-img>
       </div>
       <div class="mt-10" style="display: flex; justify-content: space-between;">
         <div style="display: flex; justify-content: space-between;">
-          <span class="pr-4">{{ this.choices.length + 1 }})</span>
+          <span class="pr-4">{{ countQuestions + 1 }})</span>
           <v-textarea
             outlined
             rounded
             class="pa-4 border-color-dark-blue mr-4"
+            cols="50"
             v-model="question"
           >
           </v-textarea>
@@ -91,7 +90,6 @@
       <v-row class="mt-7" v-if="questionType !== ''">
         <v-col cols="12" sm="12" md="6" lg="6" v-if="questionType === 'ปรนัย'">
           <div
-            class="mb-4"
             v-for="(choice, i) in choices"
             :key="i"
             style="display: flex; justify-content: space-between;"
@@ -113,10 +111,15 @@
             >
             </v-text-field>
             <v-icon
-              class="mr-5"
+              class="mr-5 mb-5"
               v-text="'mdi-delete-outline'"
               @click="subChoice(i)"
             ></v-icon>
+          </div>
+          <div class="mx-10">
+            <v-btn outlined rounded @click="addChoice"
+              ><v-icon left>mdi-plus</v-icon>เพิ่มตัวเลือก</v-btn
+            >
           </div>
         </v-col>
         <v-col
@@ -201,19 +204,26 @@
           >ยกเลิก</v-btn
         >
       </div>
+      <TagDialog :dialog="dialog" @emittedDialog="getDialog" />
     </v-card>
   </div>
 </template>
 <script>
 import { mapState } from "vuex";
+import TagDialog from "./TagDialog";
 
 export default {
   name: "addQuestion",
   props: {
     examId: Number,
     addQuestion: Boolean,
+    countQuestions: Number,
+  },
+  components: {
+    TagDialog,
   },
   data: () => ({
+    dialog: false,
     types: ["ปรนัย", "อัตนัย"],
     levelItems: [1, 2, 3, 4, 5],
     questionType: "",
@@ -228,7 +238,7 @@ export default {
     ],
     selectedFile: null,
     isSelecting: false,
-    defaultButtonText: "UPLOAD IMAGE",
+    defaultButtonText: "อัพโหลดรูปภาพ",
     score: null,
     subjectiveAnswers: [{ answer: "คำตอบที่ 1" }, { answer: "คำตอบที่ 2" }],
     answers: [],
@@ -243,6 +253,9 @@ export default {
     },
   },
   methods: {
+    getDialog(event) {
+      this.dialog = event;
+    },
     async createQuestion() {
       if (this.answers === undefined || this.answers.length == 0) {
         return alert("กรูณาใส่คำตอบ");
@@ -263,9 +276,6 @@ export default {
         return alert("กรูณาใส่ป้ายระบุ(tag)");
       }
 
-      console.log(this.tagsOfQuestion);
-
-      console.log(this.subjectiveAnswers);
       const response = await this.$store.dispatch("question/createQuestion", {
         questionType: this.questionType,
         question: this.question,
@@ -281,8 +291,6 @@ export default {
       }
 
       this.addTagToQuestion(response.data.newQuestion.questionId);
-
-      console.log(response);
 
       if (this.selectedFile)
         this.createImageInQuestion(response.data.newQuestion.questionId);
@@ -370,7 +378,7 @@ export default {
       this.image = URL.createObjectURL(this.selectedFile);
     },
     manageTag() {
-      console.log("this is plus");
+      this.dialog = !this.dialog;
     },
     cancel() {
       this.$emit("cancel", !this.addQuestion);

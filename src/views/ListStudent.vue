@@ -7,12 +7,7 @@
         <!-- <div style="height: 30%; min-height: 30%; max-height: 30%;">
           <Group />
         </div> -->
-        <div
-          style="height: 50%; min-height: 50%; max-height:50% overflow:auto"
-          class="pt-8"
-        >
-          <Students />
-        </div>
+        <Students class="pt-8" />
       </v-col>
       <v-col lg="3" md="4" sm="12" xs="12" class="h-100 pl-5">
         <ProfileMenu />
