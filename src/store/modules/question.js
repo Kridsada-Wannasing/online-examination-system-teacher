@@ -21,12 +21,22 @@ export const mutations = {
   ADD_QUESTION(state, question) {
     state.questions.push(question);
   },
-  EDIT_QUESTION(state, question) {
-    const target = state.questions.findIndex(
+  ADD_QUESTION_IN_EXAM(state, question) {
+    state.questionsInExam.push(question);
+  },
+  EDIT_QUESTION(/*state, question*/) {
+    // const target = state.questions.findIndex(
+    //   (element) => element.questionId === question.questionId
+    // );
+    // state.questions.splice(target, 1, question);
+  },
+  EDIT_QUESTION_IN_EXAM(state, question) {
+    console.log(question);
+    const target = state.questionsInExam.findIndex(
       (element) => element.questionId === question.questionId
     );
 
-    state.questions.splice(target, 1, question);
+    state.questionsInExam.splice(target, 1, question);
   },
   DELETE_QUESTION(state, questionId) {
     const target = state.questions.findIndex(
@@ -34,6 +44,14 @@ export const mutations = {
     );
 
     state.questions.splice(target, 1);
+  },
+  DELETE_QUESTION_IN_EXAM(state, questionId) {
+    console.log(questionId);
+    const target = state.questionsInExam.findIndex(
+      (element) => element.questionId === questionId
+    );
+
+    state.questionsInExam.splice(target, 1);
   },
 };
 

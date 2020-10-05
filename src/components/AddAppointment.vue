@@ -1,9 +1,14 @@
 <template>
   <div>
-    <v-card class="mx-auto pa-6" style="border-radius: 20px;" outlined>
+    <v-card
+      v-if="!showStudentTable"
+      class="mx-auto pa-6"
+      style="border-radius: 20px;"
+      outlined
+    >
       <h4 class="color-dark-blue">เพิ่มการนัดหมาย</h4>
       <v-row>
-        <v-col cols="12" sm="6" md="3" lg="3">
+        <v-col cols="12" sm="6" md="4" lg="4">
           <span class="color-dark-blue" style="font-size: 12px;">ชื่อวิชา</span>
           <v-select
             solo
@@ -13,11 +18,12 @@
             :items="subjects"
             :item-text="'subjectName'"
             :item-value="'subjectId'"
+            v-model="subjectId"
             label="ex. 12345"
             hide-details
           ></v-select>
         </v-col>
-        <v-col cols="12" sm="6" md="3" lg="3">
+        <v-col cols="12" sm="6" md="4" lg="4">
           <span class="color-dark-blue" style="font-size: 12px;"
             >ปีการศึกษา</span
           >
@@ -31,7 +37,7 @@
             hide-details
           ></v-text-field>
         </v-col>
-        <v-col cols="12" sm="6" md="3" lg="3">
+        <v-col cols="12" sm="6" md="4" lg="4">
           <span class="color-dark-blue" style="font-size: 12px;">การสอบ</span>
           <v-select
             solo
@@ -44,7 +50,7 @@
             hide-details
           ></v-select>
         </v-col>
-        <v-col cols="12" sm="6" md="3" lg="3">
+        <v-col cols="12" sm="6" md="4" lg="4">
           <span class="color-dark-blue" style="font-size: 12px;"
             >ภาคการศึกษา</span
           >
@@ -58,23 +64,18 @@
             hide-details
           ></v-text-field>
         </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="12" sm="6" md="3" lg="3">
+        <v-col cols="12" sm="6" md="4" lg="4">
           <span class="color-dark-blue" style="font-size: 12px;"
             >วันเวลาสอบ</span
           >
-          <v-select
-            solo
-            rounded
-            filled
-            dense
+          <v-datetime-picker
+            label="กดเพื่อเลือกวันเวลาสอบ"
             v-model="examDate"
-            label="ex. 12345"
-            hide-details
-          ></v-select>
+            :textFieldProps="{ solo: true, dense: true, rounded: true }"
+          >
+          </v-datetime-picker>
         </v-col>
-        <v-col cols="12" sm="6" md="3" lg="3">
+        <!-- <v-col cols="12" sm="6" md="4" lg="4">
           <span class="color-dark-blue" style="font-size: 12px;"
             >กลุ่มเรียน</span
           >
@@ -86,11 +87,11 @@
             label="ex. 12345"
             hide-details
           ></v-select>
-        </v-col>
+        </v-col> -->
       </v-row>
       <v-row>
         <v-spacer></v-spacer>
-        <v-col cols="12" sm="6" md="3" lg="3">
+        <v-col cols="12" sm="6" md="4" lg="4">
           <v-btn
             class="ml-8"
             rounded
@@ -102,7 +103,7 @@
             >สร้างการนัดหมาย</v-btn
           >
         </v-col>
-        <v-col cols="12" sm="6" md="3" lg="3">
+        <v-col cols="12" sm="6" md="4" lg="4">
           <v-btn
             class="ml-4"
             outlined
@@ -117,12 +118,47 @@
         </v-col>
       </v-row>
     </v-card>
+    <v-card v-else class="mx-auto pa-6" style="border-radius: 20px;" outlined>
+      <v-row>
+        <v-col>
+          <v-data-table
+            class="rounded-xl"
+            :headers="headers"
+            :items="students"
+            :items-per-page="5"
+          >
+            <template v-slot:top>
+              <v-toolbar flat color="white" class="rounded-xl mx-0">
+                <h3 class="color-dark-blue">
+                  รายชื่อนักศึกษา
+                </h3>
+                <v-spacer></v-spacer>
+                <AddStudentInAppointment
+                  :showDialog="true"
+                  :meetingId="meetingId"
+                />
+                <v-btn small outlined dark color="red" @click="cancel"
+                  >กลับ</v-btn
+                >
+              </v-toolbar>
+            </template>
+            <template v-slot:item.actions="{ item }">
+              <v-icon small @click="deleteStudent(item)">mdi-delete</v-icon>
+            </template>
+          </v-data-table>
+        </v-col>
+      </v-row>
+    </v-card>
   </div>
 </template>
 <script>
 import { mapState } from "vuex";
+import AddStudentInAppointment from "@/components/AddStudentInAppointment";
 export default {
   name: "addAppointment",
+  components: {
+    AddStudentInAppointment,
+  },
   props: { status: Boolean },
   data: () => ({
     types: ["กลางภาค", "ปลายภาค", "สอบย่อย"],
@@ -131,11 +167,35 @@ export default {
     examType: "",
     term: null,
     year: null,
-    invitedStudent: [],
+    menu: null,
+    showStudentTable: false,
+    meetingId: null,
+    // invitedStudent: [],
+    headers: [
+      {
+        text: "Student ID",
+        align: "start",
+        sortable: false,
+        value: "studentId",
+      },
+      { text: "Name", value: "firstName" },
+      { text: "Surname", value: "lastName" },
+      { text: "Faculty", value: "faculty" },
+      { text: "Department", value: "department" },
+      { text: "Actions", value: "actions", sortable: false },
+    ],
   }),
+  watch: {
+    examDate() {
+      console.log(this.examDate);
+    },
+    subjectId() {
+      console.log(this.subjectId);
+    },
+  },
   computed: {
     ...mapState("subject", ["subjects"]),
-    ...mapState("student", ["students"]),
+    ...mapState("meeting", ["students"]),
   },
   methods: {
     async createMeeting() {
@@ -147,33 +207,38 @@ export default {
         year: this.year,
       });
 
-      if (this.invitedStudent) {
-        this.addInvitedStudent(
-          this.mapInvitedStudent(this.invitedStudent, response.data.meetingId)
-        );
-      }
-      console.log(response);
+      // if (this.invitedStudent.length > 0) {
+      //   this.createStudentInMeeting(
+      //     this.mapStudent(this.invitedStudent, response.data.meetingId)
+      //   );
+      // }
+      alert(`${response.status}: ${response.message}`);
+      // this.$router.push({
+      //   name: "ShowAppointment",
+      //   params: { meetingId: response.newMeeting.meetingId },
+      // });
+      this.showStudentTable = true;
+      this.meetingId = response.newMeeting.meetingId;
+      // this.getAllStudentInMeeting(response.newMeeting.meetingId);
     },
-    async addInvitedStudent(invitedStudent) {
-      if (!invitedStudent) invitedStudent = this.invitedStudent;
-      const response = await this.$store.dispatch(
-        "meeting/addInvitedStudent",
-        invitedStudent
-      );
-
-      console.log(response);
-      // this.invitedStudent = response;
-    },
+    // getAllStudentInMeeting(meetingId) {
+    //   this.$store.dispatch("meeting/getAllStudentInMeeting", meetingId);
+    // },
+    // createStudentInMeeting(students) {
+    //   await this.$store.dispatch("meeting/createStudentInMeeting", students);
+    // },
     cancel() {
-      console.log(this.status);
       this.$emit("statusChange", !this.status);
     },
-    mapInvitedStudent(invitedStudent, meetingId) {
-      return invitedStudent.map((element) => ({
-        studentId: element,
-        meetingId: meetingId,
-      }));
-    },
+    // mapStudent(student, meetingId) {
+    //   return student.map((element) => ({
+    //     studentId: element,
+    //     meetingId: meetingId,
+    //   }));
+    // },
+  },
+  mounted() {
+    this.$store.dispatch("subject/getAllSubjects");
   },
 };
 </script>

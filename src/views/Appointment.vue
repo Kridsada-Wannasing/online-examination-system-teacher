@@ -4,7 +4,7 @@
     <v-row no-gutters class="h-100" align="center">
       <v-col lg="9" md="8" sm="12" xs="12" class="h-100 pr-5">
         <h1 class="color-white">การนัดหมาย</h1>
-        <v-row>
+        <v-row v-if="!status">
           <v-col cols="12" sm="6" md="4" lg="4">
             <v-select
               solo

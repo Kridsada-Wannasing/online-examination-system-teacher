@@ -22,11 +22,11 @@ export const mutations = {
     state.meetings.unshift(meeting);
   },
   ADD_STUDENT_IN_MEETING(state, student) {
-    state.meeting.Student.push(student);
+    state.students.push(student);
   },
   EDIT_MEETING(state, meeting) {
     const target = state.meetings.findIndex(
-      (element) => element.meetingId === meeting.meetingId
+      (element) => element.meetingId == meeting.meetingId
     );
     state.meetings.splice(target, 1, meeting);
   },
@@ -50,7 +50,7 @@ export const mutations = {
 export const actions = {
   async createMeeting({ commit }, meeting) {
     const response = await meetingServices.createMeeting(meeting);
-    commit("ADD_MEETING", response.data.meeting);
+    commit("ADD_MEETING", response.data.newMeeting);
     return response.data;
   },
   async getAllMeetings({ commit }, query) {
@@ -63,15 +63,19 @@ export const actions = {
     commit("SET_MEETINGS", response.data.allMeeting);
     return response;
   },
-  async addInvitedStudent({ commit }, invitedStudent) {
-    const response = await meetingServices.addInvitedStudent(invitedStudent);
-    commit("ADD_STUDENT_IN_MEETING", response.data.studentMeeting);
-    return response;
+  async createStudentInMeeting({ commit }, students) {
+    const response = await meetingServices.createStudentInMeeting(students);
+    console.log(response.data.students);
+    if (Array.isArray(response.data.students))
+      response.data.students.map((student) =>
+        commit("ADD_STUDENT_IN_MEETING", student)
+      );
+    return response.data;
   },
   async getAllStudentInMeeting({ commit }, meetingId) {
     const response = await meetingServices.getAllStudentInMeeting(meetingId);
     commit("SET_STUDENT_IN_MEETING", response.data.students);
-    return response;
+    return response.data;
   },
   async getMeeting({ commit, getters }, meetingId) {
     const target = getters.getByMeetingId(meetingId);
@@ -83,12 +87,12 @@ export const actions = {
 
     const response = await meetingServices.getMeeting(meetingId);
     commit("SET_MEETING", response.data.target);
-    return response;
+    return response.data;
   },
   async updateMeeting({ commit }, meeting) {
     const response = await meetingServices.updateMeeting(meeting);
     commit("EDIT_MEETING", response.data.updatedMeeting);
-    return response;
+    return response.data;
   },
   async deleteMeeting({ commit }, meetingId) {
     await meetingServices.deleteMeeting(meetingId);

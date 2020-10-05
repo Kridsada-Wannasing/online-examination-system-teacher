@@ -20,18 +20,18 @@
       <v-card class="mx-auto pa-5" style="border-radius: 20px;" outlined>
         <h4 class="color-dark-blue">เพิ่มคำถาม</h4>
         <v-row>
-          <!-- <v-col cols="12" sm="6" md="4" lg="4">
-            <v-select
+          <v-col cols="12" sm="6" md="4" lg="4">
+            <v-text-field
               solo
               rounded
               filled
               dense
-              :items="types"
+              disabled
               v-model="defaultQuestion.questionType"
               label="ประเภทคำถาม"
               hide-details
-            ></v-select>
-          </v-col> -->
+            ></v-text-field>
+          </v-col>
           <v-col cols="12" sm="6" md="4" lg="4">
             <v-select
               solo
@@ -63,14 +63,12 @@
             ></v-select>
           </v-col>
         </v-row>
-        <div v-if="defaultImage || image.path !== undefined">
-          <v-img
-            v-if="image.path"
-            :src="`http://localhost:8000/static/${image.path}`"
-            max-width="700"
-          ></v-img>
-          <v-img v-else :src="defaultImage" max-width="700"></v-img>
+        <!-- <div>
+          <v-img :src="defaultImage" max-width="700"></v-img>
         </div>
+        <div v-else>
+          <v-img :src="defaultImage" max-width="700"></v-img>
+        </div> -->
         <div
           class="mt-10"
           style="display: flex; justify-content: space-between;"
@@ -128,7 +126,7 @@
               <v-checkbox
                 class="ma-0 mb-1"
                 hide-details
-                :value="i + 1"
+                :value="(choice.order = i + 1)"
                 v-model="defaultAnswers"
               ></v-checkbox>
               <v-text-field
@@ -147,7 +145,7 @@
                 @click="subChoice(i)"
               ></v-icon>
             </div>
-            <div class="mx-10">
+            <div class="mx-10" v-if="showAddChoice">
               <v-btn outlined rounded @click="addChoice"
                 ><v-icon left>mdi-plus</v-icon>เพิ่มตัวเลือก</v-btn
               >
@@ -158,7 +156,7 @@
             sm="12"
             md="6"
             lg="6"
-            v-else-if="defaultChoices.questionType === 'อัตนัย'"
+            v-else-if="defaultQuestion.questionType === 'อัตนัย'"
           >
             <div
               class="mb-4"
@@ -181,6 +179,11 @@
                 v-text="'mdi-delete-outline'"
                 @click="subChoice(i)"
               ></v-icon>
+            </div>
+            <div class="mx-10" v-if="showAddAnswer">
+              <v-btn outlined rounded @click="addChoice"
+                ><v-icon left>mdi-plus</v-icon>เพิ่มคำตอบ</v-btn
+              >
             </div>
           </v-col>
           <v-col
@@ -245,28 +248,21 @@ export default {
   data: () => ({
     edited: false,
     dialog: false,
-    types: ["ปรนัย", "อัตนัย"],
     levelItems: [1, 2, 3, 4, 5],
-    subjectiveAnswers: [{ answer: "คำตอบที่ 1" }, { answer: "คำตอบที่ 2" }],
     defaultTagsOfQuestion: [],
     defaultQuestion: {
       question: "",
       questionType: "",
       level: null,
     },
-    choices: [
-      { choice: "ตัวเลือกที่ 1", order: 0 },
-      { choice: "ตัวเลือกที่ 2", order: 0 },
-      { choice: "ตัวเลือกที่ 3", order: 0 },
-      { choice: "ตัวเลือกที่ 4", order: 0 },
-    ],
+    newChoices: [],
     defaultChoices: [],
     deletedChoices: [],
     deletedTagsInQuestion: [],
     deletedAnswer: [],
     selectedFile: null,
     isSelecting: false,
-    defaultButtonText: "UPLOAD IMAGE",
+    defaultButtonText: "อัพโหลดรูปภาพ",
     score: null,
     defaultAnswers: [],
     defaultImage: "",
@@ -275,19 +271,44 @@ export default {
     defaultAnswers() {
       console.log(this.defaultAnswers);
     },
+    defaultChoices() {
+      console.log(this.defaultChoices);
+    },
+    deletedChoices() {
+      console.log(this.deletedChoices);
+    },
+    defaultImage() {
+      console.log(this.defaultImage);
+    },
+    defaultTagsOfQuestion() {
+      console.log(this.defaultTagsOfQuestion);
+    },
   },
   methods: {
     async updateQuestion() {
-      if (this.answers === undefined || this.answers.length == 0) {
-        return alert("กรูณาใส่คำตอบ");
+      if (this.defaultQuestion.questionType == "ปรนัย") {
+        if (
+          this.defaultChoices == undefined ||
+          this.defaultChoices.length == 0
+        ) {
+          return alert("กรุณาใส่ตัวเลือก");
+        }
+        if (
+          this.defaultAnswers === undefined ||
+          this.defaultAnswers.length == 0
+        ) {
+          return alert("กรุณาใส่คำตอบ");
+        }
       }
 
-      // if (
-      //   this.questionType == "ปรนัย" &&
-      //   (this.choices == undefined || this.choices.length == 0)
-      // ) {
-      //   return alert("กรุณาใส่ตัวเลือก");
-      // }
+      if (this.defaultQuestion.questionType == "อัตนัย") {
+        if (
+          this.defaultAnswers === undefined ||
+          this.defaultAnswers.length == 0
+        ) {
+          return alert("กรุณาใส่คำตอบ");
+        }
+      }
 
       if (
         this.defaultTagsOfQuestion === undefined ||
@@ -295,15 +316,6 @@ export default {
       ) {
         return alert("กรูณาใส่ป้ายระบุ(tag)");
       }
-
-      if (this.questionType == "อัตนัย") {
-        this.editAnswers();
-      } else {
-        this.editChoices();
-        this.editAnswers();
-      }
-
-      this.addTagToQuestion();
 
       const updatedQuestion = await this.$store.dispatch(
         "question/editQuestion",
@@ -315,49 +327,47 @@ export default {
         }
       );
 
-      if (this.selectedFile.name != this.image.name) this.changeImage();
-      else {
-        if (updatedQuestion)
-          alert(`${updatedQuestion.status}: ${updatedQuestion.message}`);
-        this.cancel();
+      if (this.defaultQuestion.questionType == "อัตนัย") {
+        this.editAnswers();
+      } else {
+        this.editChoices();
+        this.editAnswers();
       }
+
+      this.editTags();
+
+      // if (this.selectedFile.name != this.image.name) this.changeImage();
+      alert(`${updatedQuestion.status}: ${updatedQuestion.message}`);
+      this.cancel();
     },
     async editChoices() {
-      const updatedChoices = await this.$store.dispatch("choice/editChoices", {
-        questionId: this.questionId,
-        choices: this.choices,
-      });
-
-      alert(`${updatedChoices.status}: ${updatedChoices.message}`);
+      await this.$store.dispatch("choice/editChoice", this.mapChoices());
     },
     async editAnswers() {
-      const updatedAnswers = await this.$store.dispatch("answer/editAnswers", {
-        questionId: this.questionId,
-        answers: this.mapAnswers(),
-      });
-
-      alert(`${updatedAnswers.status}: ${updatedAnswers.message}`);
+      await this.$store.dispatch("answer/editAnswer", this.mapAnswers());
     },
     async editTags() {
-      const updatedTags = await this.$store.dispatch("tag/editTags", {
-        questionId: this.questionId,
-        tags: this.mapTags(),
-      });
-
-      alert(`${updatedTags.status}: ${updatedTags.message}`);
+      await this.$store.dispatch("tag/updateTagsInQuestion", this.mapTags());
+    },
+    mapChoices() {
+      return this.defaultChoices.map((element) => ({
+        ...element,
+        questionId: this.question.questionId,
+      }));
     },
     mapAnswers() {
-      let answers = this.answers.map((element) => ({
+      return this.defaultAnswers.map((element) => ({
         answer: element,
         score: this.score / this.answers.length,
+        questionId: this.question.questionId,
       }));
-      return answers;
     },
     mapTags() {
-      let tags = this.tagOfQuestion.map((element) => ({
+      console.log(this.defaultTagsOfQuestion);
+      return this.defaultTagsOfQuestion.map((element) => ({
         tagId: element,
+        questionId: this.question.questionId,
       }));
-      return tags;
     },
     changeImage() {
       const formData = new FormData();
@@ -369,21 +379,34 @@ export default {
         .then(() => alert("เปลี่ยนรูปภาพสำเร็จ"));
     },
     addChoice() {
-      if (this.questionType == "ปรนัย") {
-        this.choices.push({
-          choice: `ตัวเลือกที่ ${this.choices.length + 1}`,
+      if (this.defaultQuestion.questionType == "ปรนัย") {
+        this.defaultChoices.push({
+          choice: `ตัวเลือกที่ ${this.defaultChoices.length + 1}`,
+          order: 0,
         });
       } else {
-        this.subjectiveAnswers.push({
-          answer: `คำตอบที่ ${this.choices.length + 1}`,
+        this.defaultAnswers.push({
+          answer: `คำตอบที่ ${this.defaultAnswers.length + 1}`,
         });
       }
     },
     subChoice(index) {
-      if (this.questionType == "ปรนัย") {
-        this.choices.splice(index, 1);
+      if (this.defaultQuestion.questionType == "ปรนัย") {
+        if (!this.defaultChoices[index].choiceId) {
+          this.defaultChoices.splice(index, 1);
+        } else {
+          this.deletedChoices.push(this.defaultChoices[index].choiceId);
+          this.defaultChoices.splice(index, 1);
+        }
         this.defaultAnswers = [];
-      } else this.subjectiveAnswers.splice(index, 1);
+      } else {
+        if (!this.defaultAnswers[index].answerId) {
+          this.defaultAnswers.splice(index, 1);
+        } else {
+          this.deletedAnswer.push(this.defaultAnswers[index].answerId);
+          this.defaultAnswers.splice(index, 1);
+        }
+      }
     },
     onButtonClick() {
       this.isSelecting = true;
@@ -408,6 +431,7 @@ export default {
       this.dialog = !this.dialog;
     },
     cancel() {
+      this.defaultImage = "";
       this.edited = false;
     },
     async editingQuestion() {
@@ -432,12 +456,19 @@ export default {
       );
 
       this.defaultTagsOfQuestion = this.tagsOfQuestion;
-      this.defaultAnswers = this.answers;
+
+      if (this.question.questionType == "ปรนัย") {
+        this.defaultAnswers = this.answers.map((answer) => Number(answer));
+      } else {
+        this.defaultAnswers = this.answers.map((answer) => ({ answer }));
+      }
+
       this.defaultChoices = this.choices;
+      // if (this.image.path) {
+      //   this.defaultImage = `http://localhost:8000/static/${this.image.path}`;
+      // } else if (this.image.path == null) this.defaultImage = "";
 
       this.edited = true;
-      console.log(this.defaultImage);
-      console.log(this.image.name);
     },
   },
   computed: {
@@ -455,12 +486,17 @@ export default {
       return !this.edited ? true : false;
     },
     hasImage() {
-      return this.selectedFile || this.image.path ? true : false;
+      console.log(!!this.image.path);
+      return !!this.image.path;
     },
     showImage() {
-      return this.image.path
-        ? `http://localhost:8000/static/${this.image.path}`
-        : this.selectedFile;
+      return this.defaultImage;
+    },
+    showAddChoice() {
+      return this.defaultChoices.length == 10 ? false : true;
+    },
+    showAddAnswer() {
+      return this.defaultAnswers.length == 10 ? false : true;
     },
   },
 };

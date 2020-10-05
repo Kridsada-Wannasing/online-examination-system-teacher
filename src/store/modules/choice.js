@@ -32,6 +32,11 @@ export const mutations = {
 export const actions = {
   async createChoices({ commit }, choices) {
     const response = await choiceServices.createChoices(choices);
+    if (response.data.question.questionType == "ปรนัย") {
+      commit("question/ADD_QUESTION_IN_EXAM", response.data.question, {
+        root: true,
+      });
+    }
     commit("ADD_CHOICE", response.data.newChoice);
   },
   async getAllChoices({ commit }) {
@@ -44,7 +49,12 @@ export const actions = {
   },
   async editChoice({ commit }, choice) {
     const response = await choiceServices.updateChoices(choice);
-    commit("EDIT_CHOICE", response.data.updateChoice);
+    if (response.data.question.questionType == "ปรนัย") {
+      commit("question/EDIT_QUESTION_IN_EXAM", response.data.question, {
+        root: true,
+      });
+    }
+    // commit("EDIT_CHOICE", response.data.updateChoice);
   },
   async deleteChoice({ commit }, choice) {
     await choiceServices.deleteChoices(choice);

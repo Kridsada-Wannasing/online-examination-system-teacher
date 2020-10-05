@@ -7,6 +7,9 @@
     >
       <div style="height: 10%; display: flex; justify-content: space-between;">
         <h3 class="color-dark-blue">รายวิชา</h3>
+        <v-btn small outlined color="primary" to="/class">
+          <v-icon left>mdi-plus</v-icon>เพิ่มวิชา
+        </v-btn>
       </div>
       <div class="mt-10" style="height: 70%; max-height: 70%; overflow: auto;">
         <v-row no-gutters class="h-100">

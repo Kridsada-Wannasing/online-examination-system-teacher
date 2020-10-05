@@ -2,16 +2,25 @@
   <div class="h-100">
     <v-row class="h-100 ma-0 pa-0">
       <v-col cols="9" class="ma-0 pa-0 mt-0 pt-0">
+        <h1 class="color-white mb-2">การนัดหมาย</h1>
         <v-row>
-          <v-col class="ma-0 pa-0">
+          <v-col class="pa-0">
             <v-card
+              v-if="!showTable"
               class="mx-3 pa-6 mb-4"
               style="border-radius: 20px;"
               outlined
             >
-              <h4 class="color-dark-blue">ตั้งค่าการนัดหมาย</h4>
+              <div style="display:flex; justify-content:space-between;">
+                <h4 class="color-dark-blue">ตั้งค่าการนัดหมาย</h4>
+                <v-btn small text color="primary" rounded @click="openTable"
+                  >ดูหน้ารายชื่อ<v-icon right
+                    >mdi-account-arrow-right-outline</v-icon
+                  ></v-btn
+                >
+              </div>
               <v-row>
-                <v-col cols="12" sm="6" md="3" lg="3">
+                <v-col cols="12" sm="6" md="4" lg="4">
                   <span class="color-dark-blue" style="font-size: 12px;"
                     >ชื่อวิชา</span
                   >
@@ -24,11 +33,11 @@
                     :item-text="'subjectName'"
                     :item-value="'subjectId'"
                     v-model="meetingData.subjectId"
-                    label="ex. 12345"
+                    label="ex. 12445"
                     hide-details
                   ></v-select>
                 </v-col>
-                <v-col cols="12" sm="6" md="3" lg="3">
+                <v-col cols="12" sm="6" md="4" lg="4">
                   <span class="color-dark-blue" style="font-size: 12px;"
                     >ปีการศึกษา</span
                   >
@@ -38,11 +47,11 @@
                     filled
                     dense
                     v-model="meetingData.year"
-                    label="ex. 12345"
+                    label="ex. 12445"
                     hide-details
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" sm="6" md="3" lg="3">
+                <v-col cols="12" sm="6" md="4" lg="4">
                   <span class="color-dark-blue" style="font-size: 12px;"
                     >การสอบ</span
                   >
@@ -53,11 +62,11 @@
                     dense
                     :items="types"
                     v-model="meetingData.examType"
-                    label="ex.123456"
+                    label="ex.124456"
                     hide-details
                   ></v-select>
                 </v-col>
-                <v-col cols="12" sm="6" md="3" lg="3">
+                <v-col cols="12" sm="6" md="4" lg="4">
                   <span class="color-dark-blue" style="font-size: 12px;"
                     >ภาคการศึกษา</span
                   >
@@ -67,27 +76,21 @@
                     filled
                     dense
                     v-model="meetingData.term"
-                    label="ex. 123456"
+                    label="ex. 124456"
                     hide-details
                   ></v-text-field>
                 </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="12" sm="6" md="3" lg="3">
+                <v-col cols="12" sm="6" md="4" lg="4">
                   <span class="color-dark-blue" style="font-size: 12px;"
                     >วันเวลาสอบ</span
                   >
-                  <v-text-field
-                    solo
-                    rounded
-                    filled
-                    dense
+                  <v-datetime-picker
                     v-model="meetingData.examDate"
-                    label="ex. 12345"
-                    hide-details
-                  ></v-text-field>
+                    :textFieldProps="{ solo: true, dense: true, rounded: true }"
+                  >
+                  </v-datetime-picker>
                 </v-col>
-                <v-col cols="12" sm="6" md="3" lg="3">
+                <!-- <v-col cols="12" sm="6" md="4" lg="4">
                   <span class="color-dark-blue" style="font-size: 12px;"
                     >กลุ่มเรียน</span
                   >
@@ -96,14 +99,14 @@
                     rounded
                     filled
                     dense
-                    label="ex. 12345"
+                    label="ex. 12445"
                     hide-details
                   ></v-select>
-                </v-col>
+                </v-col> -->
               </v-row>
-              <v-row>
+              <v-row class="my-2">
                 <v-spacer></v-spacer>
-                <v-col cols="12" sm="6" md="3" lg="3">
+                <v-col cols="12" sm="6" md="4" lg="4">
                   <v-btn
                     class="ml-8"
                     rounded
@@ -115,7 +118,7 @@
                     >บันทึก</v-btn
                   >
                 </v-col>
-                <v-col cols="12" sm="6" md="3" lg="3">
+                <v-col cols="12" sm="6" md="4" lg="4">
                   <v-btn
                     class="ml-4"
                     outlined
@@ -130,27 +133,48 @@
                 </v-col>
               </v-row>
             </v-card>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
-            <v-data-table
-              class="rounded-xl"
-              :headers="headers"
-              :items="students"
-              :items-per-page="5"
+            <v-card
+              v-else
+              class="mx-auto pa-6"
+              style="border-radius: 20px;"
+              outlined
             >
-              <template v-slot:top>
-                <v-toolbar flat color="white" class="rounded-xl">
-                  <h3 class="color-dark-blue pl-3">
-                    นัดหมายการสอบนักศึกษาจำนวน {{ students.length }} คน
-                  </h3>
-                </v-toolbar>
-              </template>
-              <template v-slot:item.actions="{ item }">
-                <v-icon small @click="deleteStudent(item)">mdi-delete</v-icon>
-              </template>
-            </v-data-table>
+              <v-row>
+                <v-col>
+                  <v-data-table
+                    class="rounded-xl"
+                    :headers="headers"
+                    :items="students"
+                    :items-per-page="5"
+                  >
+                    <template v-slot:top>
+                      <v-toolbar flat color="white" class="rounded-xl mx-0">
+                        <h3 class="color-dark-blue">
+                          รายชื่อนักศึกษา
+                        </h3>
+                        <v-spacer></v-spacer>
+                        <AddStudentInAppointment
+                          :meetingId="meetingData.meetingId"
+                        />
+                        <v-btn
+                          small
+                          outlined
+                          text
+                          color="primary"
+                          @click="openTable"
+                          ><v-icon left>mdi-arrow-left</v-icon>กลับ</v-btn
+                        >
+                      </v-toolbar>
+                    </template>
+                    <template v-slot:item.actions="{ item }">
+                      <v-icon small @click="deleteStudent(item)"
+                        >mdi-delete</v-icon
+                      >
+                    </template>
+                  </v-data-table>
+                </v-col>
+              </v-row>
+            </v-card>
           </v-col>
         </v-row>
       </v-col>
@@ -163,14 +187,15 @@
 
 <script>
 import ProfileMenu from "@/components/ProfileMenu";
+import AddStudentInAppointment from "../components/AddStudentInAppointment";
 import { mapState } from "vuex";
 export default {
   props: {
-    // meeting: Object,
     status: Boolean,
   },
   components: {
     ProfileMenu,
+    AddStudentInAppointment,
   },
   data() {
     return {
@@ -185,7 +210,6 @@ export default {
         { text: "Surname", value: "lastName", sortable: false },
         { text: "Faculty", value: "faculty", sortable: false },
         { text: "Department", value: "department", sortable: false },
-        { text: "Department", value: "department", sortable: false },
         { text: "Actions", value: "actions", sortable: false },
       ],
       types: ["กลางภาค", "ปลายภาค", "สอบย่อย"],
@@ -196,8 +220,9 @@ export default {
         term: null,
         year: null,
       },
-      invitedStudent: [],
       cahcedData: {},
+      showDialog: false,
+      showTable: false,
     };
   },
   computed: {
@@ -207,49 +232,31 @@ export default {
   },
   methods: {
     async updateMeeting() {
-      const response = await this.$store.dispatch("meeting/updateMeeting", {
-        examDate: this.meetingData.examDate,
-        examType: this.meetingData.examType,
-        subjectId: this.meetingData.subjectId,
-        term: this.meetingData.term,
-        year: this.meetingData.year,
-      });
-
-      if (this.invitedStudent.length != 0) {
-        this.addInvitedStudent(
-          this.mapInvitedStudent(this.invitedStudent, response.data.meetingId)
-        );
+      if (this.meetingData.examDate == this.meeting.examDate) {
+        delete this.meetingData.examDate;
       }
-      console.log(response);
-    },
-    async addInvitedStudent(invitedStudent) {
+
       const response = await this.$store.dispatch(
-        "meeting/addInvitedStudent",
-        invitedStudent
+        "meeting/updateMeeting",
+        this.meetingData
       );
 
-      console.log(response);
+      alert(`${response.data.status}: ${response.data.message}`);
     },
     deleteStudent(item) {
       this.$store.dispatch("meeting/deleteStudentInMeeting", item.studentId);
     },
-    cancel() {
-      this.meetingData = this.cahcedData;
-      console.log(this.meetingData);
-      // this.$emit("statusChange", !this.status);
+    openTable() {
+      this.showTable = !this.showTable;
     },
-    mapInvitedStudent(invitedStudent, meetingId) {
-      return invitedStudent.map((element) => ({
-        studentId: element,
-        meetingId: meetingId,
-      }));
+    cancel() {
+      this.meetingData = Object.assign({}, this.meeting);
     },
   },
   mounted() {
     this.$store.dispatch("subject/getAllSubjects");
-    this.cahcedData = Object.assign({}, this.meeting);
     this.meetingData = Object.assign({}, this.meeting);
-    console.log(this.meetingData);
+    this.meetingData.examDate = new Date(this.meetingData.examDate);
   },
 };
 </script>

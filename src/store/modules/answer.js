@@ -29,6 +29,11 @@ export const mutations = {
 export const actions = {
   async createAnswers({ commit }, answer) {
     const response = await answerServices.createAnswers(answer);
+    if (response.data.question.questionType == "อัตนัย") {
+      commit("question/ADD_QUESTION_IN_EXAM", response.data.question, {
+        root: true,
+      });
+    }
     commit("ADD_ANSWER", response.data.newAnswer);
   },
   async getAllAnswers({ commit }) {
@@ -41,7 +46,12 @@ export const actions = {
   },
   async editAnswer({ commit }, answer) {
     const response = await answerServices.updateAnswer(answer);
-    commit("EDIT_ANSWER", response.data.updateAnswer);
+    if (response.data.question.questionType == "อัตนัย") {
+      commit("question/EDIT_QUESTION_IN_EXAM", response.data.question, {
+        root: true,
+      });
+    }
+    // commit("EDIT_ANSWER", response.data.updateAnswer);
   },
   async deleteAnswer({ commit }, answerId) {
     await answerServices.deleteAnswer(answerId);

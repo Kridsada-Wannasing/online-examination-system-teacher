@@ -6,8 +6,8 @@ export default {
   createMeeting(meeting) {
     return apiClient.post(`/${endpoint}`, meeting);
   },
-  addInvitedStudent(meeting) {
-    return apiClient.post(`/${endpoint}`, meeting);
+  createStudentInMeeting(students) {
+    return apiClient.post("student-meeting", students);
   },
   getAllStudentInMeeting(meetingId) {
     return apiClient.get(`/student-meeting/${meetingId}`);

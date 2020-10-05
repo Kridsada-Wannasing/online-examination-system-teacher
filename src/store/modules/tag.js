@@ -26,6 +26,10 @@ export const mutations = {
     );
     state.tags.splice(target, 1, tag);
   },
+  EDIT_TAG_OF_QUESTION(state, tag) {
+    state.tagsOfQuestion = [];
+    state.tagsOfQuestion.push(tag);
+  },
   DELETE_TAG(state, tagId) {
     const target = state.tags.findIndex((element) => element.tagId === tagId);
     state.tags.splice(target, 1);
@@ -68,6 +72,11 @@ export const actions = {
   async updateTag({ commit }, tag) {
     const response = await tagServices.updateTag(tag);
     commit("EDIT_TAG", response.data);
+    return response;
+  },
+  async updateTagsInQuestion({ commit }, tag) {
+    const response = await tagServices.updateTagsInQuestion(tag);
+    commit("EDIT_TAG_OF_QUESTION", response.data);
     return response;
   },
   async deleteTag({ commit }, tagId) {

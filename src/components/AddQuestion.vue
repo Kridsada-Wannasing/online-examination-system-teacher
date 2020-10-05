@@ -151,6 +151,11 @@
               @click="subChoice(i)"
             ></v-icon>
           </div>
+          <div class="mx-10">
+            <v-btn outlined rounded @click="addChoice"
+              ><v-icon left>mdi-plus</v-icon>เพิ่มคำตอบ</v-btn
+            >
+          </div>
         </v-col>
         <v-col
           cols="12"
@@ -257,17 +262,26 @@ export default {
       this.dialog = event;
     },
     async createQuestion() {
-      if (this.answers === undefined || this.answers.length == 0) {
-        return alert("กรูณาใส่คำตอบ");
+      if (this.questionType == "ปรนัย") {
+        if (this.choices == undefined || this.choices.length == 0) {
+          return alert("กรุณาใส่ตัวเลือก");
+        }
+        if (this.answers === undefined || this.answers.length == 0) {
+          return alert("กรุณาใส่คำตอบ");
+        }
       }
       console.log(this.answers);
-      if (
-        this.questionType == "ปรนัย" &&
-        (this.choices == undefined || this.choices.length == 0)
-      ) {
-        return alert("กรุณาใส่ตัวเลือก");
-      }
       console.log(this.choices);
+
+      if (this.questionType == "อัตนัย") {
+        if (
+          this.subjectiveAnswers === undefined ||
+          this.subjectiveAnswers.length == 0
+        ) {
+          return alert("กรุณาใส่คำตอบ");
+        }
+      }
+      console.log(this.subjectiveAnswers);
 
       if (
         this.tagsOfQuestion === undefined ||
@@ -295,9 +309,11 @@ export default {
       if (this.selectedFile)
         this.createImageInQuestion(response.data.newQuestion.questionId);
       else {
-        if (response) alert(`${response.status}: ${response.data.message}`);
         this.cancel();
       }
+
+      alert(`${response.status}: ${response.data.message}`);
+      this.cancel();
     },
     createAnswers(questionId) {
       if (this.questionType == "ปรนัย") {
@@ -312,9 +328,9 @@ export default {
       } else {
         this.$store.dispatch(
           "answer/createAnswers",
-          this.answers.map((element) => ({
+          this.subjectiveAnswers.map((element) => ({
             ...element,
-            score: this.score / this.answers.length,
+            score: this.score / this.subjectiveAnswers.length,
             questionId,
           }))
         );
@@ -348,6 +364,7 @@ export default {
       if (this.questionType == "ปรนัย") {
         this.choices.push({
           choice: `ตัวเลือกที่ ${this.choices.length + 1}`,
+          order: 0,
         });
       } else {
         this.subjectiveAnswers.push({
