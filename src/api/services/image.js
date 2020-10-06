@@ -13,7 +13,7 @@ export default {
     return apiClient.post(`/${endpoint}`, image);
   },
   changeImage(image) {
-    return apiClient.patch(`/${endpoint}/${image.questionId}`, image);
+    return apiClient.patch(`/${endpoint}`, image);
   },
   deleteImage(questionId) {
     return apiClient.delete(`${endpoint}/${questionId}`);

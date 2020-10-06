@@ -73,6 +73,12 @@
             v-model="examDate"
             :textFieldProps="{ solo: true, dense: true, rounded: true }"
           >
+            <template slot="dateIcon">
+              <v-icon>Date</v-icon>
+            </template>
+            <template slot="timeIcon">
+              <v-icon>Time</v-icon>
+            </template>
           </v-datetime-picker>
         </v-col>
         <!-- <v-col cols="12" sm="6" md="4" lg="4">
@@ -170,7 +176,6 @@ export default {
     menu: null,
     showStudentTable: false,
     meetingId: null,
-    // invitedStudent: [],
     headers: [
       {
         text: "Student ID",
@@ -185,14 +190,6 @@ export default {
       { text: "Actions", value: "actions", sortable: false },
     ],
   }),
-  watch: {
-    examDate() {
-      console.log(this.examDate);
-    },
-    subjectId() {
-      console.log(this.subjectId);
-    },
-  },
   computed: {
     ...mapState("subject", ["subjects"]),
     ...mapState("meeting", ["students"]),
@@ -207,35 +204,13 @@ export default {
         year: this.year,
       });
 
-      // if (this.invitedStudent.length > 0) {
-      //   this.createStudentInMeeting(
-      //     this.mapStudent(this.invitedStudent, response.data.meetingId)
-      //   );
-      // }
       alert(`${response.status}: ${response.message}`);
-      // this.$router.push({
-      //   name: "ShowAppointment",
-      //   params: { meetingId: response.newMeeting.meetingId },
-      // });
       this.showStudentTable = true;
       this.meetingId = response.newMeeting.meetingId;
-      // this.getAllStudentInMeeting(response.newMeeting.meetingId);
     },
-    // getAllStudentInMeeting(meetingId) {
-    //   this.$store.dispatch("meeting/getAllStudentInMeeting", meetingId);
-    // },
-    // createStudentInMeeting(students) {
-    //   await this.$store.dispatch("meeting/createStudentInMeeting", students);
-    // },
     cancel() {
       this.$emit("statusChange", !this.status);
     },
-    // mapStudent(student, meetingId) {
-    //   return student.map((element) => ({
-    //     studentId: element,
-    //     meetingId: meetingId,
-    //   }));
-    // },
   },
   mounted() {
     this.$store.dispatch("subject/getAllSubjects");

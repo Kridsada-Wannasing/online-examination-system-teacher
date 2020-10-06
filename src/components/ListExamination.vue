@@ -7,7 +7,7 @@
         outlined
       >
         <div
-          style="display: flex; justify-content: space-between; height: 20%; min-height: 20%; max-height: 20%;"
+          style="display: flex; justify-content: space-between; height: 10%; min-height: 10%; max-height: 10%;"
         >
           <h3 class="color-dark-blue">ห้องสอบทั้งหมด</h3>
           <v-btn small outlined color="primary" @click="selectMeeting">
@@ -15,8 +15,7 @@
           </v-btn>
         </div>
         <div
-          class="mt-5"
-          style="height: 80%; min-height: 80%; max-height: 80%; overflow: auto;"
+          style="height: 90%; min-height: 90%; max-height: 90%; overflow: auto;"
         >
           <v-row no-gutters>
             <v-col

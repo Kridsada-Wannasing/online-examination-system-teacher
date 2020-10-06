@@ -114,13 +114,13 @@ const router = new VueRouter({
   routes,
 });
 
-// router.beforeEach((to, from, next) => {
-//   const loggedIn = localStorage.getItem("teacher-token");
+router.beforeEach((to, from, next) => {
+  const loggedIn = localStorage.getItem("token_teacher");
 
-//   if (to.matched.some((record) => record.meta.requiresAuth) && !loggedIn) {
-//     next("/");
-//   }
-//   next();
-// });
+  if (to.matched.some((record) => record.meta.requiresAuth) && !loggedIn) {
+    next("/");
+  }
+  next();
+});
 
 export default router;

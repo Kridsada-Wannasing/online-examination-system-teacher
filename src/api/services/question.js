@@ -6,6 +6,9 @@ export default {
   createQuestion(question) {
     return apiClient.post(`/${endpoint}`, question);
   },
+  importQuestionsInExam(questions) {
+    return apiClient.post(`/question-exam/import`, questions);
+  },
   getAllQuestions() {
     return apiClient.get(`/${endpoint}`);
   },

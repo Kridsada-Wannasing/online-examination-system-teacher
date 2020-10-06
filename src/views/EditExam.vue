@@ -54,11 +54,9 @@ export default {
   },
   methods: {
     getAddQuestionClick(event) {
-      console.log(event);
       this.addQuestion = event;
     },
     getEditQuestionClick(event) {
-      console.log(event);
       this.editQuestion = event;
     },
   },

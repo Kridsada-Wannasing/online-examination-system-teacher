@@ -54,8 +54,7 @@ export default {
   },
   methods: {
     deleteStudent(item) {
-      console.log(item);
-      // this.$store.dispatch("student/deleteStudent", item);
+      this.$store.dispatch("student/deleteStudent", item.studentId);
     },
   },
 };

@@ -31,7 +31,6 @@ export const mutations = {
     // state.questions.splice(target, 1, question);
   },
   EDIT_QUESTION_IN_EXAM(state, question) {
-    console.log(question);
     const target = state.questionsInExam.findIndex(
       (element) => element.questionId === question.questionId
     );
@@ -46,7 +45,6 @@ export const mutations = {
     state.questions.splice(target, 1);
   },
   DELETE_QUESTION_IN_EXAM(state, questionId) {
-    console.log(questionId);
     const target = state.questionsInExam.findIndex(
       (element) => element.questionId === questionId
     );
@@ -60,6 +58,16 @@ export const actions = {
     const response = await questionServices.createQuestion(question);
     commit("ADD_QUESTION", response.data.newQuestion);
     return response;
+  },
+  async importQuestionsInExam({ commit }, questionsInExam) {
+    const response = await questionServices.importQuestionsInExam(
+      questionsInExam
+    );
+    if (response.data.question.questionType == "ปรนัย") {
+      commit("question/ADD_QUESTION_IN_EXAM", response.data.newQuestion, {
+        root: true,
+      });
+    }
   },
   async getAllQuestions({ commit }) {
     const response = await questionServices.getAllQuestions();

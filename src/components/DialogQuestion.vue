@@ -6,7 +6,7 @@
       small
       outlined
       depressed
-      @click.stop="dialog"
+      @click.stop="dialog = !dialog"
     >
       <v-icon left v-text="'mdi-paperclip'" small class="color-blue"></v-icon
       >เพิ่มคำถามที่มีอยู่
@@ -15,15 +15,73 @@
       <v-card>
         <v-card-title>คำถามทั้งหมด</v-card-title>
         <v-row>
-          <v-col>ชุดข้อสอบ </v-col>
           <v-col>
-            ประเภทคำถาม
+            <v-select
+              solo
+              rounded
+              filled
+              dense
+              :items="subjects"
+              :item-text="'subjectName'"
+              :item-value="'subjectId'"
+              v-model="subject"
+              label="ex. 12345"
+              hide-details
+            ></v-select>
           </v-col>
           <v-col>
-            ระดับความยาก
+            <v-select
+              solo
+              rounded
+              filled
+              dense
+              :items="exams"
+              :item-text="'examName'"
+              :item-value="'examId'"
+              v-model="exam"
+              label="ชุดข้อสอบ"
+              hide-details
+            ></v-select>
           </v-col>
           <v-col>
-            แท็ก
+            <v-select
+              solo
+              rounded
+              filled
+              dense
+              :items="types"
+              v-model="questionType"
+              label="ประเภทคำถาม"
+              hide-details
+            ></v-select>
+          </v-col>
+          <v-col>
+            <v-select
+              solo
+              rounded
+              filled
+              dense
+              :items="level"
+              v-model="questionLevel"
+              label="ระดับความยาก"
+              hide-details
+            ></v-select>
+          </v-col>
+          <v-col>
+            <v-select
+              solo
+              rounded
+              dense
+              filled
+              multiple
+              :items="tags"
+              :item-text="'tagName'"
+              :item-value="'tagId'"
+              v-model="tagsOfQuestion"
+              label="Tag"
+              hide-details
+            >
+            </v-select>
           </v-col>
         </v-row>
         <v-data-table
@@ -32,6 +90,7 @@
           single-expand
           :expanded.sync="expanded"
           item-key="questionId"
+          v-model="questionsInExam"
           class="elevation-0"
         >
           <template v-slot:top>
@@ -48,6 +107,11 @@
           <template v-slot:expanded-item="{ item }">
             <v-card>
               <v-card-title class="headline">{{ item.question }}</v-card-title>
+              <v-card-subtitle v-if="item.questionType == 'ปรนัย'">
+                <div v-for="(choice, index) in item.Choices" :key="index">
+                  <p>{{ choice.choice }}</p>
+                </div>
+              </v-card-subtitle>
             </v-card>
           </template>
         </v-data-table>
@@ -59,6 +123,9 @@
 <script>
 import { mapState } from "vuex";
 export default {
+  props: {
+    examId: [Number, String],
+  },
   data() {
     return {
       headers: [
@@ -73,14 +140,20 @@ export default {
         { text: "แท็ก", value: "tag" },
         { text: "ชุดข้อสอบ", value: "exam" },
       ],
-      expanded: [],
-      singleExpand: true,
       dialog: false,
       query: {},
+      tagsOfQuestion: [],
+      questionLevel: null,
+      questionType: "",
+      exam: null,
+      subject: null,
+      questionsInExam: [],
     };
   },
   computed: {
     ...mapState("question", ["questions"]),
+    ...mapState("exam", ["exams"]),
+    ...mapState("subject", ["subjects"]),
   },
   methods: {
     selectFromExam(examId) {
@@ -104,15 +177,19 @@ export default {
     },
     async save() {
       const response = await this.$store.dispatch(
-        "student/registerStudents",
-        this.dataTable
+        "question/importQuestionsInExam",
+        this.mapQuestionIdAndExamId()
       );
       alert(`${response.status}: ${response.message}`);
       this.cancel();
     },
+    mapQuestionIdAndExamId() {
+      return this.questionsInExam.map((question) => ({
+        questionId: question.questionId,
+        examId: this.examId,
+      }));
+    },
     cancel() {
-      this.dataTable = [];
-      this.selectedFile = null;
       this.dialog = !this.dialog;
     },
   },

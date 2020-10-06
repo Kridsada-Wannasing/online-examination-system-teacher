@@ -16,7 +16,7 @@ export const mutations = {
     localStorage.setItem("teacher", JSON.stringify(teacher));
   },
   CLEAR_TEACHER() {
-    localStorage.removeItem("token");
+    localStorage.removeItem("token_teacher");
     localStorage.removeItem("teacher");
     location.reload();
   },

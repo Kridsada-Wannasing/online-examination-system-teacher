@@ -65,7 +65,6 @@ export const actions = {
   },
   async createStudentInMeeting({ commit }, students) {
     const response = await meetingServices.createStudentInMeeting(students);
-    console.log(response.data.students);
     if (Array.isArray(response.data.students))
       response.data.students.map((student) =>
         commit("ADD_STUDENT_IN_MEETING", student)

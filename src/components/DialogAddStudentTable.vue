@@ -67,10 +67,11 @@ export default {
           sortable: false,
           value: "studentId",
         },
-        { text: "Name", value: "firstName" },
-        { text: "Surname", value: "lastName" },
-        { text: "Faculty", value: "faculty" },
-        { text: "Department", value: "department" },
+        { text: "Name", value: "firstName", sortable: false },
+        { text: "Surname", value: "lastName", sortable: false },
+        { text: "Email", value: "email", sortable: false },
+        { text: "Faculty", value: "faculty", sortable: false },
+        { text: "Department", value: "department", sortable: false },
       ],
       selectedFile: null,
       dataTable: [],
@@ -108,7 +109,6 @@ export default {
         let wb = xlsx.read(fileData, { type: "binary" });
         let wsname = wb.SheetNames[0];
         this.dataTable = xlsx.utils.sheet_to_json(wb.Sheets[wsname]);
-        console.log(this.dataTable);
       };
       reader.readAsBinaryString(this.selectedFile);
     },

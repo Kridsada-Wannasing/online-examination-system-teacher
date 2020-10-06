@@ -153,6 +153,7 @@ export default {
   watch: {
     subject() {
       this.$store.dispatch("exam/getAllExams", { subjectId: this.subject });
+      this.status = false;
     },
     examType() {
       this.query.examType = this.examType;

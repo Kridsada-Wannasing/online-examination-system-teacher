@@ -67,7 +67,6 @@ export default {
       this.status = event;
     },
     getMeetings(event) {
-      console.log(event);
       this.query.subjectId = event;
       this.$store.dispatch("meeting/getAllMeetings", qs.stringify(this.query));
     },

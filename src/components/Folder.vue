@@ -12,7 +12,9 @@
               <p style="font-size: 12px">{{ meeting.Subject.subjectName }}</p>
             </div>
             <div style="height: 30%">
-              <p class="mb-0" style="font-size: 12px">{{ meeting.examDate }}</p>
+              <p class="mb-0" style="font-size: 12px">
+                {{ formatMeetingDate }}น.
+              </p>
               <!-- <p class="mb-0" style="font-size: 12px">{{ exam.examType }}</p> -->
             </div>
           </v-col>
@@ -41,11 +43,11 @@
             </div>
             <div style="height: 30%">
               <p class="mb-0" style="font-size: 12px">
-                {{ examination.startExam }}
+                {{ formatExaminationDate }}
               </p>
-              <p class="mb-0" style="font-size: 12px">
-                {{ examination.endExam }}
-              </p>
+              <!-- <p class="mb-0" style="font-size: 12px">
+                {{ formatDate(examination.endExam) }}
+              </p> -->
             </div>
           </v-col>
           <!--  -->
@@ -75,7 +77,9 @@
               <p style="font-size: 12px">{{ meeting.Subject.subjectName }}</p>
             </div>
             <div style="height: 30%">
-              <p class="mb-0" style="font-size: 12px">{{ meeting.examDate }}</p>
+              <p class="mb-0" style="font-size: 12px">
+                {{ formatMeetingDate }}น.
+              </p>
               <!-- <p class="mb-0" style="font-size: 12px">{{ exam.examType }}</p> -->
             </div>
           </v-col>
@@ -104,11 +108,11 @@
             </div>
             <div style="height: 30%">
               <p class="mb-0" style="font-size: 12px">
-                {{ examination.startExam }}
+                {{ formatExaminationDate }}
               </p>
-              <p class="mb-0" style="font-size: 12px">
-                {{ examination.endExam }}
-              </p>
+              <!-- <p class="mb-0" style="font-size: 12px">
+                {{ formatExaminationDate() }}
+              </p> -->
             </div>
           </v-col>
           <!--  -->
@@ -132,6 +136,8 @@
   </div>
 </template>
 <script>
+import dayjs from "dayjs";
+import localizedFormat from "dayjs/plugin/localizedFormat";
 export default {
   name: "folder",
   props: {
@@ -150,9 +156,31 @@ export default {
     getImgUrl() {
       return require(this.imagePath);
     },
+    formatDate(date) {
+      dayjs.extend(localizedFormat);
+      require("dayjs/locale/th");
+      return dayjs(date)
+        .locale("th")
+        .format("LLL");
+    },
   },
-  mounted() {
-    console.log(this.examination);
+  computed: {
+    formatMeetingDate() {
+      dayjs.extend(localizedFormat);
+      require("dayjs/locale/th");
+      return dayjs(this.meeting.examDate)
+        .locale("th")
+        .format("LLL");
+    },
+    formatExaminationDate() {
+      dayjs.extend(localizedFormat);
+      require("dayjs/locale/th");
+      return `${dayjs(this.examination.startDate)
+        .locale("th")
+        .format("LLL")}น. - ${dayjs(this.examination.endDate)
+        .locale("th")
+        .format("LT")}น.`;
+    },
   },
 };
 </script>

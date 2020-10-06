@@ -249,14 +249,6 @@ export default {
     answers: [],
     image: "",
   }),
-  watch: {
-    answers() {
-      console.log(this.answers);
-    },
-    subjectiveAnswers() {
-      console.log(this.subjectiveAnswers);
-    },
-  },
   methods: {
     getDialog(event) {
       this.dialog = event;
@@ -270,8 +262,6 @@ export default {
           return alert("กรุณาใส่คำตอบ");
         }
       }
-      console.log(this.answers);
-      console.log(this.choices);
 
       if (this.questionType == "อัตนัย") {
         if (
@@ -281,7 +271,6 @@ export default {
           return alert("กรุณาใส่คำตอบ");
         }
       }
-      console.log(this.subjectiveAnswers);
 
       if (
         this.tagsOfQuestion === undefined ||
@@ -411,8 +400,6 @@ export default {
   },
   created() {
     this.$store.dispatch("tag/getAllTags");
-    console.log(this.examId);
-    console.log(this.addQuestion);
   },
 };
 </script>

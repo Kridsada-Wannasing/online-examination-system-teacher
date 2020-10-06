@@ -9,4 +9,7 @@ export default {
   getAllStudents() {
     return apiClient.get(`${endpoint}`);
   },
+  deleteStudent(studentId) {
+    return apiClient.delete(`${endpoint}/${studentId}`);
+  },
 };

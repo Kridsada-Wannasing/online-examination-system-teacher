@@ -1,5 +1,4 @@
 import imageServices from "../../api/services/image";
-import axios from "axios";
 
 export const namespaced = true;
 
@@ -33,15 +32,12 @@ export const actions = {
     const response = await imageServices.uploadImage(image);
     commit("SET_IMAGE", response.data.newImage);
   },
-  showImage(name) {
-    return axios.get(`localhost:8000/static/${name}`);
-  },
   async changeImage({ commit }, image) {
-    const response = await imageServices.updateExam(image);
+    const response = await imageServices.changeImage(image);
     commit("SET_IMAGE", response.data.updateImage);
   },
   async deleteImage({ commit }, imageId) {
-    await imageServices.deleteExam(imageId);
+    await imageServices.deleteImage(imageId);
     commit("DELETE_IMAGE");
   },
 };

@@ -4,6 +4,10 @@ import router from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
 import DatetimePicker from "vuetify-datetime-picker";
+// import VueTimepicker from "vue2-timepicker";
+
+// CSS
+import "vue2-timepicker/dist/VueTimepicker.css";
 
 Vue.use(DatetimePicker);
 // import VueSocketIO from "vue-socket.io";

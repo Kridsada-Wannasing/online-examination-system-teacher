@@ -61,7 +61,7 @@
               color="red"
               style="background-color: #feebeb; border-radius: 0px 0px 20px 20px;"
             >
-              <v-list-item-content class="text-center">
+              <v-list-item-content class="text-center" @click="logout">
                 <span style="color:#f44337;">
                   <v-icon
                     v-text="'mdi-logout'"
@@ -87,109 +87,251 @@
       style="border-radius: 20px"
       class="mx-auto"
     >
-      <v-card-text class="m-2">
-        <v-row>
-          <v-col>
-            <h3 class="color-blue">แก้ไขข้อมูลส่วนตัว</h3>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-divider class="ma-4"></v-divider>
-        </v-row>
-        <v-text-field
-          solo
-          rounded
-          dense
-          filled
-          label="ชื่อ"
-          hide-details
-        ></v-text-field>
-        <v-text-field
-          solo
-          rounded
-          dense
-          filled
-          label="นามสกุล"
-          hide-details
-        ></v-text-field>
-        <v-text-field
-          solo
-          rounded
-          dense
-          filled
-          label="อีเมล"
-          hide-details
-        ></v-text-field>
-        <v-text-field
-          solo
-          rounded
-          dense
-          filled
-          label="คณะ"
-          hide-details
-        ></v-text-field>
-        <v-text-field
-          solo
-          rounded
-          dense
-          filled
-          label="ภาควิชา"
-          hide-details
-        ></v-text-field>
-      </v-card-text>
+      <div v-if="!editPassword">
+        <v-card-text class="m-2">
+          <v-row dense>
+            <v-col>
+              <h3 class="color-blue">แก้ไขข้อมูลส่วนตัว</h3>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-divider class="mx-4 my-2"></v-divider>
+          </v-row>
+          <span class="color-dark-blue" style="font-size: 12px;">ชื่อ</span>
+          <v-text-field
+            class="mb-2"
+            solo
+            rounded
+            dense
+            filled
+            v-model="firstName"
+            label="ชื่อ"
+            hide-details
+          ></v-text-field>
+          <span class="color-dark-blue" style="font-size: 12px;">นามสกุล</span>
+          <v-text-field
+            class="mb-2"
+            solo
+            rounded
+            dense
+            filled
+            v-model="lastName"
+            label="นามสกุล"
+            hide-details
+          ></v-text-field>
+          <span class="color-dark-blue" style="font-size: 12px;">คณะ</span>
+          <v-text-field
+            class="mb-2"
+            solo
+            rounded
+            dense
+            filled
+            v-model="faculty"
+            label="คณะ"
+            hide-details
+          ></v-text-field>
+          <span class="color-dark-blue" style="font-size: 12px;">ภาควิชา</span>
+          <v-text-field
+            class="mb-2"
+            solo
+            rounded
+            dense
+            filled
+            v-model="department"
+            label="ภาควิชา"
+            hide-details
+          ></v-text-field>
+        </v-card-text>
+        <v-card-text>
+          <div class="d-flex justify-center">
+            <v-btn
+              small
+              class="green mr-2"
+              max-width="400"
+              rounded
+              dark
+              @click="updateMe"
+            >
+              บันทึก
+            </v-btn>
+            <v-btn
+              small
+              class="ml-2"
+              style="color:#f44337;"
+              max-width="400"
+              rounded
+              outlined
+            >
+              ยกเลิก
+            </v-btn>
+          </div>
+        </v-card-text>
 
-      <v-card-text>
-        <v-divider></v-divider>
-      </v-card-text>
+        <v-card-actions
+          style="position: absolute; bottom: 0"
+          class="pa-0 w-100"
+        >
+          <v-list
+            dense
+            class="pa-0 w-100"
+            style="border-radius: 0px 0px 20px 20px;"
+          >
+            <v-list-item-group>
+              <v-list-item color="primary">
+                <v-list-item-content
+                  class="text-center"
+                  @click="editPassword = !editPassword"
+                >
+                  <span class="color-dark-blue">
+                    <v-icon
+                      v-text="'mdi-border-color'"
+                      class="pr-2 color-dark-blue"
+                    ></v-icon
+                    >แก้ไขรหัสผ่าน
+                  </span>
+                </v-list-item-content>
+              </v-list-item>
 
-      <v-card-text>
-        <v-text-field
-          solo
-          rounded
-          dense
-          filled
-          label="รหัสผ่านเก่า"
-          hide-details
-        ></v-text-field>
-        <v-text-field
-          solo
-          rounded
-          dense
-          filled
-          label="รหัสผ่านใหม่"
-          hide-details
-        ></v-text-field>
-        <v-text-field
-          solo
-          rounded
-          dense
-          filled
-          label="ยืนยันรหัสผ่านใหม่"
-          hide-details
-        ></v-text-field>
-      </v-card-text>
+              <v-list-item
+                color="red"
+                style="background-color: #feebeb; border-radius: 0px 0px 20px 20px;"
+              >
+                <v-list-item-content class="text-center" @click="edit = !edit">
+                  <span style="color:#f44337;">
+                    <v-icon
+                      v-text="'mdi-logout'"
+                      class="pr-2"
+                      style="color: #f44337;"
+                    ></v-icon
+                    >กลับ
+                  </span>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list-item-group>
+          </v-list>
+        </v-card-actions>
+      </div>
 
-      <v-card-actions style="position: absolute; bottom: 0" class="pa-0 w-100">
-        <v-row>
-          <v-btn class="color-dark-blue">
-            <v-icon
-              v-text="'mdi-border-color'"
-              class="pr-2 color-dark-blue"
-            ></v-icon
-            >บันทึก
-          </v-btn>
-        </v-row>
-        <v-row>
-          <v-btn style="color:#f44337;">
-            <v-icon
-              v-text="'mdi-logout'"
-              class="pr-2"
-              style="color: #f44337;"
-            ></v-icon
-            >ยกเลิก
-          </v-btn>
-        </v-row>
-      </v-card-actions>
+      <div v-else>
+        <v-card-text>
+          <v-row dense>
+            <v-col>
+              <h3 class="color-blue">เปลี่ยนแปลงรหัสผ่าน</h3>
+            </v-col>
+          </v-row>
+
+          <span class="color-dark-blue" style="font-size: 12px;"
+            >รหัสผ่านปัจจุบัน</span
+          >
+          <v-text-field
+            class="mb-2"
+            solo
+            rounded
+            dense
+            filled
+            v-model="oldPassword"
+            type="password"
+            hide-details
+          ></v-text-field>
+
+          <span class="color-dark-blue" style="font-size: 12px;"
+            >รหัสผ่านใหม่</span
+          >
+          <v-text-field
+            class="mb-2"
+            solo
+            rounded
+            dense
+            filled
+            v-model="candidateNewPassword"
+            type="password"
+            hide-details
+          ></v-text-field>
+
+          <span class="color-dark-blue" style="font-size: 12px;"
+            >ยืนยันรหัสผ่านใหม่</span
+          >
+          <v-text-field
+            class="mb-2"
+            solo
+            rounded
+            dense
+            filled
+            v-model="confirmCandidateNewPassword"
+            type="password"
+            hide-details
+          ></v-text-field>
+        </v-card-text>
+
+        <v-card-text>
+          <div class="d-flex justify-center">
+            <v-btn
+              small
+              class="green mr-2"
+              max-width="400"
+              rounded
+              dark
+              @click="updatePassword"
+            >
+              บันทึก
+            </v-btn>
+            <v-btn
+              small
+              class="ml-2"
+              style="color:#f44337;"
+              max-width="400"
+              rounded
+              outlined
+            >
+              ยกเลิก
+            </v-btn>
+          </div>
+        </v-card-text>
+
+        <v-card-actions
+          style="position: absolute; bottom: 0"
+          class="pa-0 w-100"
+        >
+          <v-list
+            dense
+            class="pa-0 w-100"
+            style="border-radius: 0px 0px 20px 20px;"
+          >
+            <v-list-item-group>
+              <v-list-item color="primary">
+                <v-list-item-content
+                  class="text-center"
+                  @click="editPassword = !editPassword"
+                >
+                  <span class="color-dark-blue">
+                    <v-icon
+                      v-text="'mdi-border-color'"
+                      class="pr-2 color-dark-blue"
+                    ></v-icon
+                    >กลับไปยังแก้ไขข้อมูลส่วนตัว
+                  </span>
+                </v-list-item-content>
+              </v-list-item>
+
+              <v-list-item
+                color="red"
+                style="background-color: #feebeb; border-radius: 0px 0px 20px 20px;"
+              >
+                <v-list-item-content class="text-center" @click="edit = !edit">
+                  <span style="color:#f44337;">
+                    <v-icon
+                      v-text="'mdi-logout'"
+                      class="pr-2"
+                      style="color: #f44337;"
+                    ></v-icon
+                    >กลับไปยังข้อมูลส่วนตัว
+                  </span>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list-item-group>
+          </v-list>
+        </v-card-actions>
+      </div>
     </v-card>
   </div>
 </template>
@@ -207,32 +349,39 @@ export default {
       candidateNewPassword: "",
       confirmCandidateNewPassword: "",
       edit: false,
+      editPassword: false,
     };
   },
-  mounted() {},
   methods: {
     async updateMe() {
       const response = await this.$store.dispatch("teacher/updateMe", {
         firstName: this.firstName,
         lastName: this.lastName,
-        email: this.email,
         faculty: this.faculty,
         department: this.department,
       });
 
       alert(`${response.status} ${response.message}`);
+      location.reload();
     },
-    async updatePassword() {
+    updatePassword() {
       if (this.confirmCandidateNewPassword != this.candidateNewPassword) {
         return alert("รหัสผ่านใหม่กับยืนยันรหัสผ่านใหม่ไม่ตรงกัน");
       }
 
-      const response = await this.$store.dispatch("teacher/updatePassword", {
+      this.$store.dispatch("teacher/updatePassword", {
         oldPassword: this.oldPassword,
         candidateNewPassword: this.candidateNewPassword,
       });
-
-      alert(`${response.status} ${response.message}`);
+    },
+    logout() {
+      this.$store.dispatch("teacher/logout");
+    },
+    cancel() {
+      this.firstName = JSON.parse(localStorage.getItem("teacher")).firstName;
+      this.lastName = JSON.parse(localStorage.getItem("teacher")).lastName;
+      this.faculty = JSON.parse(localStorage.getItem("teacher")).faculty;
+      this.department = JSON.parse(localStorage.getItem("teacher")).department;
     },
   },
 };

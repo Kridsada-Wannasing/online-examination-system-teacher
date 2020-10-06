@@ -13,6 +13,12 @@ export const mutations = {
   ADD_STUDENT(state, students) {
     state.students.push(students);
   },
+  DELETE_STUDENT(state, studentId) {
+    let target = state.students.findIndex(
+      (student) => student.studentId == studentId
+    );
+    state.students.splice(target, 1);
+  },
 };
 
 export const actions = {
@@ -23,6 +29,11 @@ export const actions = {
   },
   async getAllStudents({ commit }) {
     const response = await studentServices.getAllStudents();
+    commit("SET_STUDENTS", response.data.allStudents);
+    return response.data.newStudents;
+  },
+  async deleteStudent({ commit }, studentId) {
+    const response = await studentServices.deleteStudent(studentId);
     commit("SET_STUDENTS", response.data.allStudents);
     return response.data.newStudents;
   },

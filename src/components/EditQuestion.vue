@@ -21,18 +21,6 @@
         <h4 class="color-dark-blue">เพิ่มคำถาม</h4>
         <v-row>
           <v-col cols="12" sm="6" md="4" lg="4">
-            <v-text-field
-              solo
-              rounded
-              filled
-              dense
-              disabled
-              v-model="defaultQuestion.questionType"
-              label="ประเภทคำถาม"
-              hide-details
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" sm="6" md="4" lg="4">
             <v-select
               solo
               rounded
@@ -63,12 +51,9 @@
             ></v-select>
           </v-col>
         </v-row>
-        <!-- <div>
-          <v-img :src="defaultImage" max-width="700"></v-img>
+        <div v-if="defaultImage">
+          <v-img :src="showImage" max-width="700"></v-img>
         </div>
-        <div v-else>
-          <v-img :src="defaultImage" max-width="700"></v-img>
-        </div> -->
         <div
           class="mt-10"
           style="display: flex; justify-content: space-between;"
@@ -267,23 +252,6 @@ export default {
     defaultAnswers: [],
     defaultImage: "",
   }),
-  watch: {
-    defaultAnswers() {
-      console.log(this.defaultAnswers);
-    },
-    defaultChoices() {
-      console.log(this.defaultChoices);
-    },
-    deletedChoices() {
-      console.log(this.deletedChoices);
-    },
-    defaultImage() {
-      console.log(this.defaultImage);
-    },
-    defaultTagsOfQuestion() {
-      console.log(this.defaultTagsOfQuestion);
-    },
-  },
   methods: {
     async updateQuestion() {
       if (this.defaultQuestion.questionType == "ปรนัย") {
@@ -336,7 +304,7 @@ export default {
 
       this.editTags();
 
-      // if (this.selectedFile.name != this.image.name) this.changeImage();
+      if (this.selectedFile) this.changeImage();
       alert(`${updatedQuestion.status}: ${updatedQuestion.message}`);
       this.cancel();
     },
@@ -363,7 +331,6 @@ export default {
       }));
     },
     mapTags() {
-      console.log(this.defaultTagsOfQuestion);
       return this.defaultTagsOfQuestion.map((element) => ({
         tagId: element,
         questionId: this.question.questionId,
@@ -372,7 +339,7 @@ export default {
     changeImage() {
       const formData = new FormData();
       formData.append("file", this.selectedFile, this.selectedFile.name);
-      formData.append("questionId", this.questionId);
+      formData.append("questionId", this.question.questionId);
 
       this.$store
         .dispatch("image/changeImage", formData)
@@ -464,9 +431,11 @@ export default {
       }
 
       this.defaultChoices = this.choices;
-      // if (this.image.path) {
-      //   this.defaultImage = `http://localhost:8000/static/${this.image.path}`;
-      // } else if (this.image.path == null) this.defaultImage = "";
+      try {
+        this.defaultImage = `http://localhost:8000/static/${this.image.path}`;
+      } catch (error) {
+        this.defaultImage = "";
+      }
 
       this.edited = true;
     },
@@ -486,8 +455,7 @@ export default {
       return !this.edited ? true : false;
     },
     hasImage() {
-      console.log(!!this.image.path);
-      return !!this.image.path;
+      return !!this.defaultImage;
     },
     showImage() {
       return this.defaultImage;

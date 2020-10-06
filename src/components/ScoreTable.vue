@@ -10,7 +10,13 @@
         style="display: flex; justify-content: space-between;"
       >
         <h4 class="color-dark-blue">รายชื่อนักศึกษา 43 คน</h4>
-        <v-btn small outlined color="primary" to="/class">
+        <v-btn
+          small
+          dark
+          color="primary"
+          @click="exportScores"
+          v-if="showButton"
+        >
           <v-icon left>mdi-arrow-up</v-icon>Export file
         </v-btn>
       </div>
@@ -32,7 +38,7 @@
               <td class="color-dark-blue">
                 {{ score.student.firstName }} {{ score.student.lastName }}
               </td>
-              <td class="color-dark-blue">{{ score.subject.subjectName }}</td>
+              <td class="color-dark-blue">{{ score.subject }}</td>
               <td class="color-dark-blue">{{ score.exam }}</td>
               <td class="color-dark-blue">{{ score.sum }}</td>
               <td class="color-dark-blue">{{ score.score }}</td>
@@ -45,10 +51,38 @@
 </template>
 <script>
 import { mapState } from "vuex";
+import XLSX from "xlsx";
 export default {
   name: "scoreTable",
   computed: {
     ...mapState("score", ["scores"]),
+    showButton() {
+      return this.scores.length > 0 ? true : false;
+    },
+  },
+  methods: {
+    exportScores() {
+      let json = this.scores.map((score) => ({
+        รหัสนักศึกษา: score.student.studentId,
+        "ชื่อ-นามสกุล": `${score.student.firstName} ${score.student.lastName}`,
+        ชื่อวิชา: score.subject,
+        ชื่อชุดข้อสอบ: score.exam,
+        คะแนนทั้งหมด: score.sum,
+        คะแนนที่ได้: score.score,
+      }));
+
+      const fileName = "test.xlsx";
+
+      /* make the worksheet */
+      let ws = XLSX.utils.json_to_sheet(json);
+
+      /* add to workbook */
+      let wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "score");
+
+      /* generate an XLSX file */
+      XLSX.writeFile(wb, fileName);
+    },
   },
 };
 </script>

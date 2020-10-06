@@ -115,7 +115,6 @@ export default {
   mounted() {
     this.$store.dispatch("student/getAllStudents");
     this.dialog = this.showDialog;
-    console.log(this.meetingId);
   },
   computed: {
     ...mapState("student", ["students"]),

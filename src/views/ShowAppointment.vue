@@ -88,6 +88,12 @@
                     v-model="meetingData.examDate"
                     :textFieldProps="{ solo: true, dense: true, rounded: true }"
                   >
+                    <template slot="dateIcon">
+                      <v-icon>Date</v-icon>
+                    </template>
+                    <template slot="timeIcon">
+                      <v-icon>Time</v-icon>
+                    </template>
                   </v-datetime-picker>
                 </v-col>
                 <!-- <v-col cols="12" sm="6" md="4" lg="4">
