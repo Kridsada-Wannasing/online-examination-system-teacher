@@ -41,7 +41,7 @@ export default {
     return {
       subject: null,
       exam: null,
-      query: {},
+      query: {}
     };
   },
   watch: {
@@ -52,14 +52,14 @@ export default {
     exam() {
       this.query.examId = this.exam;
       this.$store.dispatch("score/getAllScores", qs.stringify(this.query));
-    },
+    }
   },
   computed: {
     ...mapState("subject", ["subjects"]),
-    ...mapState("exam", ["exams"]),
+    ...mapState("exam", ["exams"])
   },
   created() {
     this.$store.dispatch("subject/getAllSubjects");
-  },
+  }
 };
 </script>

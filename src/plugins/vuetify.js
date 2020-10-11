@@ -5,8 +5,8 @@ import { Ripple } from "vuetify/lib/directives";
 Vue.use(Vuetify, {
   // other stuff
   directives: {
-    Ripple,
-  },
+    Ripple
+  }
 });
 
 export default new Vuetify({});

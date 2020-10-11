@@ -15,13 +15,13 @@ export default {
   addTagToQuestion(tag) {
     return apiClient.post(`/question-tag/${tag[0].questionId}`, tag);
   },
-  updateTag(tag) {
-    return apiClient.patch(`/${endpoint}/${tag.tagId}`, tag);
+  updateTag(tagId, tagName) {
+    return apiClient.patch(`/${endpoint}/${tagId}`, { tagName });
   },
   updateTagsInQuestion(tag) {
     return apiClient.patch(`/question-tag/${tag[0].questionId}`, tag);
   },
   deleteTag(tagId) {
     return apiClient.delete(`/${endpoint}/${tagId}`);
-  },
+  }
 };

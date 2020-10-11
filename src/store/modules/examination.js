@@ -4,7 +4,7 @@ export const namespaced = true;
 
 export const state = {
   examinations: [],
-  examination: {},
+  examination: {}
 };
 
 export const mutations = {
@@ -19,18 +19,18 @@ export const mutations = {
   },
   EDIT_EXAMINATION(state, examination) {
     const target = state.examinations.findIndex(
-      (element) => element.examinationId === examination.examinationId
+      element => element.examinationId === examination.examinationId
     );
 
     state.examinations.splice(target, 1, examination);
   },
   DELETE_EXAMINATION(state, examinationId) {
     const target = state.examinations.findIndex(
-      (element) => element.examinationId === examinationId
+      element => element.examinationId === examinationId
     );
 
     state.examinations.splice(target, 1);
-  },
+  }
 };
 
 export const actions = {
@@ -67,13 +67,13 @@ export const actions = {
   async deleteExamination({ commit }, examinationId) {
     await examinationServices.deleteExamination(examinationId);
     commit("DELETE_EXAMINATION", examinationId);
-  },
+  }
 };
 
 export const getters = {
-  getByExaminationId: (state) => (examinationId) => {
+  getByExaminationId: state => examinationId => {
     return state.examinations.find(
-      (examination) => examination.examinationId == examinationId
+      examination => examination.examinationId == examinationId
     );
-  },
+  }
 };

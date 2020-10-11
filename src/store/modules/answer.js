@@ -4,7 +4,7 @@ export const namespaced = true;
 
 export const state = {
   answers: [],
-  answer: {},
+  answer: {}
 };
 
 export const mutations = {
@@ -19,11 +19,11 @@ export const mutations = {
   },
   DELETE_ANSWER(state, answerId) {
     const target = state.answers.findIndex(
-      (element) => element.answerId === answerId
+      element => element.answerId === answerId
     );
 
     state.answers.splice(target, 1);
-  },
+  }
 };
 
 export const actions = {
@@ -31,7 +31,7 @@ export const actions = {
     const response = await answerServices.createAnswers(answer);
     if (response.data.question.questionType == "อัตนัย") {
       commit("question/ADD_QUESTION_IN_EXAM", response.data.question, {
-        root: true,
+        root: true
       });
     }
     commit("ADD_ANSWER", response.data.newAnswer);
@@ -48,7 +48,7 @@ export const actions = {
     const response = await answerServices.updateAnswer(answer);
     if (response.data.question.questionType == "อัตนัย") {
       commit("question/EDIT_QUESTION_IN_EXAM", response.data.question, {
-        root: true,
+        root: true
       });
     }
     // commit("EDIT_ANSWER", response.data.updateAnswer);
@@ -56,7 +56,7 @@ export const actions = {
   async deleteAnswer({ commit }, answerId) {
     await answerServices.deleteAnswer(answerId);
     commit("DELETE_ANSWER", answerId);
-  },
+  }
 };
 
 export const getters = {};

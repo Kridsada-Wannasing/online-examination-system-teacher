@@ -101,7 +101,7 @@
                       :textFieldProps="{
                         solo: true,
                         dense: true,
-                        rounded: true,
+                        rounded: true
                       }"
                     >
                       <template slot="dateIcon">
@@ -129,7 +129,7 @@
                       :textFieldProps="{
                         solo: true,
                         dense: true,
-                        rounded: true,
+                        rounded: true
                       }"
                     >
                     </v-datetime-picker>
@@ -172,7 +172,7 @@ import { mapState } from "vuex";
 export default {
   components: {
     ProfileMenu,
-    Folder,
+    Folder
   },
   data() {
     return {
@@ -180,9 +180,9 @@ export default {
         examId: null,
         password: "",
         startDate: "",
-        endDate: "",
+        endDate: ""
       },
-      menu: false,
+      menu: false
     };
   },
   methods: {
@@ -194,7 +194,7 @@ export default {
           password: this.examinationData.password,
           startDate: this.examinationData.startDate,
           endDate: this.examinationData.endDate,
-          meetingId: this.$route.params.meetingId,
+          meetingId: this.$route.params.meetingId
         }
       );
 
@@ -208,19 +208,28 @@ export default {
           examId: this.examinationData.examId,
           password: this.examinationData.password,
           startDate: this.examinationData.startDate,
-          endDate: this.examinationData.endDate,
+          endDate: this.examinationData.endDate
         }
       );
 
       alert(`${response.status}: ${response.message}`);
       this.$router.push({ name: "Examination" });
-    },
+    }
   },
   computed: {
     ...mapState("meeting", ["meeting"]),
     ...mapState("exam", ["exams"]),
+    ...mapState("examination", ["examination"]),
+    checkExamination() {
+      if (!this.examination || Object.keys(this.examination).length > 0)
+        return true;
+      else return false;
+    }
   },
   mounted() {
+    if (!this.examination || Object.keys(this.examination).length > 0)
+      this.examinationData = this.examination;
+
     this.$store
       .dispatch("meeting/getMeeting", this.$route.params.meetingId)
       .then(() => {
@@ -228,11 +237,11 @@ export default {
         this.examinationData.endDate = new Date(this.meeting.examDate);
 
         this.$store.dispatch("exam/getAllExams", {
-          subjectId: this.meeting.subjectId,
+          subjectId: this.meeting.subjectId
         });
       })
-      .catch((error) => alert(error));
-  },
+      .catch(error => alert(error));
+  }
 };
 </script>
 

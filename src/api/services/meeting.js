@@ -26,6 +26,6 @@ export default {
     return apiClient.delete(`/${endpoint}/${meetingId}`);
   },
   deleteStudentInMeeting(meetingId, studentId) {
-    return apiClient.delete(`/${endpoint}/${meetingId}/${studentId}`);
-  },
+    return apiClient.delete(`/student-meeting/${meetingId}/${studentId}`);
+  }
 };

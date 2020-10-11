@@ -13,43 +13,55 @@
             >
               <div style="display:flex; justify-content:space-between;">
                 <h4 class="color-dark-blue">ตั้งค่าการนัดหมาย</h4>
-                <v-btn small text color="primary" rounded @click="openTable"
-                  >ดูหน้ารายชื่อ<v-icon right
-                    >mdi-account-arrow-right-outline</v-icon
-                  ></v-btn
-                >
+                <div class="ma-0 pa-0">
+                  <v-btn
+                    small
+                    text
+                    color="red"
+                    class="mr-3"
+                    rounded
+                    @click="deleteMeeting"
+                    >ลบนัดหมายการสอบ</v-btn
+                  >
+                  <v-btn small text color="primary" rounded @click="openTable"
+                    >ดูหน้ารายชื่อ<v-icon right
+                      >mdi-account-arrow-right-outline</v-icon
+                    ></v-btn
+                  >
+                </div>
               </div>
               <v-row>
                 <v-col cols="12" sm="6" md="4" lg="4">
                   <span class="color-dark-blue" style="font-size: 12px;"
                     >ชื่อวิชา</span
                   >
-                  <v-select
-                    solo
-                    rounded
-                    filled
-                    dense
-                    :items="subjects"
-                    :item-text="'subjectName'"
-                    :item-value="'subjectId'"
-                    v-model="meetingData.subjectId"
-                    label="ex. 12445"
-                    hide-details
-                  ></v-select>
-                </v-col>
-                <v-col cols="12" sm="6" md="4" lg="4">
-                  <span class="color-dark-blue" style="font-size: 12px;"
-                    >ปีการศึกษา</span
-                  >
                   <v-text-field
                     solo
                     rounded
                     filled
                     dense
-                    v-model="meetingData.year"
-                    label="ex. 12445"
+                    readonly
+                    v-model="meetingData.Subject.subjectName"
+                    label="นัดสอบวิชา"
                     hide-details
                   ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6" md="4" lg="4">
+                  <span class="color-dark-blue" style="font-size: 12px;"
+                    >ชุดข้อสอบ</span
+                  >
+                  <v-select
+                    solo
+                    rounded
+                    filled
+                    dense
+                    :items="exams"
+                    :item-text="'examName'"
+                    :item-value="'examId'"
+                    v-model="meetingData.examId"
+                    label="นัดสอบวิชา"
+                    hide-details
+                  ></v-select>
                 </v-col>
                 <v-col cols="12" sm="6" md="4" lg="4">
                   <span class="color-dark-blue" style="font-size: 12px;"
@@ -62,7 +74,7 @@
                     dense
                     :items="types"
                     v-model="meetingData.examType"
-                    label="ex.124456"
+                    label="การสอบ"
                     hide-details
                   ></v-select>
                 </v-col>
@@ -76,16 +88,31 @@
                     filled
                     dense
                     v-model="meetingData.term"
-                    label="ex. 124456"
+                    label="ภาคเรียนที่"
                     hide-details
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="4" lg="4">
                   <span class="color-dark-blue" style="font-size: 12px;"
-                    >วันเวลาสอบ</span
+                    >ปีการศึกษา</span
+                  >
+                  <v-text-field
+                    solo
+                    rounded
+                    filled
+                    dense
+                    v-model="meetingData.year"
+                    label="ปีการศึกษา"
+                    hide-details
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6" md="4" lg="4">
+                  <span class="color-dark-blue" style="font-size: 12px;"
+                    >เริ่มสอบ</span
                   >
                   <v-datetime-picker
-                    v-model="meetingData.examDate"
+                    label="กำหนดเวลาเริ่มสอบ"
+                    v-model="meetingData.startExamDate"
                     :textFieldProps="{ solo: true, dense: true, rounded: true }"
                   >
                     <template slot="dateIcon">
@@ -95,6 +122,37 @@
                       <v-icon>Time</v-icon>
                     </template>
                   </v-datetime-picker>
+                </v-col>
+                <v-col cols="12" sm="6" md="4" lg="4">
+                  <span class="color-dark-blue" style="font-size: 12px;"
+                    >หมดเวลาสอบ</span
+                  >
+                  <v-datetime-picker
+                    label="กำหนดเวลาสิ้นสุดการสอบ"
+                    v-model="meetingData.endExamDate"
+                    :textFieldProps="{ solo: true, dense: true, rounded: true }"
+                  >
+                    <template slot="dateIcon">
+                      <v-icon>Date</v-icon>
+                    </template>
+                    <template slot="timeIcon">
+                      <v-icon>Time</v-icon>
+                    </template>
+                  </v-datetime-picker>
+                </v-col>
+                <v-col cols="12" sm="6" md="4" lg="4">
+                  <span class="color-dark-blue" style="font-size: 12px;"
+                    >รหัสผ่านเข้าสอบ</span
+                  >
+                  <v-text-field
+                    solo
+                    rounded
+                    filled
+                    dense
+                    v-model="meetingData.password"
+                    label="รหัสผ่านเข้าสอบ"
+                    hide-details
+                  ></v-text-field>
                 </v-col>
                 <!-- <v-col cols="12" sm="6" md="4" lg="4">
                   <span class="color-dark-blue" style="font-size: 12px;"
@@ -134,7 +192,7 @@
                     style="width: 150px"
                     dark
                     @click="cancel"
-                    >ยกเลิก</v-btn
+                    >กลับ</v-btn
                   >
                 </v-col>
               </v-row>
@@ -173,7 +231,7 @@
                       </v-toolbar>
                     </template>
                     <template v-slot:item.actions="{ item }">
-                      <v-icon small @click="deleteStudent(item)"
+                      <v-icon small class="ml-2" @click="deleteStudent(item)"
                         >mdi-delete</v-icon
                       >
                     </template>
@@ -194,14 +252,16 @@
 <script>
 import ProfileMenu from "@/components/ProfileMenu";
 import AddStudentInAppointment from "../components/AddStudentInAppointment";
+import dayjs from "dayjs";
+import localizedFormat from "dayjs/plugin/localizedFormat";
 import { mapState } from "vuex";
 export default {
   props: {
-    status: Boolean,
+    status: Boolean
   },
   components: {
     ProfileMenu,
-    AddStudentInAppointment,
+    AddStudentInAppointment
   },
   data() {
     return {
@@ -210,60 +270,94 @@ export default {
           text: "Student ID",
           align: "start",
           sortable: false,
-          value: "studentId",
+          value: "studentId"
         },
         { text: "Name", value: "firstName", sortable: false },
         { text: "Surname", value: "lastName", sortable: false },
         { text: "Faculty", value: "faculty", sortable: false },
         { text: "Department", value: "department", sortable: false },
-        { text: "Actions", value: "actions", sortable: false },
+        { text: "Actions", value: "actions", sortable: false }
       ],
       types: ["กลางภาค", "ปลายภาค", "สอบย่อย"],
       meetingData: {
         subjectId: null,
-        examDate: "",
+        startExamDate: "",
+        endExamDate: "",
         examType: "",
         term: null,
-        year: null,
+        year: null
       },
       cahcedData: {},
       showDialog: false,
-      showTable: false,
+      showTable: false
     };
   },
   computed: {
     ...mapState("subject", ["subjects"]),
     ...mapState("meeting", ["students"]),
-    ...mapState("meeting", ["meeting"]),
+    ...mapState("exam", ["exams"]),
+    ...mapState("meeting", ["meeting"])
   },
   methods: {
     async updateMeeting() {
-      if (this.meetingData.examDate == this.meeting.examDate) {
-        delete this.meetingData.examDate;
+      if (this.meetingData.startExamDate == this.meeting.startExamDate) {
+        delete this.meetingData.startExamDate;
       }
 
-      const response = await this.$store.dispatch(
-        "meeting/updateMeeting",
-        this.meetingData
-      );
+      const response = await this.$store.dispatch("meeting/updateMeeting", {
+        ...this.meetingData,
+        isPostpone: true
+      });
 
-      alert(`${response.data.status}: ${response.data.message}`);
+      alert(`${response.status}: ${response.message}`);
+      this.cancel();
     },
     deleteStudent(item) {
-      this.$store.dispatch("meeting/deleteStudentInMeeting", item.studentId);
+      confirm("คุณต้องการลบรายชื่อนักศึกษาหรือไม่") &&
+        this.$store
+          .dispatch("meeting/deleteStudentInMeeting", {
+            meetingId: this.meeting.meetingId,
+            studentId: item.studentId
+          })
+          .then(() => alert("ลบรายชื่อเรียบร้อย"))
+          .catch(error => alert(error));
+    },
+    deleteMeeting() {
+      confirm("คุณต้องการลบนัดหมายการสอบนี้หรือไม่") &&
+        this.$store
+          .dispatch("meeting/deleteMeeting", this.meetingData.meetingId)
+          .then(() => {
+            alert("ลบนัดหมายการสอบนี้เรียบร้อย");
+            this.$router.push({ name: "Appointment" });
+          })
+          .catch(error => alert(error));
     },
     openTable() {
       this.showTable = !this.showTable;
+      this.$store.dispatch(
+        "meeting/getAllStudentInMeeting",
+        this.meeting.meetingId
+      );
     },
     cancel() {
       this.meetingData = Object.assign({}, this.meeting);
-    },
+      this.$router.push({ name: "Appointment" });
+    }
   },
-  mounted() {
-    this.$store.dispatch("subject/getAllSubjects");
+  created() {
+    this.$store.dispatch("exam/getAllExams", {
+      subjectId: this.meeting.subjectId
+    });
+
+    dayjs.extend(localizedFormat);
     this.meetingData = Object.assign({}, this.meeting);
-    this.meetingData.examDate = new Date(this.meetingData.examDate);
-  },
+    this.meetingData.startExamDate = dayjs(
+      this.meetingData.startExamDate
+    ).format("YYYY-MM-DD HH:mm");
+    this.meetingData.endExamDate = dayjs(this.meetingData.endExamDate).format(
+      "YYYY-MM-DD HH:mm"
+    );
+  }
 };
 </script>
 

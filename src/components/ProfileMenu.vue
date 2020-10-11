@@ -336,6 +336,7 @@
   </div>
 </template>
 <script>
+import teacherServices from "../api/services/teacher";
 export default {
   name: "profileMenu",
   data() {
@@ -349,7 +350,7 @@ export default {
       candidateNewPassword: "",
       confirmCandidateNewPassword: "",
       edit: false,
-      editPassword: false,
+      editPassword: false
     };
   },
   methods: {
@@ -358,21 +359,24 @@ export default {
         firstName: this.firstName,
         lastName: this.lastName,
         faculty: this.faculty,
-        department: this.department,
+        department: this.department
       });
 
       alert(`${response.status} ${response.message}`);
-      location.reload();
+      this.logout();
     },
     updatePassword() {
       if (this.confirmCandidateNewPassword != this.candidateNewPassword) {
         return alert("รหัสผ่านใหม่กับยืนยันรหัสผ่านใหม่ไม่ตรงกัน");
       }
 
-      this.$store.dispatch("teacher/updatePassword", {
-        oldPassword: this.oldPassword,
-        candidateNewPassword: this.candidateNewPassword,
-      });
+      teacherServices
+        .updatePassword({
+          oldPassword: this.oldPassword,
+          candidateNewPassword: this.candidateNewPassword
+        })
+        .then(() => this.logout())
+        .catch(error => alert(error.response.data.message));
     },
     logout() {
       this.$store.dispatch("teacher/logout");
@@ -382,7 +386,7 @@ export default {
       this.lastName = JSON.parse(localStorage.getItem("teacher")).lastName;
       this.faculty = JSON.parse(localStorage.getItem("teacher")).faculty;
       this.department = JSON.parse(localStorage.getItem("teacher")).department;
-    },
-  },
+    }
+  }
 };
 </script>

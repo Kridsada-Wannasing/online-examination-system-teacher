@@ -3,7 +3,7 @@ import studentServices from "../../api/services/student";
 export const namespaced = true;
 
 export const state = {
-  students: [],
+  students: []
 };
 
 export const mutations = {
@@ -15,17 +15,17 @@ export const mutations = {
   },
   DELETE_STUDENT(state, studentId) {
     let target = state.students.findIndex(
-      (student) => student.studentId == studentId
+      student => student.studentId == studentId
     );
     state.students.splice(target, 1);
-  },
+  }
 };
 
 export const actions = {
   async registerStudents({ commit }, newStudents) {
     const response = await studentServices.registerStudents(newStudents);
-    commit("ADD_STUDENT", response.data.newStudents);
-    return response.data.newStudents;
+    response.data.newAccount.map(student => commit("ADD_STUDENT", student));
+    return response.data;
   },
   async getAllStudents({ commit }) {
     const response = await studentServices.getAllStudents();
@@ -34,9 +34,9 @@ export const actions = {
   },
   async deleteStudent({ commit }, studentId) {
     const response = await studentServices.deleteStudent(studentId);
-    commit("SET_STUDENTS", response.data.allStudents);
+    commit("DELETE_STUDENT", studentId);
     return response.data.newStudents;
-  },
+  }
 };
 
 export const getters = {};

@@ -8,15 +8,14 @@
       <div class="text-center w-100">
         <Folder class="w-100" :color="'green'" :exam="exam" />
       </div>
-
       <v-btn
+        v-if="checkAuthorityExam"
         class="mt-4 ml-4"
-        outlined
         color="success"
         small
         dark
-        v-if="checkAuthorityExam"
-        >เพิ่มคำถามจากชุดข้อสอบ</v-btn
+        :to="{ name: 'EditExam', params: { examId: examId } }"
+        >แก้ไขชุดข้อสอบ</v-btn
       >
       <v-btn
         v-if="checkAuthorityExam"
@@ -25,10 +24,17 @@
         color="red"
         small
         dark
-        :to="{ name: 'EditExam', params: { examId: examId } }"
-        >แก้ไขชุดข้อสอบ</v-btn
+        @click="deleteExam"
+        >ลบชุดข้อสอบ</v-btn
       >
-      <v-btn v-else class="mt-4 ml-4" outlined color="red" small dark
+      <v-btn
+        v-else
+        class="mt-4 ml-4"
+        outlined
+        color="red"
+        small
+        dark
+        @click="duplicateExam"
         >คัดลอกชุดข้อสอบ</v-btn
       >
     </v-card>
@@ -42,12 +48,12 @@ export default {
   name: "showEditExam",
   props: ["examId", "subjectId"],
   components: {
-    Folder,
+    Folder
   },
   created() {
     this.$store.dispatch("exam/getExam", {
       examId: this.examId,
-      subjectId: this.subjectId,
+      subjectId: this.subjectId
     });
   },
   computed: {
@@ -56,10 +62,37 @@ export default {
       if (
         this.exam.teacherId ==
         JSON.parse(localStorage.getItem("teacher")).teacherId
-      )
+      ) {
+        this.$emit("isYourExam", true);
         return true;
-      else return false;
-    },
+      } else {
+        this.$emit("isYourExam", false);
+        return false;
+      }
+    }
   },
+  methods: {
+    deleteExam() {
+      confirm("คุณต้องการลบข้อมูลชุดข้อสอบนี้หรือไม่") &&
+        this.$store
+          .dispatch("exam/deleteExam", this.examId)
+          .then(() => this.$router.push({ name: "Exam" }));
+    },
+    duplicateExam() {
+      confirm("คุณต้องการคัดลอกชุดข้อสอบนี้หรือไม่") &&
+        this.$store
+          .dispatch("exam/duplicateExam", this.examId)
+          .then(response => {
+            alert(`${response.status}: ${response.message}`);
+            this.$router.push({
+              name: "EditExam",
+              params: {
+                subjectId: response.newDuplicateExam.subjectId,
+                examId: response.newDuplicateExam.examId
+              }
+            });
+          });
+    }
+  }
 };
 </script>

@@ -58,17 +58,17 @@ export default {
     ...mapState("score", ["scores"]),
     showButton() {
       return this.scores.length > 0 ? true : false;
-    },
+    }
   },
   methods: {
     exportScores() {
-      let json = this.scores.map((score) => ({
+      let json = this.scores.map(score => ({
         รหัสนักศึกษา: score.student.studentId,
         "ชื่อ-นามสกุล": `${score.student.firstName} ${score.student.lastName}`,
         ชื่อวิชา: score.subject,
         ชื่อชุดข้อสอบ: score.exam,
         คะแนนทั้งหมด: score.sum,
-        คะแนนที่ได้: score.score,
+        คะแนนที่ได้: score.score
       }));
 
       const fileName = "test.xlsx";
@@ -82,7 +82,7 @@ export default {
 
       /* generate an XLSX file */
       XLSX.writeFile(wb, fileName);
-    },
-  },
+    }
+  }
 };
 </script>

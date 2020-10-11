@@ -5,15 +5,12 @@ export default {
     return apiClient.post("/login", credentials);
   },
   forgotPassword(email) {
-    return apiClient.post("/forgotPassword", email);
+    return apiClient.post("/forgot-password", email);
   },
   updateMe(data) {
     return apiClient.patch("/me", data);
   },
-  updatePassword(oldPassword, newPassword) {
-    return apiClient.patch("/newPassword", {
-      oldPassword,
-      newPassword,
-    });
-  },
+  updatePassword(updatePassword) {
+    return apiClient.patch("/password", updatePassword);
+  }
 };

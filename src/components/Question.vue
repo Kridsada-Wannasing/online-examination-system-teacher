@@ -1,8 +1,11 @@
 <template>
-  <div class="pa-1" style="overflow-y:auto;">
+  <div class="pa-1">
     <div style="display: flex; justify-content: space-between;">
       <h4 class="color-dark-blue">คำถาม</h4>
-      <h5 class="color-dark-blue">{{ questionsInExam.length }} ข้อ</h5>
+      <div class="ma-0 pa-0 text-end">
+        <h5 class="color-dark-blue mb-3">{{ showNumberOfQuestions }}</h5>
+        <DialogQuestion />
+      </div>
     </div>
     <v-row>
       <v-col cols="12" v-for="(question, i) in questionsInExam" :key="i">
@@ -26,7 +29,7 @@
         <AddQuestion
           :addQuestion="addQuestion"
           @cancel="addQuestionClick"
-          :countQuestions="questionsInExam.length"
+          :countQuestions="questionsInExam ? questionsInExam.length : 0"
         />
       </v-col>
     </v-row>
@@ -35,18 +38,20 @@
 <script>
 import AddQuestion from "../components/AddQuestion";
 import EditQuestion from "../components/EditQuestion";
+import DialogQuestion from "../components/DialogQuestion";
 import { mapState } from "vuex";
 export default {
   name: "question",
   components: {
     AddQuestion,
     EditQuestion,
+    DialogQuestion
   },
   props: ["questions", "addQuestion", "editQuestion"],
   data() {
     return {
       editClick: false,
-      questionId: 0,
+      questionId: 0
     };
   },
   methods: {
@@ -56,10 +61,15 @@ export default {
     editQuestionClick(questionId) {
       this.questionId = questionId;
       this.$emit("clickEditQuestion", !this.editQuestion);
-    },
+    }
   },
   computed: {
     ...mapState("question", ["questionsInExam"]),
-  },
+    showNumberOfQuestions() {
+      return this.questionsInExam
+        ? `${this.questionsInExam.length} ข้อ`
+        : "ยังไม่มีคำถาม";
+    }
+  }
 };
 </script>

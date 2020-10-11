@@ -42,15 +42,15 @@ export default {
   components: {
     Question,
     ShowEditExam,
-    TypeExam,
+    TypeExam
   },
   data: () => ({
     addQuestion: false,
-    editQuestion: false,
+    editQuestion: false
   }),
   computed: {
     ...mapState("exam", ["exam"]),
-    ...mapState("question", ["questionsInExam"]),
+    ...mapState("question", ["questionsInExam"])
   },
   methods: {
     getAddQuestionClick(event) {
@@ -58,7 +58,7 @@ export default {
     },
     getEditQuestionClick(event) {
       this.editQuestion = event;
-    },
-  },
+    }
+  }
 };
 </script>

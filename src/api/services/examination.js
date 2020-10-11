@@ -20,5 +20,5 @@ export default {
   },
   deleteExamination(examinationId) {
     return apiClient.delete(`${endpoint}/${examinationId}`);
-  },
+  }
 };

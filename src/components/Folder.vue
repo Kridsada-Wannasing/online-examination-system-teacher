@@ -32,25 +32,6 @@
             </div>
           </v-col>
           <!--  -->
-          <v-col v-else-if="examination" class="text-left">
-            <div style="height: 70%">
-              <p class="mb-0" style="font-size: 14px;">
-                <b>{{ examination.examId }}</b>
-              </p>
-              <p style="font-size: 12px">
-                {{ examination.meetingId }}
-              </p>
-            </div>
-            <div style="height: 30%">
-              <p class="mb-0" style="font-size: 12px">
-                {{ formatExaminationDate }}
-              </p>
-              <!-- <p class="mb-0" style="font-size: 12px">
-                {{ formatDate(examination.endExam) }}
-              </p> -->
-            </div>
-          </v-col>
-          <!--  -->
           <v-col v-else-if="subject" class="text-left">
             <div style="height: 70%">
               <p class="mb-0" style="font-size: 14px;">
@@ -97,25 +78,6 @@
             </div>
           </v-col>
           <!--  -->
-          <v-col v-else-if="examination" class="text-left">
-            <div style="height: 70%">
-              <p class="mb-0" style="font-size: 14px;">
-                <b>{{ examination.examId }}</b>
-              </p>
-              <p style="font-size: 12px">
-                {{ examination.meetingId }}
-              </p>
-            </div>
-            <div style="height: 30%">
-              <p class="mb-0" style="font-size: 12px">
-                {{ formatExaminationDate }}
-              </p>
-              <!-- <p class="mb-0" style="font-size: 12px">
-                {{ formatExaminationDate() }}
-              </p> -->
-            </div>
-          </v-col>
-          <!--  -->
           <v-col v-else-if="subject" class="text-left">
             <div style="height: 70%">
               <p class="mb-0" style="font-size: 14px;">
@@ -144,12 +106,11 @@ export default {
     exam: Object,
     meeting: Object,
     color: String,
-    subject: Object,
-    examination: Object,
+    subject: Object
   },
   data() {
     return {
-      imagePath: `@/assets/icon/folder-${this.color}.svg`,
+      imagePath: `@/assets/icon/folder-${this.color}.svg`
     };
   },
   methods: {
@@ -162,25 +123,16 @@ export default {
       return dayjs(date)
         .locale("th")
         .format("LLL");
-    },
+    }
   },
   computed: {
     formatMeetingDate() {
       dayjs.extend(localizedFormat);
       require("dayjs/locale/th");
-      return dayjs(this.meeting.examDate)
+      return dayjs(this.meeting.startExamDate)
         .locale("th")
         .format("LLL");
-    },
-    formatExaminationDate() {
-      dayjs.extend(localizedFormat);
-      require("dayjs/locale/th");
-      return `${dayjs(this.examination.startDate)
-        .locale("th")
-        .format("LLL")}น. - ${dayjs(this.examination.endDate)
-        .locale("th")
-        .format("LT")}น.`;
-    },
-  },
+    }
+  }
 };
 </script>

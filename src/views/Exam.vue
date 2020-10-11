@@ -18,7 +18,7 @@ export default {
   name: "exam",
   components: {
     ProfileMenu,
-    ListExam,
-  },
+    ListExam
+  }
 };
 </script>

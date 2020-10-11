@@ -27,7 +27,13 @@
               style="display: flex; justify-content: space-between;"
             >
               <h3 class="color-dark-blue">การนัดหมายตอนนี้</h3>
-              <v-btn small outlined color="primary" @click="status = !status">
+              <v-btn
+                small
+                outlined
+                color="primary"
+                @click="status = !status"
+                v-if="isSelectSubject"
+              >
                 <v-icon left>mdi-plus</v-icon>เพิ่มการนัดหมาย
               </v-btn>
             </div>
@@ -56,11 +62,12 @@ export default {
   components: {
     ProfileMenu,
     ListAppointment,
-    AddAppointment,
+    AddAppointment
   },
   data: () => ({
     status: false,
     query: {},
+    isSelectSubject: false
   }),
   methods: {
     getStatusChange(event) {
@@ -68,14 +75,15 @@ export default {
     },
     getMeetings(event) {
       this.query.subjectId = event;
+      this.isSelectSubject = true;
       this.$store.dispatch("meeting/getAllMeetings", qs.stringify(this.query));
-    },
+    }
   },
   computed: {
-    ...mapState("subject", ["subjects"]),
+    ...mapState("subject", ["subjects"])
   },
   mounted() {
     this.$store.dispatch("subject/getAllSubjects");
-  },
+  }
 };
 </script>

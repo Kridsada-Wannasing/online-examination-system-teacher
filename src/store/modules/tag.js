@@ -4,7 +4,7 @@ export const namespaced = true;
 
 export const state = {
   tags: [],
-  tagsOfQuestion: [],
+  tagsOfQuestion: []
 };
 
 export const mutations = {
@@ -21,9 +21,7 @@ export const mutations = {
     state.tagsOfQuestion.push(tag);
   },
   EDIT_TAG(state, tag) {
-    const target = state.tags.findIndex(
-      (element) => element.tagId === tag.tagId
-    );
+    const target = state.tags.findIndex(element => element.tagId === tag.tagId);
     state.tags.splice(target, 1, tag);
   },
   EDIT_TAG_OF_QUESTION(state, tag) {
@@ -31,9 +29,9 @@ export const mutations = {
     state.tagsOfQuestion.push(tag);
   },
   DELETE_TAG(state, tagId) {
-    const target = state.tags.findIndex((element) => element.tagId === tagId);
+    const target = state.tags.findIndex(element => element.tagId === tagId);
     state.tags.splice(target, 1);
-  },
+  }
 };
 
 export const actions = {
@@ -45,17 +43,17 @@ export const actions = {
   async addTagToQuestion({ commit }, tag) {
     const response = await tagServices.addTagToQuestion(tag);
     commit("ADD_TAG_OF_QUESTION", response.data.newTagsInQuestion);
-    return response;
+    return response.data;
   },
   async getAllTags({ commit }) {
     const response = await tagServices.getAllTags();
     commit("SET_TAGS", response.data.allTag);
-    return response;
+    return response.data;
   },
   async getTagsInQuestion({ commit }, questionId) {
     const response = await tagServices.getTagsInQuestion(questionId);
     commit("SET_TAGS_OF_QUESTION", response.data.tagsOfQuestion);
-    return response;
+    return response.data;
   },
   async getTag({ commit, getters }, tagId) {
     const target = getters.getByTagId(tagId);
@@ -70,26 +68,27 @@ export const actions = {
     return response;
   },
   async updateTag({ commit }, tag) {
-    const response = await tagServices.updateTag(tag);
-    commit("EDIT_TAG", response.data);
-    return response;
+    const { tagId, tagName } = tag;
+    const response = await tagServices.updateTag(tagId, tagName);
+    commit("EDIT_TAG", tag);
+    return response.data;
   },
   async updateTagsInQuestion({ commit }, tag) {
     const response = await tagServices.updateTagsInQuestion(tag);
     commit("EDIT_TAG_OF_QUESTION", response.data);
-    return response;
+    return response.data;
   },
   async deleteTag({ commit }, tagId) {
     const response = await tagServices.deleteTag(tagId);
-    commit("DELETE_TAG", response.data);
+    commit("DELETE_TAG", tagId);
     return response;
-  },
+  }
 };
 
 export const getters = {
-  getByTagId: (state) => (tagId) => {
+  getByTagId: state => tagId => {
     if (tagId == state.tag.tagId) return state.tag;
 
-    return state.tags.find((tag) => tag.tagId === tagId);
-  },
+    return state.tags.find(tag => tag.tagId === tagId);
+  }
 };

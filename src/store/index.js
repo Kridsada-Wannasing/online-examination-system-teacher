@@ -28,9 +28,9 @@ export default new Vuex.Store({
     meeting,
     examination,
     student,
-    score,
+    score
   },
   state: {},
   mutations: {},
-  actions: {},
+  actions: {}
 });

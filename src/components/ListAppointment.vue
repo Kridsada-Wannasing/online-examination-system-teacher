@@ -18,7 +18,7 @@
           style="text-decoration:none;"
           :to="{
             name: 'ShowAppointment',
-            params: { meetingId: meeting.meetingId },
+            params: { meetingId: meeting.meetingId }
           }"
         >
           <Folder
@@ -28,9 +28,9 @@
           />
         </router-link>
       </v-col>
-      <v-col cols="12" lg="4" md="6" sm="6" xs="12" class="mb-2">
+      <!-- <v-col cols="12" lg="4" md="6" sm="6" xs="12" class="mb-2">
         <Folder class="mr-2" color="plus" />
-      </v-col>
+      </v-col> -->
     </v-row>
   </div>
 </template>
@@ -40,16 +40,13 @@ import { mapState } from "vuex";
 export default {
   name: "listAppointment",
   components: {
-    Folder,
+    Folder
   },
   data: () => ({
-    status: false,
+    status: false
   }),
-  created() {
-    this.$store.dispatch("meeting/getAllMeetings");
-  },
   computed: {
-    ...mapState("meeting", ["meetings"]),
-  },
+    ...mapState("meeting", ["meetings"])
+  }
 };
 </script>

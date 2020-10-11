@@ -15,6 +15,11 @@ export default {
   getQuestionsInExam(examId) {
     return apiClient.get(`/question-exam/${examId}`);
   },
+  searchQuestions(examId, queryString) {
+    if (queryString)
+      return apiClient.get(`/question-exam/search/${examId}${queryString}`);
+    else return apiClient.get(`/question-exam/search/${examId}`);
+  },
   getQuestion(examId) {
     return apiClient.get(`/${endpoint}/${examId}`);
   },
@@ -26,5 +31,5 @@ export default {
   },
   deleteQuestion(questionId) {
     return apiClient.delete(`${endpoint}/${questionId}`);
-  },
+  }
 };

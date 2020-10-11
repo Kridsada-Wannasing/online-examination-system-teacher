@@ -4,7 +4,7 @@ export const namespaced = true;
 
 export const state = {
   images: [],
-  image: {},
+  image: {}
 };
 
 export const mutations = {
@@ -16,7 +16,7 @@ export const mutations = {
   },
   DELETE_IMAGE(state) {
     state.image = undefined;
-  },
+  }
 };
 
 export const actions = {
@@ -39,11 +39,11 @@ export const actions = {
   async deleteImage({ commit }, imageId) {
     await imageServices.deleteImage(imageId);
     commit("DELETE_IMAGE");
-  },
+  }
 };
 
 export const getters = {
-  getByQuestionId: (state) => (questionId) => {
-    return state.images.find((image) => image.questionId == questionId);
-  },
+  getByQuestionId: state => questionId => {
+    return state.images.find(image => image.questionId == questionId);
+  }
 };

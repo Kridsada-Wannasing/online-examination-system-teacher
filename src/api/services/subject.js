@@ -17,5 +17,5 @@ export default {
   },
   deleteSubject(subjectId) {
     return apiClient.delete(`/${endpoint}/${subjectId}`);
-  },
+  }
 };

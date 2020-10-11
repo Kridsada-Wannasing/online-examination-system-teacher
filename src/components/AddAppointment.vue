@@ -19,23 +19,27 @@
             :item-text="'subjectName'"
             :item-value="'subjectId'"
             v-model="subjectId"
-            label="ex. 12345"
+            @change="showExam"
+            label="นัดสอบวิชา"
             hide-details
           ></v-select>
         </v-col>
         <v-col cols="12" sm="6" md="4" lg="4">
           <span class="color-dark-blue" style="font-size: 12px;"
-            >ปีการศึกษา</span
+            >ชุดข้อสอบ</span
           >
-          <v-text-field
+          <v-select
             solo
             rounded
             filled
             dense
-            v-model="year"
-            label="ex. 12345"
+            :items="exams"
+            :item-text="'examName'"
+            :item-value="'examId'"
+            v-model="examId"
+            label="นัดสอบวิชา"
             hide-details
-          ></v-text-field>
+          ></v-select>
         </v-col>
         <v-col cols="12" sm="6" md="4" lg="4">
           <span class="color-dark-blue" style="font-size: 12px;">การสอบ</span>
@@ -46,7 +50,7 @@
             dense
             :items="types"
             v-model="examType"
-            label="ex.123456"
+            label="การสอบ"
             hide-details
           ></v-select>
         </v-col>
@@ -60,17 +64,29 @@
             filled
             dense
             v-model="term"
-            label="ex. 123456"
+            label="ภาคเรียนที่"
             hide-details
           ></v-text-field>
         </v-col>
         <v-col cols="12" sm="6" md="4" lg="4">
           <span class="color-dark-blue" style="font-size: 12px;"
-            >วันเวลาสอบ</span
+            >ปีการศึกษา</span
           >
+          <v-text-field
+            solo
+            rounded
+            filled
+            dense
+            v-model="year"
+            label="ปีการศึกษา"
+            hide-details
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" sm="6" md="4" lg="4">
+          <span class="color-dark-blue" style="font-size: 12px;">เริ่มสอบ</span>
           <v-datetime-picker
-            label="กดเพื่อเลือกวันเวลาสอบ"
-            v-model="examDate"
+            label="กำหนดเวลาเริ่มสอบ"
+            v-model="startExamDate"
             :textFieldProps="{ solo: true, dense: true, rounded: true }"
           >
             <template slot="dateIcon">
@@ -80,6 +96,37 @@
               <v-icon>Time</v-icon>
             </template>
           </v-datetime-picker>
+        </v-col>
+        <v-col cols="12" sm="6" md="4" lg="4">
+          <span class="color-dark-blue" style="font-size: 12px;"
+            >หมดเวลาสอบ</span
+          >
+          <v-datetime-picker
+            label="กำหนดเวลาสิ้นสุดการสอบ"
+            v-model="endExamDate"
+            :textFieldProps="{ solo: true, dense: true, rounded: true }"
+          >
+            <template slot="dateIcon">
+              <v-icon>Date</v-icon>
+            </template>
+            <template slot="timeIcon">
+              <v-icon>Time</v-icon>
+            </template>
+          </v-datetime-picker>
+        </v-col>
+        <v-col cols="12" sm="6" md="4" lg="4">
+          <span class="color-dark-blue" style="font-size: 12px;"
+            >รหัสผ่านเข้าสอบ</span
+          >
+          <v-text-field
+            solo
+            rounded
+            filled
+            dense
+            v-model="password"
+            label="รหัสผ่านเข้าสอบ"
+            hide-details
+          ></v-text-field>
         </v-col>
         <!-- <v-col cols="12" sm="6" md="4" lg="4">
           <span class="color-dark-blue" style="font-size: 12px;"
@@ -163,57 +210,72 @@ import AddStudentInAppointment from "@/components/AddStudentInAppointment";
 export default {
   name: "addAppointment",
   components: {
-    AddStudentInAppointment,
+    AddStudentInAppointment
   },
   props: { status: Boolean },
   data: () => ({
     types: ["กลางภาค", "ปลายภาค", "สอบย่อย"],
     subjectId: null,
-    examDate: "",
+    startExamDate: "",
+    endExamDate: "",
     examType: "",
+    examId: null,
     term: null,
     year: null,
     menu: null,
     showStudentTable: false,
     meetingId: null,
+    password: "",
     headers: [
       {
         text: "Student ID",
         align: "start",
         sortable: false,
-        value: "studentId",
+        value: "studentId"
       },
       { text: "Name", value: "firstName" },
       { text: "Surname", value: "lastName" },
       { text: "Faculty", value: "faculty" },
       { text: "Department", value: "department" },
-      { text: "Actions", value: "actions", sortable: false },
-    ],
+      { text: "Actions", value: "actions", sortable: false }
+    ]
   }),
   computed: {
     ...mapState("subject", ["subjects"]),
     ...mapState("meeting", ["students"]),
+    ...mapState("exam", ["exams"])
   },
   methods: {
     async createMeeting() {
-      const response = await this.$store.dispatch("meeting/createMeeting", {
-        examDate: this.examDate,
-        examType: this.examType,
-        subjectId: this.subjectId,
-        term: this.term,
-        year: this.year,
-      });
+      try {
+        const response = await this.$store.dispatch("meeting/createMeeting", {
+          startExamDate: this.startExamDate,
+          endExamDate: this.endExamDate,
+          password: this.password,
+          isPostpone: false,
+          examType: this.examType,
+          subjectId: this.subjectId,
+          term: this.term,
+          year: this.year,
+          examId: this.examId
+        });
 
-      alert(`${response.status}: ${response.message}`);
-      this.showStudentTable = true;
-      this.meetingId = response.newMeeting.meetingId;
+        alert(`${response.status}: ${response.message}`);
+        this.showStudentTable = true;
+        this.meetingId = response.newMeeting.meetingId;
+      } catch (error) {
+        alert(error);
+      }
     },
     cancel() {
       this.$emit("statusChange", !this.status);
     },
+    showExam(subjectId) {
+      this.$store.dispatch("exam/getAllExams", { subjectId });
+    }
   },
   mounted() {
     this.$store.dispatch("subject/getAllSubjects");
-  },
+  }
 };
 </script>

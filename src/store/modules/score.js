@@ -5,7 +5,7 @@ export const namespaced = true;
 export const state = {
   scores: [],
   score: {},
-  scoresInExam: [],
+  scoresInExam: []
 };
 
 export const mutations = {
@@ -23,18 +23,18 @@ export const mutations = {
   },
   EDIT_SCORE(state, score) {
     const target = state.scores.findIndex(
-      (element) => element.scoreId === score.scoreId
+      element => element.scoreId === score.scoreId
     );
 
     state.scores.splice(target, 1, score);
   },
   DELETE_SCORE(state, scoreId) {
     const target = state.scores.findIndex(
-      (element) => element.scoreId === scoreId
+      element => element.scoreId === scoreId
     );
 
     state.scores.splice(target, 1);
-  },
+  }
 };
 
 export const actions = {
@@ -43,10 +43,11 @@ export const actions = {
     commit("ADD_SCORE", response.data.newScore);
   },
   async getAllScores({ commit }, queryString) {
-    if (Object.keys(queryString).length !== 0) queryString = `?${queryString}`;
-
-    const response = await scoreServices.getAllScores(queryString);
-
+    let response;
+    if (queryString) {
+      queryString = `?${queryString}`;
+      response = await scoreServices.getAllScores(queryString);
+    } else response = await scoreServices.getAllScores(queryString);
     commit("SET_SCORES", response.data.scores);
   },
   async getScoresInExam({ commit }, scoreId) {
@@ -75,13 +76,13 @@ export const actions = {
   async deleteScore({ commit }, scoreId) {
     await scoreServices.deleteScore(scoreId);
     commit("DELETE_SCORE");
-  },
+  }
 };
 
 export const getters = {
-  getByScoreId: (state) => (scoreId) => {
+  getByScoreId: state => scoreId => {
     if (scoreId == state.score.scoreId) return state.score;
 
-    return state.scores.find((score) => score.scoreId == scoreId);
-  },
+    return state.scores.find(score => score.scoreId == scoreId);
+  }
 };

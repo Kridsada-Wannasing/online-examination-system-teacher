@@ -19,15 +19,15 @@ import io from "socket.io-client";
 export default {
   name: "Home",
   components: {
-    TeacherMenu,
+    TeacherMenu
   },
   data() {
     return {
-      socket: {},
+      socket: {}
     };
   },
   created() {
     this.socket = io("http://localhost:8000");
-  },
+  }
 };
 </script>

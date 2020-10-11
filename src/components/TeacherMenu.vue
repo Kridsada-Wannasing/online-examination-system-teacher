@@ -55,25 +55,25 @@ export default {
       {
         text: "ชุดข้อสอบ",
         icon: "mdi-file-document-outline",
-        route: { name: "Exam" },
+        route: { name: "Exam" }
       },
       { text: "คะแนนสอบ", icon: "mdi-poll", route: { name: "Score" } },
       {
         text: "การนัดหมาย",
         icon: "mdi-calendar-blank-outline",
-        route: { name: "Appointment" },
+        route: { name: "Appointment" }
       },
-      {
-        text: "ห้องสอบ",
-        icon: "mdi-cube-outline",
-        route: { name: "Examination" },
-      },
+      // {
+      //   text: "ห้องสอบ",
+      //   icon: "mdi-cube-outline",
+      //   route: { name: "Examination" },
+      // },
       {
         text: "บัญชีนักศึกษา",
         icon: "mdi-account-multiple-plus",
-        route: { name: "ListStudent" },
-      },
-    ],
-  }),
+        route: { name: "ListStudent" }
+      }
+    ]
+  })
 };
 </script>

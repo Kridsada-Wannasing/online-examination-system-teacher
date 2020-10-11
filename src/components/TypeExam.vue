@@ -7,7 +7,7 @@
         >
         <v-text-field
           solo
-          placeholder="ex. 1234567"
+          placeholder="ชื่อชุดข้อสอบ"
           filled
           rounded
           dense
@@ -33,7 +33,7 @@
         <span class="color-dark-blue" style="font-size: 12px;">ปีการศึกษา</span>
         <v-select
           solo
-          placeholder="ex. 1234567"
+          placeholder="ปีการศึกษา"
           filled
           rounded
           dense
@@ -50,7 +50,7 @@
         >
         <v-select
           solo
-          placeholder="ex. 1234567"
+          placeholder="ภาคการศึกษา"
           filled
           rounded
           dense
@@ -61,7 +61,7 @@
       </v-col>
       <v-col cols="12" sm="6" md="4" lg="4">
         <span class="color-dark-blue" style="font-size: 12px;"
-          >รูปแบบการสอบ</span
+          >รูปแบบการตอบคำถาม</span
         >
         <v-select
           solo
@@ -81,7 +81,7 @@
         >
         <v-select
           solo
-          placeholder="ex. 1234567"
+          placeholder="สิทธิ์การเข้าถึง"
           filled
           rounded
           dense
@@ -129,25 +129,25 @@
 </template>
 <script>
 import range from "lodash/range";
+import { mapState } from "vuex";
 
 export default {
   name: "typeExam",
-  components: {},
   props: {
     exam: Object,
     status: Boolean,
-    subject: [Number, String],
+    subjectId: [Number, String]
   },
   data() {
     return {
-      types: ["กลางภาค", "ปลายภาค", "objective", "subjective"],
+      types: ["กลางภาค", "ปลายภาค", "สอบย่อย"],
       formatOfAnswer: [
         { text: "แก้ไขคำตอบได้", format: true },
-        { text: "แก้ไขคำตอบไม่ได้", format: false },
+        { text: "แก้ไขคำตอบไม่ได้", format: false }
       ],
       authorityOfExam: [
         { text: "public", authority: true },
-        { text: "private", authority: false },
+        { text: "private", authority: false }
       ],
       years: [],
       terms: [1, 2, 3],
@@ -158,12 +158,19 @@ export default {
         examType: "",
         term: null,
         year: null,
-        subjectId: this.subject,
-      },
+        subjectId: this.subjectId
+      }
     };
+  },
+  computed: {
+    ...mapState("subject", ["subject"])
   },
   methods: {
     async createExam() {
+      if (!this.examData.examName) {
+        this.examData.examName = `ข้อสอบวิชา${this.subject.subjectName}  ภาคเรียนที่ ${this.examData.term}/${this.examData.year}`;
+      }
+
       const response = await this.$store.dispatch(
         "exam/createExam",
         this.examData
@@ -184,7 +191,7 @@ export default {
       );
       alert(`${response.status}: ${response.message}`);
       this.$emit("statusChange", status);
-    },
+    }
   },
   created() {
     if (this.exam) {
@@ -195,6 +202,9 @@ export default {
     const startYear = currentYear - 20;
 
     this.years = range(startYear, currentYear);
-  },
+
+    this.$store.dispatch("subject/getSubject", this.subjectId);
+    console.log(this.subject);
+  }
 };
 </script>

@@ -6,6 +6,9 @@ export default {
   createExam(exam) {
     return apiClient.post(`/${endpoint}`, exam);
   },
+  duplicateExam(examId) {
+    return apiClient.post(`/${endpoint}/${examId}`);
+  },
   getAllExams(subjectId, queryString) {
     if (queryString)
       return apiClient.get(`/${endpoint}/${subjectId}?${queryString}`);
@@ -19,5 +22,5 @@ export default {
   },
   deleteExam(examId) {
     return apiClient.delete(`${endpoint}/${examId}`);
-  },
+  }
 };

@@ -17,5 +17,5 @@ export default {
   },
   deleteChoices(choices) {
     return apiClient.delete(`${endpoint}/`, choices);
-  },
+  }
 };

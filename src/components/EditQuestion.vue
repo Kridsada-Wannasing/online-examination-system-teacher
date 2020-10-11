@@ -18,7 +18,12 @@
     </div>
     <div v-else>
       <v-card class="mx-auto pa-5" style="border-radius: 20px;" outlined>
-        <h4 class="color-dark-blue">เพิ่มคำถาม</h4>
+        <div class="d-flex justify-space-between">
+          <h4 class="color-dark-blue">แก้ไขคำถาม</h4>
+          <v-btn outlined color="red" small dark @click="deleteQuestion"
+            >ลบคำถาม</v-btn
+          >
+        </div>
         <v-row>
           <v-col cols="12" sm="6" md="4" lg="4">
             <v-select
@@ -144,7 +149,6 @@
             v-else-if="defaultQuestion.questionType === 'อัตนัย'"
           >
             <div
-              class="mb-4"
               v-for="(answer, i) in defaultAnswers"
               :key="i"
               style="display: flex; justify-content: space-between;"
@@ -160,7 +164,7 @@
               >
               </v-text-field>
               <v-icon
-                class="mr-5"
+                class="mr-5 mb-5"
                 v-text="'mdi-delete-outline'"
                 @click="subChoice(i)"
               ></v-icon>
@@ -187,7 +191,7 @@
                 filled
                 dense
                 label="คะแนน"
-                v-model="score"
+                v-model="defaultQuestion.sumScoreQuestion"
                 hide-details
               ></v-text-field>
             </div>
@@ -224,11 +228,11 @@ import TagDialog from "./TagDialog";
 export default {
   name: "editQuestion",
   components: {
-    TagDialog,
+    TagDialog
   },
   props: {
     question: Object,
-    index: Number,
+    index: Number
   },
   data: () => ({
     edited: false,
@@ -238,7 +242,7 @@ export default {
     defaultQuestion: {
       question: "",
       questionType: "",
-      level: null,
+      level: null
     },
     newChoices: [],
     defaultChoices: [],
@@ -250,7 +254,7 @@ export default {
     defaultButtonText: "อัพโหลดรูปภาพ",
     score: null,
     defaultAnswers: [],
-    defaultImage: "",
+    defaultImage: ""
   }),
   methods: {
     async updateQuestion() {
@@ -289,9 +293,10 @@ export default {
         "question/editQuestion",
         {
           questionId: this.question.questionId,
-          // questionType: this.defaultQuestion.types,
           question: this.defaultQuestion.question,
           level: this.defaultQuestion.level,
+          numberOfAnswer: this.defaultAnswers.length,
+          sumScoreQuestion: this.defaultQuestion.sumScoreQuestion
         }
       );
 
@@ -318,22 +323,23 @@ export default {
       await this.$store.dispatch("tag/updateTagsInQuestion", this.mapTags());
     },
     mapChoices() {
-      return this.defaultChoices.map((element) => ({
+      return this.defaultChoices.map(element => ({
         ...element,
-        questionId: this.question.questionId,
+        questionId: this.question.questionId
       }));
     },
     mapAnswers() {
-      return this.defaultAnswers.map((element) => ({
+      return this.defaultAnswers.map(element => ({
         answer: element,
-        score: this.score / this.answers.length,
-        questionId: this.question.questionId,
+        score:
+          this.defaultQuestion.sumScoreQuestion / this.defaultAnswers.length,
+        questionId: this.question.questionId
       }));
     },
     mapTags() {
-      return this.defaultTagsOfQuestion.map((element) => ({
+      return this.defaultTagsOfQuestion.map(element => ({
         tagId: element,
-        questionId: this.question.questionId,
+        questionId: this.question.questionId
       }));
     },
     changeImage() {
@@ -349,11 +355,11 @@ export default {
       if (this.defaultQuestion.questionType == "ปรนัย") {
         this.defaultChoices.push({
           choice: `ตัวเลือกที่ ${this.defaultChoices.length + 1}`,
-          order: 0,
+          order: 0
         });
       } else {
         this.defaultAnswers.push({
-          answer: `คำตอบที่ ${this.defaultAnswers.length + 1}`,
+          answer: `คำตอบที่ ${this.defaultAnswers.length + 1}`
         });
       }
     },
@@ -392,6 +398,12 @@ export default {
     },
     onFileChanged(e) {
       this.selectedFile = e.target.files[0];
+
+      if (this.selectedFile.size > 104857600) {
+        this.selectedFile = null;
+        return alert("รูปภาพต้องมีขนาดไม่เกิน 100MB");
+      }
+
       this.defaultImage = URL.createObjectURL(this.selectedFile);
     },
     manageTag() {
@@ -400,6 +412,13 @@ export default {
     cancel() {
       this.defaultImage = "";
       this.edited = false;
+    },
+    deleteQuestion() {
+      confirm("คุณต้องการลบคำถามข้อนี้ใช่ไหม") &&
+        this.$store
+          .dispatch("question/deleteQuestion", this.question.questionId)
+          .then(() => this.cancel)
+          .catch(error => alert(error));
     },
     async editingQuestion() {
       this.defaultQuestion = Object.assign({}, this.question);
@@ -425,9 +444,9 @@ export default {
       this.defaultTagsOfQuestion = this.tagsOfQuestion;
 
       if (this.question.questionType == "ปรนัย") {
-        this.defaultAnswers = this.answers.map((answer) => Number(answer));
+        this.defaultAnswers = this.answers.map(answer => Number(answer));
       } else {
-        this.defaultAnswers = this.answers.map((answer) => ({ answer }));
+        this.defaultAnswers = this.answers.map(answer => ({ answer }));
       }
 
       this.defaultChoices = this.choices;
@@ -438,7 +457,7 @@ export default {
       }
 
       this.edited = true;
-    },
+    }
   },
   computed: {
     ...mapState("tag", ["tags"]),
@@ -465,7 +484,7 @@ export default {
     },
     showAddAnswer() {
       return this.defaultAnswers.length == 10 ? false : true;
-    },
-  },
+    }
+  }
 };
 </script>

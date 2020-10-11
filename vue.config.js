@@ -3,12 +3,12 @@ module.exports = {
   css: {
     loaderOptions: {
       sass: {
-        additionalData: `@import "@/scss/_index.scss"`,
+        additionalData: `@import "@/scss/_index.scss"`
         // additionalData: `@import "~@/scss/_index.scss";`
-      },
-    },
+      }
+    }
   },
   configureWebpack: {
-    devtool: "source-map",
-  },
+    devtool: "source-map"
+  }
 };

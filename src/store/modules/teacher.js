@@ -3,7 +3,7 @@ import teacherServices from "../../api/services/teacher";
 export const namespaced = true;
 
 export const state = {
-  teacher: {},
+  teacher: {}
 };
 
 export const mutations = {
@@ -19,7 +19,7 @@ export const mutations = {
     localStorage.removeItem("token_teacher");
     localStorage.removeItem("teacher");
     location.reload();
-  },
+  }
 };
 
 export const actions = {
@@ -28,6 +28,8 @@ export const actions = {
 
     commit("SET_TOKEN", response.data.token);
     commit("SET_TEACHER", response.data.teacher);
+
+    return response.data;
   },
   logout({ commit }) {
     commit("CLEAR_TEACHER");
@@ -36,13 +38,22 @@ export const actions = {
     const response = await teacherServices.updateMe(data);
 
     commit("SET_TEACHER", response.data.teacher);
+    return response.data;
   },
-  async updatePassword({ oldPassword, newPassword }) {
-    await teacherServices.updatePassword(oldPassword, newPassword);
+  updatePassword(updatePassword) {
+    console.log(
+      updatePassword.oldPassword,
+      updatePassword.candidateNewPassword
+    );
+    return teacherServices
+      .updatePassword(updatePassword)
+      .then(response => response.data)
+      .catch(error => Promise.reject(error));
   },
   async forgotPassword(email) {
-    await teacherServices.forgotPassword(email);
-  },
+    const response = await teacherServices.forgotPassword(email);
+    return response.data;
+  }
 };
 
 export const getters = {};

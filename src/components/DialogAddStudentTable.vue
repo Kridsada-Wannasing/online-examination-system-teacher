@@ -65,19 +65,19 @@ export default {
           text: "Student ID",
           align: "start",
           sortable: false,
-          value: "studentId",
+          value: "studentId"
         },
         { text: "Name", value: "firstName", sortable: false },
         { text: "Surname", value: "lastName", sortable: false },
         { text: "Email", value: "email", sortable: false },
         { text: "Faculty", value: "faculty", sortable: false },
-        { text: "Department", value: "department", sortable: false },
+        { text: "Department", value: "department", sortable: false }
       ],
       selectedFile: null,
       dataTable: [],
       dialog: false,
       defaultButtonText: "เพิ่มรายชื่อ",
-      isSelecting: false,
+      isSelecting: false
     };
   },
   computed: {
@@ -85,7 +85,7 @@ export default {
       return this.selectedFile
         ? this.selectedFile.name
         : this.defaultButtonText;
-    },
+    }
   },
   methods: {
     onButtonClick() {
@@ -128,8 +128,8 @@ export default {
       this.dataTable = [];
       this.selectedFile = null;
       this.dialog = !this.dialog;
-    },
-  },
+    }
+  }
 };
 </script>
 

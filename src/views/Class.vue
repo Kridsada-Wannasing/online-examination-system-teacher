@@ -6,7 +6,7 @@
         <div
           style="height: 50%; min-height: 50%; max-height: 50%; overflow: auto;"
         >
-          <ListClass />
+          <ListSubject />
         </div>
         <div
           class="pt-10"
@@ -26,7 +26,7 @@
                     >รหัสวิชา</span
                   >
                   <v-text-field
-                    placeholder="ex. 1234567"
+                    placeholder="ใส่รหัสวิชา"
                     filled
                     rounded
                     dense
@@ -39,7 +39,7 @@
                     >ชื่อวิชา</span
                   >
                   <v-text-field
-                    placeholder="ex."
+                    placeholder="ใส่ชื่อวิชา"
                     filled
                     rounded
                     dense
@@ -84,31 +84,34 @@
   </div>
 </template>
 <script>
-import ListClass from "@/components/ListClass";
+import ListSubject from "@/components/ListSubject";
 import ProfileMenu from "@/components/ProfileMenu";
 
 export default {
   name: "class",
   components: {
-    ListClass,
-    ProfileMenu,
+    ListSubject,
+    ProfileMenu
   },
   data: () => ({
     subjectId: null,
-    subjectName: "",
+    subjectName: ""
   }),
   methods: {
     async createSubject() {
       const response = await this.$store.dispatch("subject/createSubject", {
         subjectId: this.subjectId,
-        subjectName: this.subjectName,
+        subjectName: this.subjectName
       });
 
       alert(`${response.status}: ${response.message}`);
+      this.subjectId = null;
+      this.subjectName = "";
+      this.cancel();
     },
     cancel() {
       this.$router.push({ name: "Welcome" });
-    },
-  },
+    }
+  }
 };
 </script>

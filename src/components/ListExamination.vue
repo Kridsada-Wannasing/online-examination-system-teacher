@@ -28,11 +28,19 @@
               v-for="(examination, i) in examinations"
               :key="i"
             >
-              <Folder
-                class="mr-2"
-                :color="i % 2 == 0 ? 'green' : 'blue'"
-                :examination="examination"
-              />
+              <router-link
+                :to="{
+                  name: 'SettingExamination',
+                  params: { meetingId: examination.meetingId }
+                }"
+                style="text-decoration:none;"
+              >
+                <Folder
+                  class="mr-2"
+                  :color="i % 2 == 0 ? 'green' : 'blue'"
+                  :examination="examination"
+                />
+              </router-link>
             </v-col>
             <v-col cols="12" lg="4" md="6" sm="6" xs="12" class="h-100 mb-5">
               <Folder class="mr-2" color="plus" />
@@ -50,7 +58,7 @@ import Folder from "../components/Folder";
 
 export default {
   components: {
-    Folder,
+    Folder
   },
   data() {
     return {
@@ -59,40 +67,20 @@ export default {
       endExam: "",
       examId: null,
       invitedStudents: [],
-      status: true,
+      status: true
     };
   },
   computed: {
-    ...mapState("examination", ["examinations"]),
-    // ...mapState("meeting", ["meetings"]),
+    ...mapState("examination", ["examinations"])
   },
   mounted() {
     this.$store.dispatch("examination/getAllExaminations");
-    // this.$store.dispatch("meeting/getAllMeetings");
   },
   methods: {
-    // async createExamination(meetingId) {
-    //   await this.$store.dispatch(
-    //     "examination/createExamination",
-    //     {
-    //       password: this.password,
-    //       startExam: this.startExam,
-    //       endExam: this.endExam,
-    //       meetingId,
-    //     }
-    //   );
-    //   if(this.invitedStudents) this.addInvitedStudents(meetingId)
-    // },
-    // async addInvitedStudents(meetingId) {
-    //   await this.$store.dispatch(
-    //     "meeting/addInvitedStudents",
-    //     this.invitedStudents
-    //   );
-    // },
     selectMeeting() {
       this.$router.push({ name: "SelectMeeting" });
-    },
-  },
+    }
+  }
 };
 </script>
 

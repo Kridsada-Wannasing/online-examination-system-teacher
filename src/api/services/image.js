@@ -17,5 +17,5 @@ export default {
   },
   deleteImage(questionId) {
     return apiClient.delete(`${endpoint}/${questionId}`);
-  },
+  }
 };

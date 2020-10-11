@@ -3,7 +3,7 @@ import choiceServices from "../../api/services/choice";
 export const namespaced = true;
 
 export const state = {
-  choices: [],
+  choices: []
 };
 
 export const mutations = {
@@ -15,18 +15,18 @@ export const mutations = {
   },
   EDIT_CHOICE(state, choice) {
     const target = state.choices.findIndex(
-      (element) => element.choiceId === choice.choiceId
+      element => element.choiceId === choice.choiceId
     );
 
     state.choices.splice(target, 1, choice);
   },
   DELETE_CHOICE(state, choiceId) {
     const target = state.choices.findIndex(
-      (element) => element.choiceId === choiceId
+      element => element.choiceId === choiceId
     );
 
     state.choices.splice(target, 1);
-  },
+  }
 };
 
 export const actions = {
@@ -34,7 +34,7 @@ export const actions = {
     const response = await choiceServices.createChoices(choices);
     if (response.data.question.questionType == "ปรนัย") {
       commit("question/ADD_QUESTION_IN_EXAM", response.data.question, {
-        root: true,
+        root: true
       });
     }
     commit("ADD_CHOICE", response.data.newChoice);
@@ -51,7 +51,7 @@ export const actions = {
     const response = await choiceServices.updateChoices(choice);
     if (response.data.question.questionType == "ปรนัย") {
       commit("question/EDIT_QUESTION_IN_EXAM", response.data.question, {
-        root: true,
+        root: true
       });
     }
     // commit("EDIT_CHOICE", response.data.updateChoice);
@@ -59,11 +59,11 @@ export const actions = {
   async deleteChoice({ commit }, choice) {
     await choiceServices.deleteChoices(choice);
     commit("DELETE_CHOICE", choice.choiceId);
-  },
+  }
 };
 
 export const getters = {
-  getByChoiceId: (state) => (choiceId) => {
-    return state.choices.find((choice) => choice.choiceId == choiceId);
-  },
+  getByChoiceId: state => choiceId => {
+    return state.choices.find(choice => choice.choiceId == choiceId);
+  }
 };

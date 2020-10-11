@@ -4,7 +4,7 @@ export const namespaced = true;
 
 export const state = {
   subjects: [],
-  subject: {},
+  subject: {}
 };
 
 export const mutations = {
@@ -15,20 +15,20 @@ export const mutations = {
     state.subject = subject;
   },
   ADD_SUBJECT(state, subject) {
-    state.subjects.unshift(subject);
+    state.subjects.push(subject);
   },
   EDIT_SUBJECT(state, subject) {
     const target = state.subjects.findIndex(
-      (element) => element.subjectId === subject.subjectId
+      element => element.subjectId == subject.subjectId
     );
     state.subjects.splice(target, 1, subject);
   },
   DELETE_SUBJECT(state, subjectId) {
     const target = state.subjects.findIndex(
-      (element) => element.subjectId === subjectId
+      element => element.subjectId == subjectId
     );
     state.subjects.splice(target, 1);
-  },
+  }
 };
 
 export const actions = {
@@ -42,7 +42,9 @@ export const actions = {
     commit("SET_SUBJECTS", response.data.allSubject);
     return response.data;
   },
-  async getSubject({ commit, getters }, subjectId) {
+  async getSubject({ commit, getters, state }, subjectId) {
+    if (subjectId == state.subject.subjectId) return state.subject;
+
     const target = getters.getBySubjectId(subjectId);
 
     if (target) {
@@ -54,22 +56,20 @@ export const actions = {
     commit("SET_SUBJECT", response.data.target);
     return response.data.target;
   },
-  async updateSubject({ commit }, { subject }) {
+  async updateSubject({ commit }, subject) {
     const response = await subjectServices.updateSubject(subject);
-    commit("EDIT_SUBJECT", response.data.updatedSubject);
-    return response.data.updatedSubject;
+    commit("EDIT_SUBJECT", subject);
+    return response.data;
   },
   async deleteSubject({ commit }, subjectId) {
     const response = await subjectServices.deleteSubject(subjectId);
-    commit("DELETE_SUBJECT", response.data);
+    commit("DELETE_SUBJECT", subjectId);
     return response;
-  },
+  }
 };
 
 export const getters = {
-  getBySubjectId: (state) => (id) => {
-    if (id == state.subject.id) return state.subject;
-
-    return state.subjects.find((subject) => subject.id === id);
-  },
+  getBySubjectId: state => subjectId => {
+    return state.subjects.find(subject => subject.subjectId == subjectId);
+  }
 };

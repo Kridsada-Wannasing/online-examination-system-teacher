@@ -7,7 +7,12 @@
           <WelcomeBox />
         </div>
         <div style="height: 60%;" class="pt-10">
-          <ListClass />
+          <ListSubject
+            v-if="!status"
+            :status="status"
+            @changeStatus="getStatusChange"
+          />
+          <Subject v-else :status="status" @changeStatus="getStatusChange" />
         </div>
       </v-col>
       <v-col lg="3" md="4" sm="12" xs="12" class="h-100 pl-5">
@@ -17,15 +22,27 @@
   </div>
 </template>
 <script>
-import ListClass from "@/components/ListClass";
+import ListSubject from "@/components/ListSubject";
 import ProfileMenu from "@/components/ProfileMenu";
 import WelcomeBox from "@/components/WelcomeBox";
+import Subject from "@/components/Subject";
 export default {
   name: "welcome",
   components: {
-    ListClass,
+    ListSubject,
     ProfileMenu,
-    WelcomeBox
+    WelcomeBox,
+    Subject
+  },
+  data() {
+    return {
+      status: false
+    };
+  },
+  methods: {
+    getStatusChange(event) {
+      this.status = event;
+    }
   }
 };
 </script>

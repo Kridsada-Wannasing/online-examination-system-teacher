@@ -20,8 +20,8 @@ export default {
   name: "welcome",
   components: {
     ProfileMenu,
-    ListExamination,
-  },
+    ListExamination
+  }
 };
 </script>
 <style lang="scss"></style>

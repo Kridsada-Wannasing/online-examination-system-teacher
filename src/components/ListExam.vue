@@ -44,6 +44,7 @@
 
     <div v-if="!status" class="w-100" style="height: 80%; max-height: 80%;">
       <v-card
+        v-if="isSelectSubject"
         class="pt-8 px-8 h-100 w-100"
         style="border-radius: 20px; display: inline-table;"
         outlined
@@ -52,12 +53,19 @@
           style="display: flex; justify-content: space-between; height: 12%; min-height: 12%; max-height: 12%;"
         >
           <h3 class="color-dark-blue">ชุดข้อสอบ</h3>
-          <v-btn small outlined color="primary" @click="showCreateExam">
+          <v-btn
+            small
+            outlined
+            color="primary"
+            @click="showCreateExam"
+            v-if="isSelectSubject"
+          >
             <v-icon left>mdi-plus</v-icon>เพิ่มชุดข้อสอบ
           </v-btn>
         </div>
         <div
           style="height: 80%; min-height: 80%; max-height: 80%; overflow: auto;"
+          v-if="exams.length > 0"
         >
           <v-row no-gutters>
             <v-col
@@ -73,7 +81,7 @@
               <router-link
                 :to="{
                   name: 'Question',
-                  params: { subjectId: subject, examId: exam.examId },
+                  params: { subjectId: subject, examId: exam.examId }
                 }"
               >
                 <Folder
@@ -83,11 +91,20 @@
                 />
               </router-link>
             </v-col>
-            <v-col cols="12" lg="4" md="6" sm="6" xs="12" class="h-100 mb-9">
+            <!-- <v-col cols="12" lg="4" md="6" sm="6" xs="12" class="h-100 mb-9">
               <Folder class="mr-2" color="plus" />
-            </v-col>
+            </v-col> -->
           </v-row>
         </div>
+        <div v-else></div>
+      </v-card>
+      <v-card
+        v-else
+        class="pt-8 px-8 h-100 w-100 d-flex justify-center align-center text-center"
+        style="border-radius: 20px; display: inline-table;"
+        outlined
+      >
+        <h3>กรุณาเลือกวิชาเพื่อค้นหาชุดข้อสอบ</h3>
       </v-card>
     </div>
 
@@ -108,7 +125,7 @@
           <TypeExam
             :status="status"
             @statusChange="getStatusChange"
-            :subject="subject"
+            :subjectId="subject"
           />
         </div>
       </v-card>
@@ -126,16 +143,16 @@ export default {
   name: "listExam",
   components: {
     Folder,
-    TypeExam,
+    TypeExam
   },
   data: () => ({
-    types: ["กลางภาค", "ปลายภาค", "objective", "subjective"],
+    types: ["กลางภาค", "ปลายภาค", "สอบย่อย"],
     status: false,
     examType: "",
     years: [],
     year: "",
     subject: null,
-    query: {},
+    query: {}
   }),
   created() {
     this.$store.dispatch("subject/getAllSubjects");
@@ -149,6 +166,9 @@ export default {
   computed: {
     ...mapState("subject", ["subjects"]),
     ...mapState("exam", ["exams"]),
+    isSelectSubject() {
+      return this.subject ? true : false;
+    }
   },
   watch: {
     subject() {
@@ -159,23 +179,23 @@ export default {
       this.query.examType = this.examType;
       this.$store.dispatch("exam/getAllExams", {
         subjectId: this.subject,
-        query: qs.stringify(this.query),
+        query: qs.stringify(this.query)
       });
     },
     year() {
       this.query.year = this.year;
       this.$store.dispatch("exam/getAllExams", {
         subjectId: this.subject,
-        query: qs.stringify(this.query),
+        query: qs.stringify(this.query)
       });
-    },
+    }
   },
   methods: {
     mapExamType() {
-      return this.exams.map((exam) => exam.examType);
+      return this.exams.map(exam => exam.examType);
     },
     mapSemester() {
-      return this.exams.map((exam) => `${exam.term}/${exam.year}`);
+      return this.exams.map(exam => `${exam.term}/${exam.year}`);
     },
     getAllExams(subject) {
       this.$store.dispatch("exam/getAllExams", subject);
@@ -185,7 +205,7 @@ export default {
     },
     showCreateExam() {
       this.status = !this.status;
-    },
-  },
+    }
+  }
 };
 </script>

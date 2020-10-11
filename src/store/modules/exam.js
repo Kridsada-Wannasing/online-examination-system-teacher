@@ -4,7 +4,7 @@ export const namespaced = true;
 
 export const state = {
   exams: [],
-  exam: {},
+  exam: {}
 };
 
 export const mutations = {
@@ -19,24 +19,27 @@ export const mutations = {
   },
   EDIT_EXAM(state, exam) {
     const target = state.exams.findIndex(
-      (element) => element.examId === exam.examId
+      element => element.examId == exam.examId
     );
 
     state.exams.splice(target, 1, exam);
   },
   DELETE_EXAM(state, examId) {
-    const target = state.exams.findIndex(
-      (element) => element.examId === examId
-    );
+    const target = state.exams.findIndex(element => element.examId == examId);
 
     state.exams.splice(target, 1);
-  },
+  }
 };
 
 export const actions = {
   async createExam({ commit }, exam) {
     const response = await examServices.createExam(exam);
     commit("ADD_EXAM", response.data.newExam);
+    return response.data;
+  },
+  async duplicateExam({ commit }, examId) {
+    const response = await examServices.duplicateExam(examId);
+    commit("ADD_EXAM", response.data.newDuplicateExam);
     return response.data;
   },
   async getAllExams({ commit }, { subjectId, query }) {
@@ -71,11 +74,11 @@ export const actions = {
   async deleteExam({ commit }, examId) {
     await examServices.deleteExam(examId);
     commit("DELETE_EXAM", examId);
-  },
+  }
 };
 
 export const getters = {
-  getByExamId: (state) => (examId) => {
-    return state.exams.find((exam) => exam.examId == examId);
-  },
+  getByExamId: state => examId => {
+    return state.exams.find(exam => exam.examId == examId);
+  }
 };

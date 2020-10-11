@@ -11,5 +11,5 @@ export default {
   },
   deleteStudent(studentId) {
     return apiClient.delete(`${endpoint}/${studentId}`);
-  },
+  }
 };

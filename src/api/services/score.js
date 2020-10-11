@@ -19,5 +19,5 @@ export default {
   },
   deleteScore(subjectId, scoreId) {
     return apiClient.delete(`${endpoint}/${subjectId}/${scoreId}`);
-  },
+  }
 };

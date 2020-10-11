@@ -26,22 +26,22 @@ export default {
   components: {
     ProfileMenu,
     FilterClass,
-    ScoreTable,
+    ScoreTable
   },
   data() {
     return {
       subject: null,
       status: false,
-      query: {},
+      query: {}
     };
   },
   computed: {
-    ...mapState("score", ["scores"]),
+    ...mapState("score", ["scores"])
   },
   methods: {
     getSelectedSubject(event) {
       this.query.subject = event;
-    },
-  },
+    }
+  }
 };
 </script>

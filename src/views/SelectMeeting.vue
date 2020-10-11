@@ -32,8 +32,8 @@
                 >
                   <router-link
                     :to="{
-                      name: 'CreateExamination',
-                      params: { meetingId: meeting.meetingId },
+                      name: 'SettingExamination',
+                      params: { meetingId: meeting.meetingId }
                     }"
                     style="text-decoration:none;"
                   >
@@ -71,14 +71,14 @@ import Folder from "@/components/Folder";
 export default {
   components: {
     ProfileMenu,
-    Folder,
+    Folder
   },
   computed: {
-    ...mapState("meeting", ["meetings"]),
+    ...mapState("meeting", ["meetings"])
   },
   created() {
     this.$store.dispatch("meeting/getAllMeetings");
-  },
+  }
 };
 </script>
 

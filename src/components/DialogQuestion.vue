@@ -6,13 +6,13 @@
       small
       outlined
       depressed
-      @click.stop="dialog = !dialog"
+      @click.stop="showDialog"
     >
-      <v-icon left v-text="'mdi-paperclip'" small class="color-blue"></v-icon
+      <v-icon left v-text="'mdi-plus'" small class="color-blue"></v-icon
       >เพิ่มคำถามที่มีอยู่
     </v-btn>
-    <v-dialog v-model="dialog" max-width="900">
-      <v-card>
+    <v-dialog v-model="dialog" max-width="1100">
+      <v-card class="px-4">
         <v-card-title>คำถามทั้งหมด</v-card-title>
         <v-row>
           <v-col>
@@ -25,7 +25,8 @@
               :item-text="'subjectName'"
               :item-value="'subjectId'"
               v-model="subject"
-              label="ex. 12345"
+              @change="getExams"
+              label="เลือกวิชา"
               hide-details
             ></v-select>
           </v-col>
@@ -39,6 +40,7 @@
               :item-text="'examName'"
               :item-value="'examId'"
               v-model="exam"
+              @change="selectFromExam"
               label="ชุดข้อสอบ"
               hide-details
             ></v-select>
@@ -50,7 +52,7 @@
               filled
               dense
               :items="types"
-              v-model="questionType"
+              @change="selectFromQuestionType"
               label="ประเภทคำถาม"
               hide-details
             ></v-select>
@@ -62,7 +64,7 @@
               filled
               dense
               :items="level"
-              v-model="questionLevel"
+              @change="selectFromLevel"
               label="ระดับความยาก"
               hide-details
             ></v-select>
@@ -78,6 +80,7 @@
               :item-text="'tagName'"
               :item-value="'tagId'"
               v-model="tagsOfQuestion"
+              @change="selectFromTag"
               label="Tag"
               hide-details
             >
@@ -91,6 +94,8 @@
           :expanded.sync="expanded"
           item-key="questionId"
           v-model="questionsInExam"
+          show-expand
+          show-select
           class="elevation-0"
         >
           <template v-slot:top>
@@ -104,15 +109,32 @@
               >
             </v-toolbar>
           </template>
-          <template v-slot:expanded-item="{ item }">
-            <v-card>
-              <v-card-title class="headline">{{ item.question }}</v-card-title>
-              <v-card-subtitle v-if="item.questionType == 'ปรนัย'">
-                <div v-for="(choice, index) in item.Choices" :key="index">
-                  <p>{{ choice.choice }}</p>
+          <template v-slot:item.exam>
+            <p>{{ showExam }}</p>
+          </template>
+          <template v-slot:item.subject>
+            <p>{{ showSubject }}</p>
+          </template>
+          <template v-slot:item.QuestionTags="{ item }">
+            <p v-for="(tag, index) in item.QuestionTags" :key="index">
+              {{ tag.Tag.tagName }}
+            </p>
+          </template>
+          <template v-slot:expanded-item="{ headers, item }">
+            <td :colspan="headers.length">
+              <div class="row">
+                <div class="col">
+                  <div>
+                    <h3>{{ item.question }}</h3>
+                  </div>
+                  <div v-if="item.Choices">
+                    <p v-for="choice in item.Choices" :key="choice.order">
+                      {{ choice.choice }}
+                    </p>
+                  </div>
                 </div>
-              </v-card-subtitle>
-            </v-card>
+              </div>
+            </td>
           </template>
         </v-data-table>
       </v-card>
@@ -121,59 +143,82 @@
 </template>
 
 <script>
+import qs from "qs";
 import { mapState } from "vuex";
 export default {
   props: {
-    examId: [Number, String],
+    examId: [Number, String]
   },
   data() {
     return {
       headers: [
+        { text: "ชื่อวิชา", align: "start", value: "subject", sortable: false },
+        { text: "ชุดข้อสอบ", value: "exam", sortable: false },
+        { text: "ประเภทคำถาม", value: "questionType", sortable: false },
+        { text: "ระดับความยาก", value: "level", sortable: false },
+        { text: "แท็ก", value: "QuestionTags", sortable: false },
         {
-          text: "รหัสประจำคำถาม",
-          align: "start",
-          sortable: false,
-          value: "questionId",
+          text: "รายละเอียดคำถาม",
+          value: "data-table-expand",
+          sortable: false
         },
-        { text: "ประเภทคำถาม", value: "questionType" },
-        { text: "ระดับความยาก", value: "level" },
-        { text: "แท็ก", value: "tag" },
-        { text: "ชุดข้อสอบ", value: "exam" },
+        { text: "", value: "data-table-select", sortable: false }
       ],
+      types: ["ปรนัย", "อัตนัย"],
+      level: [1, 2, 3, 4, 5],
       dialog: false,
+      expanded: [],
       query: {},
       tagsOfQuestion: [],
       questionLevel: null,
       questionType: "",
       exam: null,
       subject: null,
-      questionsInExam: [],
+      questionsInExam: []
     };
   },
   computed: {
     ...mapState("question", ["questions"]),
     ...mapState("exam", ["exams"]),
+    ...mapState("tag", ["tags"]),
     ...mapState("subject", ["subjects"]),
+    showExam() {
+      let exam = this.exams.find(exam => exam.examId == this.exam);
+      return exam.examName;
+    },
+    showSubject() {
+      let subject = this.subjects.find(
+        subject => subject.subjectId == this.subject
+      );
+      return subject.subjectName;
+    }
   },
   methods: {
-    selectFromExam(examId) {
-      this.query.examId = examId;
+    getExams(subjectId) {
+      this.$store.dispatch("exam/getAllExams", { subjectId: subjectId });
     },
-    selectFromTag(tagId) {
-      this.query.tagId = tagId;
+    selectFromExam(examId) {
+      this.exam = examId;
+      this.search();
+    },
+    selectFromTag() {
+      this.query.tagId = this.tagsOfQuestion;
+      this.search();
     },
     selectFromLevel(level) {
       this.query.level = level;
+      this.search();
     },
     selectFromQuestionType(questionType) {
       this.query.questionType = questionType;
+      this.search();
     },
     search() {
-      this.$store.dispatch("question/getAllQuestions", this.query);
-    },
-    deleteItem(item) {
-      const index = this.dataTable.indexOf(item);
-      this.dataTable.splice(index, 1);
+      console.log(this.exam);
+      this.$store.dispatch("question/searchQuestions", {
+        examId: this.exam,
+        queryString: qs.stringify(this.query)
+      });
     },
     async save() {
       const response = await this.$store.dispatch(
@@ -184,15 +229,20 @@ export default {
       this.cancel();
     },
     mapQuestionIdAndExamId() {
-      return this.questionsInExam.map((question) => ({
+      return this.questionsInExam.map(question => ({
         questionId: question.questionId,
-        examId: this.examId,
+        examId: this.$route.params.examId
       }));
+    },
+    async showDialog() {
+      await this.$store.dispatch("subject/getAllSubjects");
+      await this.$store.dispatch("tag/getAllTags");
+      this.dialog = !this.dialog;
     },
     cancel() {
       this.dialog = !this.dialog;
-    },
-  },
+    }
+  }
 };
 </script>
 

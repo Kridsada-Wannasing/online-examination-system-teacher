@@ -130,7 +130,6 @@
           v-else-if="questionType === 'อัตนัย'"
         >
           <div
-            class="mb-4"
             v-for="(answer, i) in subjectiveAnswers"
             :key="i"
             style="display: flex; justify-content: space-between;"
@@ -146,7 +145,7 @@
             >
             </v-text-field>
             <v-icon
-              class="mr-5"
+              class="mr-5 mb-5"
               v-text="'mdi-delete-outline'"
               @click="subChoice(i)"
             ></v-icon>
@@ -222,10 +221,10 @@ export default {
   props: {
     examId: Number,
     addQuestion: Boolean,
-    countQuestions: Number,
+    countQuestions: Number
   },
   components: {
-    TagDialog,
+    TagDialog
   },
   data: () => ({
     dialog: false,
@@ -239,7 +238,7 @@ export default {
       { choice: "ตัวเลือกที่ 1", order: 0 },
       { choice: "ตัวเลือกที่ 2", order: 0 },
       { choice: "ตัวเลือกที่ 3", order: 0 },
-      { choice: "ตัวเลือกที่ 4", order: 0 },
+      { choice: "ตัวเลือกที่ 4", order: 0 }
     ],
     selectedFile: null,
     isSelecting: false,
@@ -247,20 +246,22 @@ export default {
     score: null,
     subjectiveAnswers: [{ answer: "คำตอบที่ 1" }, { answer: "คำตอบที่ 2" }],
     answers: [],
-    image: "",
+    image: ""
   }),
   methods: {
     getDialog(event) {
       this.dialog = event;
     },
     async createQuestion() {
+      let numberOfAnswer;
+
       if (this.questionType == "ปรนัย") {
         if (this.choices == undefined || this.choices.length == 0) {
           return alert("กรุณาใส่ตัวเลือก");
         }
         if (this.answers === undefined || this.answers.length == 0) {
           return alert("กรุณาใส่คำตอบ");
-        }
+        } else numberOfAnswer = this.answers.length;
       }
 
       if (this.questionType == "อัตนัย") {
@@ -269,7 +270,7 @@ export default {
           this.subjectiveAnswers.length == 0
         ) {
           return alert("กรุณาใส่คำตอบ");
-        }
+        } else numberOfAnswer = this.subjectiveAnswers.length;
       }
 
       if (
@@ -284,6 +285,8 @@ export default {
         question: this.question,
         examId: this.$route.params.examId,
         level: this.level,
+        numberOfAnswer: numberOfAnswer,
+        sumScoreQuestion: this.score
       });
 
       if (this.questionType == "อัตนัย") {
@@ -308,19 +311,19 @@ export default {
       if (this.questionType == "ปรนัย") {
         this.$store.dispatch(
           "answer/createAnswers",
-          this.answers.map((element) => ({
+          this.answers.map(element => ({
             answer: element,
             score: this.score / this.answers.length,
-            questionId,
+            questionId
           }))
         );
       } else {
         this.$store.dispatch(
           "answer/createAnswers",
-          this.subjectiveAnswers.map((element) => ({
+          this.subjectiveAnswers.map(element => ({
             ...element,
             score: this.score / this.subjectiveAnswers.length,
-            questionId,
+            questionId
           }))
         );
       }
@@ -328,16 +331,16 @@ export default {
     addTagToQuestion(questionId) {
       this.$store.dispatch(
         "tag/addTagToQuestion",
-        this.tagsOfQuestion.map((element) => ({
+        this.tagsOfQuestion.map(element => ({
           tagId: element,
-          questionId,
+          questionId
         }))
       );
     },
     createChoices(questionId) {
       this.$store.dispatch(
         "choice/createChoices",
-        this.choices.map((element) => {
+        this.choices.map(element => {
           return { ...element, questionId };
         })
       );
@@ -353,11 +356,11 @@ export default {
       if (this.questionType == "ปรนัย") {
         this.choices.push({
           choice: `ตัวเลือกที่ ${this.choices.length + 1}`,
-          order: 0,
+          order: 0
         });
       } else {
         this.subjectiveAnswers.push({
-          answer: `คำตอบที่ ${this.choices.length + 1}`,
+          answer: `คำตอบที่ ${this.subjectiveAnswers.length + 1}`
         });
       }
     },
@@ -381,6 +384,11 @@ export default {
     },
     onFileChanged(e) {
       this.selectedFile = e.target.files[0];
+
+      if (this.selectedFile.size > 104857600) {
+        return alert("รูปภาพต้องมีขนาดไม่เกิน 100MB");
+      }
+
       this.image = URL.createObjectURL(this.selectedFile);
     },
     manageTag() {
@@ -388,7 +396,7 @@ export default {
     },
     cancel() {
       this.$emit("cancel", !this.addQuestion);
-    },
+    }
   },
   computed: {
     ...mapState("tag", ["tags"]),
@@ -396,10 +404,10 @@ export default {
       return this.selectedFile
         ? this.selectedFile.name
         : this.defaultButtonText;
-    },
+    }
   },
   created() {
     this.$store.dispatch("tag/getAllTags");
-  },
+  }
 };
 </script>

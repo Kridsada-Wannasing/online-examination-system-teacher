@@ -87,9 +87,9 @@ export default {
   props: {
     showDialog: {
       type: Boolean,
-      default: false,
+      default: false
     },
-    meetingId: [Number, String],
+    meetingId: [Number, String]
   },
   data() {
     return {
@@ -98,17 +98,17 @@ export default {
           text: "Student ID",
           align: "start",
           sortable: false,
-          value: "studentId",
+          value: "studentId"
         },
         { text: "Name", value: "firstName", sortable: false },
         { text: "Surname", value: "lastName", sortable: false },
         { text: "Faculty", value: "faculty", sortable: false },
-        { text: "Department", value: "department", sortable: false },
+        { text: "Department", value: "department", sortable: false }
       ],
       selectedStudent: [],
       deletedStudent: [],
       dataTable: [],
-      dialog: false,
+      dialog: false
       // query: {},
     };
   },
@@ -117,7 +117,7 @@ export default {
     this.dialog = this.showDialog;
   },
   computed: {
-    ...mapState("student", ["students"]),
+    ...mapState("student", ["students"])
   },
   methods: {
     // getStudentByFaculty(item) {
@@ -141,9 +141,9 @@ export default {
       this.cancel();
     },
     mapInvitedStudent(students, meetingId) {
-      return students.map((element) => ({
+      return students.map(element => ({
         studentId: element.studentId,
-        meetingId: meetingId,
+        meetingId: meetingId
       }));
     },
     addInvitedStudent() {
@@ -152,8 +152,8 @@ export default {
     cancel() {
       this.dataTable = [];
       this.dialog = !this.dialog;
-    },
-  },
+    }
+  }
 };
 </script>
 
