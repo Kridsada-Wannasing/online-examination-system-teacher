@@ -132,22 +132,22 @@ import range from "lodash/range";
 import { mapState } from "vuex";
 
 export default {
-  name: "typeExam",
+  name: "CreateExam",
   props: {
     exam: Object,
     status: Boolean,
-    subjectId: [Number, String]
+    subjectId: [Number, String],
   },
   data() {
     return {
       types: ["กลางภาค", "ปลายภาค", "สอบย่อย"],
       formatOfAnswer: [
         { text: "แก้ไขคำตอบได้", format: true },
-        { text: "แก้ไขคำตอบไม่ได้", format: false }
+        { text: "แก้ไขคำตอบไม่ได้", format: false },
       ],
       authorityOfExam: [
         { text: "public", authority: true },
-        { text: "private", authority: false }
+        { text: "private", authority: false },
       ],
       years: [],
       terms: [1, 2, 3],
@@ -158,12 +158,12 @@ export default {
         examType: "",
         term: null,
         year: null,
-        subjectId: this.subjectId
-      }
+        subjectId: this.subjectId,
+      },
     };
   },
   computed: {
-    ...mapState("subject", ["subject"])
+    ...mapState("subject", ["subject"]),
   },
   methods: {
     async createExam() {
@@ -191,7 +191,7 @@ export default {
       );
       alert(`${response.status}: ${response.message}`);
       this.$emit("statusChange", status);
-    }
+    },
   },
   created() {
     if (this.exam) {
@@ -205,6 +205,6 @@ export default {
 
     this.$store.dispatch("subject/getSubject", this.subjectId);
     console.log(this.subject);
-  }
+  },
 };
 </script>

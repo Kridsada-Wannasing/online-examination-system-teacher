@@ -81,7 +81,7 @@
               <router-link
                 :to="{
                   name: 'Question',
-                  params: { subjectId: subject, examId: exam.examId }
+                  params: { subjectId: subject, examId: exam.examId },
                 }"
               >
                 <Folder
@@ -122,7 +122,7 @@
           class="mt-5"
           style="overflow-y: auto; height: 80%; min-height: 80%; max-height: 80%;"
         >
-          <TypeExam
+          <CreateExam
             :status="status"
             @statusChange="getStatusChange"
             :subjectId="subject"
@@ -134,7 +134,7 @@
 </template>
 <script>
 import Folder from "./Folder";
-import TypeExam from "./TypeExam";
+import CreateExam from "./CreateExam";
 import { mapState } from "vuex";
 import qs from "qs";
 import range from "lodash/range";
@@ -143,7 +143,7 @@ export default {
   name: "listExam",
   components: {
     Folder,
-    TypeExam
+    CreateExam,
   },
   data: () => ({
     types: ["กลางภาค", "ปลายภาค", "สอบย่อย"],
@@ -152,7 +152,7 @@ export default {
     years: [],
     year: "",
     subject: null,
-    query: {}
+    query: {},
   }),
   created() {
     this.$store.dispatch("subject/getAllSubjects");
@@ -168,7 +168,7 @@ export default {
     ...mapState("exam", ["exams"]),
     isSelectSubject() {
       return this.subject ? true : false;
-    }
+    },
   },
   watch: {
     subject() {
@@ -179,23 +179,23 @@ export default {
       this.query.examType = this.examType;
       this.$store.dispatch("exam/getAllExams", {
         subjectId: this.subject,
-        query: qs.stringify(this.query)
+        query: qs.stringify(this.query),
       });
     },
     year() {
       this.query.year = this.year;
       this.$store.dispatch("exam/getAllExams", {
         subjectId: this.subject,
-        query: qs.stringify(this.query)
+        query: qs.stringify(this.query),
       });
-    }
+    },
   },
   methods: {
     mapExamType() {
-      return this.exams.map(exam => exam.examType);
+      return this.exams.map((exam) => exam.examType);
     },
     mapSemester() {
-      return this.exams.map(exam => `${exam.term}/${exam.year}`);
+      return this.exams.map((exam) => `${exam.term}/${exam.year}`);
     },
     getAllExams(subject) {
       this.$store.dispatch("exam/getAllExams", subject);
@@ -205,7 +205,7 @@ export default {
     },
     showCreateExam() {
       this.status = !this.status;
-    }
-  }
+    },
+  },
 };
 </script>

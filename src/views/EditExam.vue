@@ -10,7 +10,7 @@
           <h3 class="color-dark-blue">แก้ไขชุดข้อสอบ</h3>
           <hr class="mt-3 mb-3" />
           <div class="mb-2">
-            <TypeExam :exam="exam" />
+            <CreateExam :exam="exam" />
           </div>
           <hr class="mt-5 mb-5" />
           <div class="mb-2">
@@ -32,7 +32,7 @@
 </template>
 <script>
 import ShowEditExam from "@/components/ShowEditExam";
-import TypeExam from "@/components/TypeExam";
+import CreateExam from "@/components/CreateExam";
 import Question from "@/components/Question";
 import { mapState } from "vuex";
 
@@ -42,15 +42,15 @@ export default {
   components: {
     Question,
     ShowEditExam,
-    TypeExam
+    CreateExam,
   },
   data: () => ({
     addQuestion: false,
-    editQuestion: false
+    editQuestion: false,
   }),
   computed: {
     ...mapState("exam", ["exam"]),
-    ...mapState("question", ["questionsInExam"])
+    ...mapState("question", ["questionsInExam"]),
   },
   methods: {
     getAddQuestionClick(event) {
@@ -58,7 +58,7 @@ export default {
     },
     getEditQuestionClick(event) {
       this.editQuestion = event;
-    }
-  }
+    },
+  },
 };
 </script>

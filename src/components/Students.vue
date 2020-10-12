@@ -27,7 +27,7 @@ import DialogAddStudentTable from "./DialogAddStudentTable";
 export default {
   name: "students",
   components: {
-    DialogAddStudentTable
+    DialogAddStudentTable,
   },
   data() {
     return {
@@ -36,23 +36,27 @@ export default {
           text: "Student ID",
           align: "start",
           sortable: false,
-          value: "studentId"
+          value: "studentId",
         },
         { text: "Name", value: "firstName", sortable: false },
         { text: "Surname", value: "lastName", sortable: false },
         { text: "Faculty", value: "faculty", sortable: false },
         { text: "Department", value: "department", sortable: false },
-        { text: "Actions", value: "actions", sortable: false }
-      ]
+        { text: "Actions", value: "actions", sortable: false },
+      ],
     };
   },
   computed: {
-    ...mapState("student", ["students"])
+    ...mapState("student", ["students"]),
   },
   methods: {
     deleteStudent(item) {
-      this.$store.dispatch("student/deleteStudent", item.studentId);
-    }
-  }
+      confirm("คุณต้องการลบรายชื่อนักศึกษาหรือไม่") &&
+        this.$store
+          .dispatch("student/deleteStudent", item.studentId)
+          .then(() => alert("ลบรายชื่อนักศึกษาเรียบร้อย"))
+          .catch((error) => alert(error));
+    },
+  },
 };
 </script>

@@ -9,7 +9,7 @@
         class="pl-3 pr-3 color-dark-blue"
         style="display: flex; justify-content: space-between;"
       >
-        <h4 class="color-dark-blue">รายชื่อนักศึกษา 43 คน</h4>
+        <h4 class="color-dark-blue">รายชื่อนักศึกษา {{ scores.length }} คน</h4>
         <v-btn
           small
           dark
@@ -24,12 +24,12 @@
         <template v-slot:default>
           <thead>
             <tr>
-              <th class="text-left">STUDENTID</th>
-              <th class="text-left">NAME</th>
-              <th class="text-left">SUBJECT</th>
-              <th class="text-left">EXAM</th>
-              <th class="text-left">SUM</th>
-              <th class="text-left">SCORE</th>
+              <th class="text-left">รหัสนักศึกษา</th>
+              <th class="text-left">ชื่อนาม-สกุล</th>
+              <th class="text-left">การสอบ</th>
+              <th class="text-left">ภาคเรียนที่</th>
+              <th class="text-left">คะแนนทั้งหมด</th>
+              <th class="text-left">คะแนนที่ได้</th>
             </tr>
           </thead>
           <tbody>
@@ -38,8 +38,8 @@
               <td class="color-dark-blue">
                 {{ score.student.firstName }} {{ score.student.lastName }}
               </td>
-              <td class="color-dark-blue">{{ score.subject }}</td>
-              <td class="color-dark-blue">{{ score.exam }}</td>
+              <td class="color-dark-blue">{{ score.examType }}</td>
+              <td class="color-dark-blue">{{ score.term }}/{{ score.year }}</td>
               <td class="color-dark-blue">{{ score.sum }}</td>
               <td class="color-dark-blue">{{ score.score }}</td>
             </tr>
@@ -58,20 +58,23 @@ export default {
     ...mapState("score", ["scores"]),
     showButton() {
       return this.scores.length > 0 ? true : false;
-    }
+    },
   },
   methods: {
     exportScores() {
-      let json = this.scores.map(score => ({
+      let json = this.scores.map((score) => ({
         รหัสนักศึกษา: score.student.studentId,
         "ชื่อ-นามสกุล": `${score.student.firstName} ${score.student.lastName}`,
+        รหัสวิชา: score.subjectId,
         ชื่อวิชา: score.subject,
-        ชื่อชุดข้อสอบ: score.exam,
+        ชุดข้อสอบ: score.exam,
+        การสอบ: score.examType,
+        ภาคเรียนที่: `${score.term}/${score.year}`,
         คะแนนทั้งหมด: score.sum,
-        คะแนนที่ได้: score.score
+        คะแนนที่ได้: score.score,
       }));
 
-      const fileName = "test.xlsx";
+      const fileName = "report-score.xlsx";
 
       /* make the worksheet */
       let ws = XLSX.utils.json_to_sheet(json);
@@ -82,7 +85,7 @@ export default {
 
       /* generate an XLSX file */
       XLSX.writeFile(wb, fileName);
-    }
-  }
+    },
+  },
 };
 </script>

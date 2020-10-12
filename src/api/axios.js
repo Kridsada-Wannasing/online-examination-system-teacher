@@ -2,17 +2,17 @@ import axios from "axios";
 import NProgress from "nprogress";
 
 export const apiClient = axios.create({
-  baseURL: "http://localhost:8000/teacher",
+  baseURL: process.env.VUE_APP_API_URL + "/teacher",
   withCredentials: false,
   headers: {
     Accept: "application/json",
-    "Content-Type": "application/json"
+    "Content-Type": "application/json",
   },
-  timeout: 10000
+  timeout: 10000,
 });
 
 apiClient.interceptors.request.use(
-  config => {
+  (config) => {
     if (
       config.url.includes("/login") ||
       config.url.includes("/forgot-password")
@@ -32,12 +32,12 @@ apiClient.interceptors.request.use(
     NProgress.start();
     return config;
   },
-  error => {
+  (error) => {
     Promise.reject(error);
   }
 );
 
-apiClient.interceptors.response.use(response => {
+apiClient.interceptors.response.use((response) => {
   NProgress.done();
   return response;
 });

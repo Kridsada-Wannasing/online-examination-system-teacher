@@ -257,11 +257,11 @@ import localizedFormat from "dayjs/plugin/localizedFormat";
 import { mapState } from "vuex";
 export default {
   props: {
-    status: Boolean
+    status: Boolean,
   },
   components: {
     ProfileMenu,
-    AddStudentInAppointment
+    AddStudentInAppointment,
   },
   data() {
     return {
@@ -270,13 +270,13 @@ export default {
           text: "Student ID",
           align: "start",
           sortable: false,
-          value: "studentId"
+          value: "studentId",
         },
         { text: "Name", value: "firstName", sortable: false },
         { text: "Surname", value: "lastName", sortable: false },
         { text: "Faculty", value: "faculty", sortable: false },
         { text: "Department", value: "department", sortable: false },
-        { text: "Actions", value: "actions", sortable: false }
+        { text: "Actions", value: "actions", sortable: false },
       ],
       types: ["กลางภาค", "ปลายภาค", "สอบย่อย"],
       meetingData: {
@@ -285,18 +285,18 @@ export default {
         endExamDate: "",
         examType: "",
         term: null,
-        year: null
+        year: null,
       },
       cahcedData: {},
       showDialog: false,
-      showTable: false
+      showTable: false,
     };
   },
   computed: {
     ...mapState("subject", ["subjects"]),
     ...mapState("meeting", ["students"]),
     ...mapState("exam", ["exams"]),
-    ...mapState("meeting", ["meeting"])
+    ...mapState("meeting", ["meeting"]),
   },
   methods: {
     async updateMeeting() {
@@ -306,21 +306,22 @@ export default {
 
       const response = await this.$store.dispatch("meeting/updateMeeting", {
         ...this.meetingData,
-        isPostpone: true
+        isPostpone: true,
       });
 
       alert(`${response.status}: ${response.message}`);
       this.cancel();
     },
     deleteStudent(item) {
+      console.log(item.studentId);
       confirm("คุณต้องการลบรายชื่อนักศึกษาหรือไม่") &&
         this.$store
           .dispatch("meeting/deleteStudentInMeeting", {
             meetingId: this.meeting.meetingId,
-            studentId: item.studentId
+            studentId: item.studentId,
           })
           .then(() => alert("ลบรายชื่อเรียบร้อย"))
-          .catch(error => alert(error));
+          .catch((error) => alert(error));
     },
     deleteMeeting() {
       confirm("คุณต้องการลบนัดหมายการสอบนี้หรือไม่") &&
@@ -330,7 +331,7 @@ export default {
             alert("ลบนัดหมายการสอบนี้เรียบร้อย");
             this.$router.push({ name: "Appointment" });
           })
-          .catch(error => alert(error));
+          .catch((error) => alert(error));
     },
     openTable() {
       this.showTable = !this.showTable;
@@ -342,11 +343,11 @@ export default {
     cancel() {
       this.meetingData = Object.assign({}, this.meeting);
       this.$router.push({ name: "Appointment" });
-    }
+    },
   },
   created() {
     this.$store.dispatch("exam/getAllExams", {
-      subjectId: this.meeting.subjectId
+      subjectId: this.meeting.subjectId,
     });
 
     dayjs.extend(localizedFormat);
@@ -357,7 +358,7 @@ export default {
     this.meetingData.endExamDate = dayjs(this.meetingData.endExamDate).format(
       "YYYY-MM-DD HH:mm"
     );
-  }
+  },
 };
 </script>
 

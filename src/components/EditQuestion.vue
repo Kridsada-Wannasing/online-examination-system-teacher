@@ -228,11 +228,11 @@ import TagDialog from "./TagDialog";
 export default {
   name: "editQuestion",
   components: {
-    TagDialog
+    TagDialog,
   },
   props: {
     question: Object,
-    index: Number
+    index: Number,
   },
   data: () => ({
     edited: false,
@@ -242,7 +242,7 @@ export default {
     defaultQuestion: {
       question: "",
       questionType: "",
-      level: null
+      level: null,
     },
     newChoices: [],
     defaultChoices: [],
@@ -254,7 +254,7 @@ export default {
     defaultButtonText: "อัพโหลดรูปภาพ",
     score: null,
     defaultAnswers: [],
-    defaultImage: ""
+    defaultImage: "",
   }),
   methods: {
     async updateQuestion() {
@@ -296,7 +296,7 @@ export default {
           question: this.defaultQuestion.question,
           level: this.defaultQuestion.level,
           numberOfAnswer: this.defaultAnswers.length,
-          sumScoreQuestion: this.defaultQuestion.sumScoreQuestion
+          sumScoreQuestion: this.defaultQuestion.sumScoreQuestion,
         }
       );
 
@@ -323,23 +323,23 @@ export default {
       await this.$store.dispatch("tag/updateTagsInQuestion", this.mapTags());
     },
     mapChoices() {
-      return this.defaultChoices.map(element => ({
+      return this.defaultChoices.map((element) => ({
         ...element,
-        questionId: this.question.questionId
+        questionId: this.question.questionId,
       }));
     },
     mapAnswers() {
-      return this.defaultAnswers.map(element => ({
+      return this.defaultAnswers.map((element) => ({
         answer: element,
         score:
           this.defaultQuestion.sumScoreQuestion / this.defaultAnswers.length,
-        questionId: this.question.questionId
+        questionId: this.question.questionId,
       }));
     },
     mapTags() {
-      return this.defaultTagsOfQuestion.map(element => ({
+      return this.defaultTagsOfQuestion.map((element) => ({
         tagId: element,
-        questionId: this.question.questionId
+        questionId: this.question.questionId,
       }));
     },
     changeImage() {
@@ -355,11 +355,11 @@ export default {
       if (this.defaultQuestion.questionType == "ปรนัย") {
         this.defaultChoices.push({
           choice: `ตัวเลือกที่ ${this.defaultChoices.length + 1}`,
-          order: 0
+          order: 0,
         });
       } else {
         this.defaultAnswers.push({
-          answer: `คำตอบที่ ${this.defaultAnswers.length + 1}`
+          answer: `คำตอบที่ ${this.defaultAnswers.length + 1}`,
         });
       }
     },
@@ -418,7 +418,7 @@ export default {
         this.$store
           .dispatch("question/deleteQuestion", this.question.questionId)
           .then(() => this.cancel)
-          .catch(error => alert(error));
+          .catch((error) => alert(error));
     },
     async editingQuestion() {
       this.defaultQuestion = Object.assign({}, this.question);
@@ -444,20 +444,20 @@ export default {
       this.defaultTagsOfQuestion = this.tagsOfQuestion;
 
       if (this.question.questionType == "ปรนัย") {
-        this.defaultAnswers = this.answers.map(answer => Number(answer));
+        this.defaultAnswers = this.answers.map((answer) => Number(answer));
       } else {
-        this.defaultAnswers = this.answers.map(answer => ({ answer }));
+        this.defaultAnswers = this.answers.map((answer) => ({ answer }));
       }
 
       this.defaultChoices = this.choices;
       try {
-        this.defaultImage = `http://localhost:8000/static/${this.image.path}`;
+        this.defaultImage = `${process.env.VUE_APP_API_URL}/static/${this.image.path}`;
       } catch (error) {
         this.defaultImage = "";
       }
 
       this.edited = true;
-    }
+    },
   },
   computed: {
     ...mapState("tag", ["tags"]),
@@ -484,7 +484,7 @@ export default {
     },
     showAddAnswer() {
       return this.defaultAnswers.length == 10 ? false : true;
-    }
-  }
+    },
+  },
 };
 </script>

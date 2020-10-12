@@ -5,7 +5,7 @@ export const namespaced = true;
 export const state = {
   meetings: [],
   meeting: {},
-  students: []
+  students: [],
 };
 
 export const mutations = {
@@ -26,7 +26,7 @@ export const mutations = {
   },
   EDIT_MEETING(state, meeting) {
     const target = state.meetings.findIndex(
-      element => element.meetingId == meeting.meetingId
+      (element) => element.meetingId == meeting.meetingId
     );
     state.meetings.splice(target, 1, meeting);
   },
@@ -35,17 +35,16 @@ export const mutations = {
   },
   DELETE_MEETING(state, meetingId) {
     const target = state.meetings.findIndex(
-      element => element.meetingId === meetingId
+      (element) => element.meetingId === meetingId
     );
     state.meetings.splice(target, 1);
   },
-  DELETE_STUDENT_IN_MEETING(state, meetingId, studentId) {
+  DELETE_STUDENT_IN_MEETING(state, studentId) {
     const target = state.students.findIndex(
-      element =>
-        element.meetingId == meetingId && element.studentId == studentId
+      (element) => element.studentId == studentId
     );
     state.students.splice(target, 1);
-  }
+  },
 };
 
 export const actions = {
@@ -67,7 +66,7 @@ export const actions = {
   async createStudentInMeeting({ commit }, students) {
     const response = await meetingServices.createStudentInMeeting(students);
     if (Array.isArray(response.data.students))
-      response.data.students.map(student =>
+      response.data.students.map((student) =>
         commit("ADD_STUDENT_IN_MEETING", student)
       );
     return response.data;
@@ -100,15 +99,15 @@ export const actions = {
   },
   async deleteStudentInMeeting({ commit }, { meetingId, studentId }) {
     await meetingServices.deleteStudentInMeeting(meetingId, studentId);
-    commit("DELETE_STUDENT_IN_MEETING", meetingId, studentId);
-  }
+    commit("DELETE_STUDENT_IN_MEETING", studentId);
+  },
 };
 
 export const getters = {
-  getByMeetingId: state => meetingId => {
-    return state.meetings.find(meeting => meeting.meetingId == meetingId);
+  getByMeetingId: (state) => (meetingId) => {
+    return state.meetings.find((meeting) => meeting.meetingId == meetingId);
   },
-  getInvitedStudentByMeetingId: state => meetingId => {
-    return state.students.filter(student => student.meetingId == meetingId);
-  }
+  getInvitedStudentByMeetingId: (state) => (meetingId) => {
+    return state.students.filter((student) => student.meetingId == meetingId);
+  },
 };

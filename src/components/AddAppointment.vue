@@ -20,7 +20,7 @@
             :item-value="'subjectId'"
             v-model="subjectId"
             @change="showExam"
-            label="นัดสอบวิชา"
+            label="เลือกวิชา"
             hide-details
           ></v-select>
         </v-col>
@@ -37,7 +37,7 @@
             :item-text="'examName'"
             :item-value="'examId'"
             v-model="examId"
-            label="นัดสอบวิชา"
+            label="เลือกชุดข้อสอบ"
             hide-details
           ></v-select>
         </v-col>
@@ -210,7 +210,7 @@ import AddStudentInAppointment from "@/components/AddStudentInAppointment";
 export default {
   name: "addAppointment",
   components: {
-    AddStudentInAppointment
+    AddStudentInAppointment,
   },
   props: { status: Boolean },
   data: () => ({
@@ -231,19 +231,19 @@ export default {
         text: "Student ID",
         align: "start",
         sortable: false,
-        value: "studentId"
+        value: "studentId",
       },
       { text: "Name", value: "firstName" },
       { text: "Surname", value: "lastName" },
       { text: "Faculty", value: "faculty" },
       { text: "Department", value: "department" },
-      { text: "Actions", value: "actions", sortable: false }
-    ]
+      { text: "Actions", value: "actions", sortable: false },
+    ],
   }),
   computed: {
     ...mapState("subject", ["subjects"]),
     ...mapState("meeting", ["students"]),
-    ...mapState("exam", ["exams"])
+    ...mapState("exam", ["exams"]),
   },
   methods: {
     async createMeeting() {
@@ -257,7 +257,7 @@ export default {
           subjectId: this.subjectId,
           term: this.term,
           year: this.year,
-          examId: this.examId
+          examId: this.examId,
         });
 
         alert(`${response.status}: ${response.message}`);
@@ -272,10 +272,10 @@ export default {
     },
     showExam(subjectId) {
       this.$store.dispatch("exam/getAllExams", { subjectId });
-    }
+    },
   },
   mounted() {
     this.$store.dispatch("subject/getAllSubjects");
-  }
+  },
 };
 </script>
