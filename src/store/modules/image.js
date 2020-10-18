@@ -4,7 +4,7 @@ export const namespaced = true;
 
 export const state = {
   images: [],
-  image: {}
+  image: {},
 };
 
 export const mutations = {
@@ -16,34 +16,54 @@ export const mutations = {
   },
   DELETE_IMAGE(state) {
     state.image = undefined;
-  }
+  },
 };
 
 export const actions = {
   async getAllImages({ commit }) {
-    const response = await imageServices.getAllImages();
-    commit("SET_IMAGES", response.data.allImages);
+    try {
+      const response = await imageServices.getAllImages();
+      commit("SET_IMAGES", response.data.allImages);
+    } catch (error) {
+      return Promise.reject(error);
+    }
   },
   async getImageInQuestion({ commit }, questionId) {
-    const response = await imageServices.getImageInQuestion(questionId);
-    commit("SET_IMAGE", response.data.image);
+    try {
+      const response = await imageServices.getImageInQuestion(questionId);
+      commit("SET_IMAGE", response.data.image);
+    } catch (error) {
+      return Promise.reject(error);
+    }
   },
   async uploadImage({ commit }, image) {
-    const response = await imageServices.uploadImage(image);
-    commit("SET_IMAGE", response.data.newImage);
+    try {
+      const response = await imageServices.uploadImage(image);
+      commit("SET_IMAGE", response.data.newImage);
+    } catch (error) {
+      return Promise.reject(error);
+    }
   },
   async changeImage({ commit }, image) {
-    const response = await imageServices.changeImage(image);
-    commit("SET_IMAGE", response.data.updateImage);
+    try {
+      const response = await imageServices.changeImage(image);
+      commit("SET_IMAGE", response.data.updateImage);
+    } catch (error) {
+      return Promise.reject(error);
+    }
   },
   async deleteImage({ commit }, imageId) {
-    await imageServices.deleteImage(imageId);
-    commit("DELETE_IMAGE");
-  }
+    try {
+      await imageServices.deleteImage(imageId);
+      commit("DELETE_IMAGE");
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  },
 };
 
 export const getters = {
-  getByQuestionId: state => questionId => {
-    return state.images.find(image => image.questionId == questionId);
-  }
+  getByQuestionId: (state) => (questionId) => {
+    return state.images.find((image) => image.questionId == questionId);
+  },
 };

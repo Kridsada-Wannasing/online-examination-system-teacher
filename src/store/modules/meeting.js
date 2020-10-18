@@ -49,57 +49,89 @@ export const mutations = {
 
 export const actions = {
   async createMeeting({ commit }, meeting) {
-    const response = await meetingServices.createMeeting(meeting);
-    commit("ADD_MEETING", response.data.newMeeting);
-    return response.data;
+    try {
+      const response = await meetingServices.createMeeting(meeting);
+      commit("ADD_MEETING", response.data.newMeeting);
+      return response.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
   },
   async getAllMeetings({ commit }, query) {
-    let response;
-    if (query) {
-      response = await meetingServices.getAllMeetings(query);
-    } else {
-      response = await meetingServices.getAllMeetings();
+    try {
+      let response;
+      if (query) {
+        response = await meetingServices.getAllMeetings(query);
+      } else {
+        response = await meetingServices.getAllMeetings();
+      }
+      commit("SET_MEETINGS", response.data.allMeeting);
+      return response;
+    } catch (error) {
+      return Promise.reject(error);
     }
-    commit("SET_MEETINGS", response.data.allMeeting);
-    return response;
   },
   async createStudentInMeeting({ commit }, students) {
-    const response = await meetingServices.createStudentInMeeting(students);
-    if (Array.isArray(response.data.students))
-      response.data.students.map((student) =>
-        commit("ADD_STUDENT_IN_MEETING", student)
-      );
-    return response.data;
+    try {
+      const response = await meetingServices.createStudentInMeeting(students);
+      if (Array.isArray(response.data.students))
+        response.data.students.map((student) =>
+          commit("ADD_STUDENT_IN_MEETING", student)
+        );
+      return response.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
   },
   async getAllStudentInMeeting({ commit }, meetingId) {
-    const response = await meetingServices.getAllStudentInMeeting(meetingId);
-    commit("SET_STUDENT_IN_MEETING", response.data.students);
-    return response.data;
+    try {
+      const response = await meetingServices.getAllStudentInMeeting(meetingId);
+      commit("SET_STUDENT_IN_MEETING", response.data.students);
+      return response.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
   },
   async getMeeting({ commit, getters }, meetingId) {
-    const target = getters.getByMeetingId(meetingId);
+    try {
+      const target = getters.getByMeetingId(meetingId);
 
-    if (target) {
-      commit("SET_MEETING", target);
-      return target;
+      if (target) {
+        commit("SET_MEETING", target);
+        return target;
+      }
+
+      const response = await meetingServices.getMeeting(meetingId);
+      commit("SET_MEETING", response.data.target);
+      return response.data;
+    } catch (error) {
+      return Promise.reject(error);
     }
-
-    const response = await meetingServices.getMeeting(meetingId);
-    commit("SET_MEETING", response.data.target);
-    return response.data;
   },
   async updateMeeting({ commit }, meeting) {
-    const response = await meetingServices.updateMeeting(meeting);
-    commit("EDIT_MEETING", response.data.updatedMeeting);
-    return response.data;
+    try {
+      const response = await meetingServices.updateMeeting(meeting);
+      commit("EDIT_MEETING", response.data.updatedMeeting);
+      return response.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
   },
   async deleteMeeting({ commit }, meetingId) {
-    await meetingServices.deleteMeeting(meetingId);
-    commit("DELETE_MEETING", meetingId);
+    try {
+      await meetingServices.deleteMeeting(meetingId);
+      commit("DELETE_MEETING", meetingId);
+    } catch (error) {
+      return Promise.reject(error);
+    }
   },
   async deleteStudentInMeeting({ commit }, { meetingId, studentId }) {
-    await meetingServices.deleteStudentInMeeting(meetingId, studentId);
-    commit("DELETE_STUDENT_IN_MEETING", studentId);
+    try {
+      await meetingServices.deleteStudentInMeeting(meetingId, studentId);
+      commit("DELETE_STUDENT_IN_MEETING", studentId);
+    } catch (error) {
+      return Promise.reject(error);
+    }
   },
 };
 

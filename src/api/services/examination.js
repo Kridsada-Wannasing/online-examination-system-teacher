@@ -6,8 +6,8 @@ export default {
   createExamination(examination) {
     return apiClient.post(`/${endpoint}`, examination);
   },
-  getAllExaminations() {
-    return apiClient.get(`/${endpoint}`);
+  getExamLogOfQuestion(examId) {
+    return apiClient.get(`/exam-log/${examId}`);
   },
   getExamination(examinationId) {
     return apiClient.get(`/${endpoint}/${examinationId}`);
@@ -20,5 +20,5 @@ export default {
   },
   deleteExamination(examinationId) {
     return apiClient.delete(`${endpoint}/${examinationId}`);
-  }
+  },
 };

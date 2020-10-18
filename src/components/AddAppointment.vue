@@ -248,6 +248,38 @@ export default {
   methods: {
     async createMeeting() {
       try {
+        if (!this.subjectId) {
+          return alert("กรุณาเลือกวิชาสอบ");
+        }
+
+        if (!this.examId) {
+          return alert("กรุณาเลือกชุดข้อสอบ");
+        }
+
+        if (!this.examType) {
+          return alert("กรุณาเลือกประเภทการสอบ");
+        }
+
+        if (!this.term) {
+          return alert("กรุณาระบุภาคการศึกษา");
+        }
+
+        if (!this.year) {
+          return alert("กรุณาระบุปีการศึกษา");
+        }
+
+        if (!this.startExamDate) {
+          return alert("กรุณาเลือกเวลาเริ่มสอบ");
+        }
+
+        if (!this.endExamDate) {
+          return alert("กรุณาเลือกเวลาสิ้นสุดการสอบ");
+        }
+
+        if (!this.password) {
+          return alert("กรุณาระบุรหัสเข้าสอบ");
+        }
+
         const response = await this.$store.dispatch("meeting/createMeeting", {
           startExamDate: this.startExamDate,
           endExamDate: this.endExamDate,

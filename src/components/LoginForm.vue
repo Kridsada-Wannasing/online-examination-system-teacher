@@ -61,15 +61,18 @@ export default {
     return {
       email: "",
       password: "",
-      status: false
+      status: false,
     };
   },
   methods: {
     async login() {
       try {
+        if (!this.email || !this.password) {
+          return alert("คุณยังไม่ได้ใส่อีเมลหรือรหัสผ่าน");
+        }
         await this.$store.dispatch("teacher/login", {
           email: this.email,
-          password: this.password
+          password: this.password,
         });
         this.$router.push({ path: "/welcome" });
       } catch (error) {
@@ -79,13 +82,14 @@ export default {
     forgotPassword() {
       teacherServices
         .forgotPassword({
-          email: this.email
+          email: this.email,
         })
-        .then(response =>
-          alert(`${response.data.status}: ${response.data.message}`)
-        )
-        .catch(error => alert(`${error.response.data.message}`));
-    }
-  }
+        .then((response) => {
+          this.status = false;
+          alert(`${response.data.status}: ${response.data.message}`);
+        })
+        .catch((error) => alert(`${error.response.data.message}`));
+    },
+  },
 };
 </script>

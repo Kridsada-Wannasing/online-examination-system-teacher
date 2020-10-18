@@ -350,7 +350,7 @@ export default {
       candidateNewPassword: "",
       confirmCandidateNewPassword: "",
       edit: false,
-      editPassword: false
+      editPassword: false,
     };
   },
   methods: {
@@ -359,13 +359,25 @@ export default {
         firstName: this.firstName,
         lastName: this.lastName,
         faculty: this.faculty,
-        department: this.department
+        department: this.department,
       });
 
       alert(`${response.status} ${response.message}`);
       this.logout();
     },
     updatePassword() {
+      if (!this.oldPassword) {
+        return alert("กรุณาใส่รหัสผ่านปัจจุบัน");
+      }
+
+      if (!this.candidateNewPassword) {
+        return alert("กรุณาใส่รหัสผ่านใหม่");
+      }
+
+      if (!this.confirmCandidateNewPassword) {
+        return alert("กรุณาใส่ยืนยันรหัสผ่านใหม่");
+      }
+
       if (this.confirmCandidateNewPassword != this.candidateNewPassword) {
         return alert("รหัสผ่านใหม่กับยืนยันรหัสผ่านใหม่ไม่ตรงกัน");
       }
@@ -373,10 +385,14 @@ export default {
       teacherServices
         .updatePassword({
           oldPassword: this.oldPassword,
-          candidateNewPassword: this.candidateNewPassword
+          candidateNewPassword: this.candidateNewPassword,
         })
-        .then(() => this.logout())
-        .catch(error => alert(error.response.data.message));
+        .then((response) => {
+          console.log(response);
+          alert(`${response.data.status}: ${response.data.message}`);
+          this.logout();
+        })
+        .catch((error) => alert(error.response.data.message));
     },
     logout() {
       this.$store.dispatch("teacher/logout");
@@ -386,7 +402,7 @@ export default {
       this.lastName = JSON.parse(localStorage.getItem("teacher")).lastName;
       this.faculty = JSON.parse(localStorage.getItem("teacher")).faculty;
       this.department = JSON.parse(localStorage.getItem("teacher")).department;
-    }
-  }
+    },
+  },
 };
 </script>

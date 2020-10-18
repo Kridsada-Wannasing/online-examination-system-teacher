@@ -3,7 +3,7 @@ import teacherServices from "../../api/services/teacher";
 export const namespaced = true;
 
 export const state = {
-  teacher: {}
+  teacher: {},
 };
 
 export const mutations = {
@@ -19,41 +19,49 @@ export const mutations = {
     localStorage.removeItem("token_teacher");
     localStorage.removeItem("teacher");
     location.reload();
-  }
+  },
 };
 
 export const actions = {
   async login({ commit }, credentials) {
-    const response = await teacherServices.login(credentials);
+    try {
+      const response = await teacherServices.login(credentials);
 
-    commit("SET_TOKEN", response.data.token);
-    commit("SET_TEACHER", response.data.teacher);
+      commit("SET_TOKEN", response.data.token);
+      commit("SET_TEACHER", response.data.teacher);
 
-    return response.data;
+      return response.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
   },
   logout({ commit }) {
     commit("CLEAR_TEACHER");
   },
   async updateMe({ commit }, data) {
-    const response = await teacherServices.updateMe(data);
+    try {
+      const response = await teacherServices.updateMe(data);
 
-    commit("SET_TEACHER", response.data.teacher);
-    return response.data;
+      commit("SET_TEACHER", response.data.teacher);
+      return response.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
   },
   updatePassword(updatePassword) {
-    console.log(
-      updatePassword.oldPassword,
-      updatePassword.candidateNewPassword
-    );
     return teacherServices
       .updatePassword(updatePassword)
-      .then(response => response.data)
-      .catch(error => Promise.reject(error));
+      .then((response) => response.data)
+      .catch((error) => Promise.reject(error));
   },
   async forgotPassword(email) {
-    const response = await teacherServices.forgotPassword(email);
-    return response.data;
-  }
+    try {
+      const response = await teacherServices.forgotPassword(email);
+      return response.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  },
 };
 
 export const getters = {};

@@ -7,12 +7,12 @@
       <v-card-text>
         <v-container>
           <v-row>
-            <v-col cols="12">
+            <!-- <v-col cols="12">
               <v-text-field
                 label="รหัสวิชา"
                 v-model="subjectData.subjectId"
               ></v-text-field>
-            </v-col>
+            </v-col> -->
             <v-col cols="12">
               <v-text-field
                 label="ชื่อวิชา"
@@ -23,9 +23,9 @@
         </v-container>
       </v-card-text>
       <v-card-actions>
-        <v-btn color="red" text @click="deleteSubject">
+        <!-- <v-btn color="red" text @click="deleteSubject">
           ลบรายวิชา
-        </v-btn>
+        </v-btn> -->
         <v-spacer></v-spacer>
         <v-btn color="blue darken-1" text @click="updateSubject">
           บันทึก
@@ -42,26 +42,27 @@
 export default {
   props: {
     dialog: Boolean,
-    subject: Object
+    subject: Object,
   },
   data: () => ({
     subjectData: {
       subjectId: null,
-      subjectName: ""
-    }
+      subjectName: "",
+    },
   }),
   watch: {
     subject() {
       this.subjectData = this.subject;
-    }
+    },
   },
   methods: {
     async updateSubject() {
       try {
-        const response = await this.$store.dispatch("subject/updateSubject", {
-          subjectId: this.subjectId,
-          subjectName: this.subjectName
-        });
+        const response = await this.$store.dispatch(
+          "subject/updateSubject",
+          this.subjectData,
+          this.subject.subjectId
+        );
 
         alert(`${response.status}: ${response.message}`);
         this.cancel();
@@ -70,20 +71,19 @@ export default {
       }
     },
     deleteSubject() {
-      console.log(this.subject.subjectId);
       confirm("คุณต้องการลบรายวิชานี้หรือไม่") &&
         this.$store
-          .dispatch("subject/deleteSubject", this.subjectId)
+          .dispatch("subject/deleteSubject", this.subject.subjectId)
           .then(() => {
             alert("ลบรายวิชานี้เรียบร้อย");
             this.cancel();
           })
-          .catch(error => alert(error.response.data.message));
+          .catch((error) => alert(error.response.data.message));
     },
     cancel() {
       this.$emit("showDialog", false);
-    }
-  }
+    },
+  },
 };
 </script>
 

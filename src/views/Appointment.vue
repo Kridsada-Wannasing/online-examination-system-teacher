@@ -41,7 +41,11 @@
           </v-card>
 
           <div v-else>
-            <AddAppointment :status="status" @statusChange="getStatusChange" />
+            <AddAppointment
+              :subject="subject"
+              :status="status"
+              @statusChange="getStatusChange"
+            />
           </div>
         </div>
       </v-col>
@@ -62,12 +66,13 @@ export default {
   components: {
     ProfileMenu,
     ListAppointment,
-    AddAppointment
+    AddAppointment,
   },
   data: () => ({
     status: false,
     query: {},
-    isSelectSubject: false
+    isSelectSubject: false,
+    subject: null,
   }),
   methods: {
     getStatusChange(event) {
@@ -76,14 +81,15 @@ export default {
     getMeetings(event) {
       this.query.subjectId = event;
       this.isSelectSubject = true;
+      this.subject = event;
       this.$store.dispatch("meeting/getAllMeetings", qs.stringify(this.query));
-    }
+    },
   },
   computed: {
-    ...mapState("subject", ["subjects"])
+    ...mapState("subject", ["subjects"]),
   },
   mounted() {
     this.$store.dispatch("subject/getAllSubjects");
-  }
+  },
 };
 </script>

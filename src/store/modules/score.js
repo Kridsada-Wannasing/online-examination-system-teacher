@@ -5,7 +5,7 @@ export const namespaced = true;
 export const state = {
   scores: [],
   score: {},
-  scoresInExam: []
+  scoresInExam: [],
 };
 
 export const mutations = {
@@ -23,66 +23,91 @@ export const mutations = {
   },
   EDIT_SCORE(state, score) {
     const target = state.scores.findIndex(
-      element => element.scoreId === score.scoreId
+      (element) => element.scoreId === score.scoreId
     );
 
     state.scores.splice(target, 1, score);
   },
   DELETE_SCORE(state, scoreId) {
     const target = state.scores.findIndex(
-      element => element.scoreId === scoreId
+      (element) => element.scoreId === scoreId
     );
 
     state.scores.splice(target, 1);
-  }
+  },
 };
 
 export const actions = {
   async createScore({ commit }, score) {
-    const response = await scoreServices.createScore(score);
-    commit("ADD_SCORE", response.data.newScore);
+    try {
+      const response = await scoreServices.createScore(score);
+      commit("ADD_SCORE", response.data.newScore);
+      return response.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
   },
   async getAllScores({ commit }, queryString) {
-    let response;
-    if (queryString) {
-      queryString = `?${queryString}`;
-      response = await scoreServices.getAllScores(queryString);
-    } else response = await scoreServices.getAllScores(queryString);
-    commit("SET_SCORES", response.data.scores);
+    try {
+      let response;
+      if (queryString) {
+        queryString = `?${queryString}`;
+        response = await scoreServices.getAllScores(queryString);
+      } else response = await scoreServices.getAllScores(queryString);
+      commit("SET_SCORES", response.data.scores);
+    } catch (error) {
+      return Promise.reject(error);
+    }
   },
   async getScoresInExam({ commit }, scoreId) {
-    const response = await scoreServices.getScoresInScore(scoreId);
+    try {
+      const response = await scoreServices.getScoresInScore(scoreId);
 
-    commit("SET_SCORES_IN_EXAM", response.data.getScores);
+      commit("SET_SCORES_IN_EXAM", response.data.getScores);
+    } catch (error) {
+      return Promise.reject(error);
+    }
   },
   async getScore({ commit, getters }, score) {
-    const { subjectId, scoreId } = score;
+    try {
+      const { subjectId, scoreId } = score;
 
-    const target = getters.getByScoreId(subjectId);
+      const target = getters.getByScoreId(subjectId);
 
-    if (target) {
-      commit("SET_SCORE", target);
-      return target;
+      if (target) {
+        commit("SET_SCORE", target);
+        return target;
+      }
+
+      const response = await scoreServices.getScore(subjectId, scoreId);
+      commit("SET_SCORE", response.data.score);
+    } catch (error) {
+      return Promise.reject(error);
     }
-
-    const response = await scoreServices.getScore(subjectId, scoreId);
-    commit("SET_SCORE", response.data.score);
   },
   async editScore({ commit }, score) {
-    const { subjectId } = score;
-    const response = await scoreServices.updateScore(subjectId, score);
-    commit("EDIT_SCORE", response.data.updateScore);
+    try {
+      const { subjectId } = score;
+      const response = await scoreServices.updateScore(subjectId, score);
+      commit("EDIT_SCORE", response.data.updateScore);
+    } catch (error) {
+      return Promise.reject(error);
+    }
   },
   async deleteScore({ commit }, scoreId) {
-    await scoreServices.deleteScore(scoreId);
-    commit("DELETE_SCORE");
-  }
+    try {
+      await scoreServices.deleteScore(scoreId);
+      commit("DELETE_SCORE");
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  },
 };
 
 export const getters = {
-  getByScoreId: state => scoreId => {
+  getByScoreId: (state) => (scoreId) => {
     if (scoreId == state.score.scoreId) return state.score;
 
-    return state.scores.find(score => score.scoreId == scoreId);
-  }
+    return state.scores.find((score) => score.scoreId == scoreId);
+  },
 };

@@ -4,7 +4,7 @@ export const namespaced = true;
 
 export const state = {
   exams: [],
-  exam: {}
+  exam: {},
 };
 
 export const mutations = {
@@ -19,66 +19,90 @@ export const mutations = {
   },
   EDIT_EXAM(state, exam) {
     const target = state.exams.findIndex(
-      element => element.examId == exam.examId
+      (element) => element.examId == exam.examId
     );
 
     state.exams.splice(target, 1, exam);
   },
   DELETE_EXAM(state, examId) {
-    const target = state.exams.findIndex(element => element.examId == examId);
+    const target = state.exams.findIndex((element) => element.examId == examId);
 
     state.exams.splice(target, 1);
-  }
+  },
 };
 
 export const actions = {
   async createExam({ commit }, exam) {
-    const response = await examServices.createExam(exam);
-    commit("ADD_EXAM", response.data.newExam);
-    return response.data;
+    try {
+      const response = await examServices.createExam(exam);
+      commit("ADD_EXAM", response.data.newExam);
+      return response.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
   },
   async duplicateExam({ commit }, examId) {
-    const response = await examServices.duplicateExam(examId);
-    commit("ADD_EXAM", response.data.newDuplicateExam);
-    return response.data;
+    try {
+      const response = await examServices.duplicateExam(examId);
+      commit("ADD_EXAM", response.data.newDuplicateExam);
+      return response.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
   },
   async getAllExams({ commit }, { subjectId, query }) {
-    let response;
-    if (query) {
-      response = await examServices.getAllExams(subjectId, query);
-    } else {
-      response = await examServices.getAllExams(subjectId);
+    try {
+      let response;
+      if (query) {
+        response = await examServices.getAllExams(subjectId, query);
+      } else {
+        response = await examServices.getAllExams(subjectId);
+      }
+      commit("SET_EXAMS", response.data.allExam);
+      return response.data;
+    } catch (error) {
+      return Promise.reject(error);
     }
-    commit("SET_EXAMS", response.data.allExam);
-    return response.data;
   },
   async getExam({ commit, state, getters }, exam) {
-    if (exam.examId == state.exam.examId) return state.exam;
+    try {
+      if (exam.examId == state.exam.examId) return state.exam;
 
-    const target = getters.getByExamId(exam.examId);
+      const target = getters.getByExamId(exam.examId);
 
-    if (target) {
-      commit("SET_EXAM", target);
-      return target;
+      if (target) {
+        commit("SET_EXAM", target);
+        return target;
+      }
+
+      const response = await examServices.getExam(exam.subjectId, exam.examId);
+      commit("SET_EXAM", response.data.target);
+      return response.data;
+    } catch (error) {
+      return Promise.reject(error);
     }
-
-    const response = await examServices.getExam(exam.subjectId, exam.examId);
-    commit("SET_EXAM", response.data.target);
-    return response.data;
   },
   async editExam({ commit }, exam) {
-    const response = await examServices.updateExam(exam);
-    commit("EDIT_EXAM", response.data.updateExam);
-    return response.data;
+    try {
+      const response = await examServices.updateExam(exam);
+      commit("EDIT_EXAM", response.data.updateExam);
+      return response.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
   },
   async deleteExam({ commit }, examId) {
-    await examServices.deleteExam(examId);
-    commit("DELETE_EXAM", examId);
-  }
+    try {
+      await examServices.deleteExam(examId);
+      commit("DELETE_EXAM", examId);
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  },
 };
 
 export const getters = {
-  getByExamId: state => examId => {
-    return state.exams.find(exam => exam.examId == examId);
-  }
+  getByExamId: (state) => (examId) => {
+    return state.exams.find((exam) => exam.examId == examId);
+  },
 };

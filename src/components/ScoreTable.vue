@@ -5,7 +5,40 @@
       style="border-radius: 20px; height:40% max-height:40%"
       outlined
     >
-      <div
+      <v-data-table :headers="headers" :items="scores">
+        <template v-slot:top>
+          <v-toolbar flat color="white" class="rounded-xl mx-0">
+            <h3 class="color-dark-blue">
+              คะแนนสอบนักศึกษา {{ scores.length }} คน
+            </h3>
+            <v-spacer></v-spacer>
+            <v-btn
+              small
+              dark
+              color="primary"
+              @click="exportScores"
+              v-if="showButton"
+            >
+              <v-icon left>mdi-arrow-up</v-icon>EXPORT SCORE
+            </v-btn>
+          </v-toolbar>
+        </template>
+        <template v-slot:item.studentId="{ item }">
+          {{ item.student.studentId }}
+        </template>
+        <template v-slot:item.fullName="{ item }">
+          {{ item.student.firstName }} {{ item.student.lastName }}
+        </template>
+        <template v-slot:item.semester="{ item }">
+          {{ item.term }}/{{ item.year }}
+        </template>
+        <!-- <template v-slot:item.actions="{ item }">
+          <v-icon small class="mr-2" @click="dialog = !dialog">
+            mdi-pencil
+          </v-icon>
+        </template> -->
+      </v-data-table>
+      <!-- <div
         class="pl-3 pr-3 color-dark-blue"
         style="display: flex; justify-content: space-between;"
       >
@@ -45,7 +78,7 @@
             </tr>
           </tbody>
         </template>
-      </v-simple-table>
+      </v-simple-table> -->
     </v-card>
   </div>
 </template>
@@ -54,6 +87,25 @@ import { mapState } from "vuex";
 import XLSX from "xlsx";
 export default {
   name: "scoreTable",
+  data() {
+    return {
+      headers: [
+        {
+          text: "รหัสนักศึกษา",
+          align: "start",
+          sortable: false,
+          value: "studentId",
+        },
+        { text: "ชื่อ-นามสกุล", value: "fullName", sortable: false },
+        { text: "การสอบ", value: "examType", sortable: false },
+        { text: "ภาคเรียนที่", value: "semester", sortable: false },
+        { text: "คะแนนทั้งหมด", value: "sum", sortable: false },
+        { text: "คะแนนที่ได้", value: "score", sortable: false },
+        { text: "จัดการ", value: "actions", sortable: false },
+      ],
+      dialog: false,
+    };
+  },
   computed: {
     ...mapState("score", ["scores"]),
     showButton() {

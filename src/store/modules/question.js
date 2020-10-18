@@ -5,7 +5,7 @@ export const namespaced = true;
 export const state = {
   questions: [],
   question: {},
-  questionsInExam: []
+  questionsInExam: [],
 };
 
 export const mutations = {
@@ -34,43 +34,51 @@ export const mutations = {
   },
   EDIT_QUESTION_IN_EXAM(state, question) {
     const target = state.questionsInExam.findIndex(
-      element => element.questionId === question.questionId
+      (element) => element.questionId === question.questionId
     );
 
     state.questionsInExam.splice(target, 1, question);
   },
   DELETE_QUESTION(state, questionId) {
     const target = state.questions.findIndex(
-      element => element.questionId == questionId
+      (element) => element.questionId == questionId
     );
 
     state.questions.splice(target, 1);
   },
   DELETE_QUESTION_IN_EXAM(state, questionId) {
     const target = state.questionsInExam.findIndex(
-      element => element.questionId == questionId
+      (element) => element.questionId == questionId
     );
 
     state.questionsInExam.splice(target, 1);
-  }
+  },
 };
 
 export const actions = {
   async createQuestion({ commit }, question) {
-    const response = await questionServices.createQuestion(question);
-    commit("ADD_QUESTION", response.data.newQuestion);
-    return response;
+    try {
+      const response = await questionServices.createQuestion(question);
+      commit("ADD_QUESTION", response.data.newQuestion);
+      return response;
+    } catch (error) {
+      return Promise.reject(error);
+    }
   },
   async importQuestionsInExam({ commit }, questionsInExam) {
-    const response = await questionServices.importQuestionsInExam(
-      questionsInExam
-    );
-    response.data.newQuestion.map(question =>
-      commit("question/ADD_QUESTION_IN_EXAM", question, {
-        root: true
-      })
-    );
-    return response.data;
+    try {
+      const response = await questionServices.importQuestionsInExam(
+        questionsInExam
+      );
+      response.data.newQuestion.map((question) =>
+        commit("question/ADD_QUESTION_IN_EXAM", question, {
+          root: true,
+        })
+      );
+      return response.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
   },
   // async getAllQuestions({ commit }) {
   //   const response = await questionServices.getAllQuestions();
@@ -78,48 +86,70 @@ export const actions = {
   //   return response.data;
   // },
   async getQuestionsInExam({ commit }, examId) {
-    const response = await questionServices.getQuestionsInExam(examId);
-    commit("SET_QUESTIONS_IN_EXAM", response.data.getQuestions);
-    return response.data;
+    try {
+      const response = await questionServices.getQuestionsInExam(examId);
+      commit("SET_QUESTIONS_IN_EXAM", response.data.getQuestions);
+      return response.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
   },
   async searchQuestions({ commit }, { examId, queryString }) {
-    let response;
-    if (queryString) {
-      response = await questionServices.searchQuestions(
-        examId,
-        `?${queryString}`
-      );
-    } else {
-      response = await questionServices.searchQuestions(examId);
+    try {
+      let response;
+      if (queryString) {
+        response = await questionServices.searchQuestions(
+          examId,
+          `?${queryString}`
+        );
+      } else {
+        response = await questionServices.searchQuestions(examId);
+      }
+      commit("SET_QUESTIONS", response.data.getQuestions);
+      return response.data;
+    } catch (error) {
+      return Promise.reject(error);
     }
-    commit("SET_QUESTIONS", response.data.getQuestions);
-    return response.data;
   },
   async getQuestion({ commit, getters }, questionId) {
-    const target = getters.getByExamId(questionId);
+    try {
+      const target = getters.getByExamId(questionId);
 
-    if (target) {
-      commit("SET_QUESTION", target);
-      return target;
+      if (target) {
+        commit("SET_QUESTION", target);
+        return target;
+      }
+
+      const response = await questionServices.getQuestion(questionId);
+      commit("SET_QUESTION", response.data.target);
+      return response.data;
+    } catch (error) {
+      return Promise.reject(error);
     }
-
-    const response = await questionServices.getQuestion(questionId);
-    commit("SET_QUESTION", response.data.target);
-    return response.data;
   },
   async editQuestion({ commit }, question) {
-    const response = await questionServices.updateQuestion(question);
-    commit("EDIT_QUESTION", response.data.updateQuestion);
-    return response.data;
+    try {
+      const response = await questionServices.updateQuestion(question);
+      commit("EDIT_QUESTION", response.data.updateQuestion);
+      return response.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
   },
   async deleteQuestion({ commit }, questionId) {
-    await questionServices.deleteQuestion(questionId);
-    commit("DELETE_QUESTION_IN_EXAM", questionId);
-  }
+    try {
+      await questionServices.deleteQuestion(questionId);
+      commit("DELETE_QUESTION_IN_EXAM", questionId);
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  },
 };
 
 export const getters = {
-  getByQuestionId: state => questionId => {
-    return state.questions.find(question => question.questionId == questionId);
-  }
+  getByQuestionId: (state) => (questionId) => {
+    return state.questions.find(
+      (question) => question.questionId == questionId
+    );
+  },
 };

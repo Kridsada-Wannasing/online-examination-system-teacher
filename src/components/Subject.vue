@@ -58,18 +58,20 @@
 <script>
 export default {
   props: {
-    status: Boolean
+    status: Boolean,
   },
   data: () => ({
     subjectId: null,
-    subjectName: ""
+    subjectName: "",
   }),
   methods: {
     async createSubject() {
+      if (!this.subjectId) return alert("กรุณาใส่รหัสวิชา");
+      else if (!this.subjectName) return alert("กรุณาใส่ชื่อวิชา");
       try {
         const response = await this.$store.dispatch("subject/createSubject", {
           subjectId: this.subjectId,
-          subjectName: this.subjectName
+          subjectName: this.subjectName,
         });
 
         alert(`${response.status}: ${response.message}`);
@@ -77,31 +79,13 @@ export default {
       } catch (error) {
         alert(error.response.data.message);
       }
-    },
-    async updateSubject() {
-      try {
-        const response = await this.$store.dispatch("subject/updateSubject", {
-          subjectId: this.subjectId,
-          subjectName: this.subjectName
-        });
-
-        alert(`${response.status}: ${response.message}`);
-        this.cancel();
-      } catch (error) {
-        alert(error.response.data.message);
-      }
-    },
-    deleteSubject() {
-      this.$store
-        .dispatch("subject/createSubject", this.subjectId)
-        .then(() => this.cancel());
     },
     cancel() {
       this.subjectId = null;
       this.subjectName = "";
       this.$emit("changeStatus", !this.status);
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -4,7 +4,8 @@ export const namespaced = true;
 
 export const state = {
   examinations: [],
-  examination: {}
+  examination: {},
+  examLog: [],
 };
 
 export const mutations = {
@@ -14,23 +15,26 @@ export const mutations = {
   SET_EXAMINATION(state, examination) {
     state.examination = examination;
   },
+  SET_EXAM_LOG(state, examLog) {
+    state.examLog = examLog;
+  },
   ADD_EXAMINATION(state, examination) {
     state.examinations.unshift(examination);
   },
   EDIT_EXAMINATION(state, examination) {
     const target = state.examinations.findIndex(
-      element => element.examinationId === examination.examinationId
+      (element) => element.examinationId === examination.examinationId
     );
 
     state.examinations.splice(target, 1, examination);
   },
   DELETE_EXAMINATION(state, examinationId) {
     const target = state.examinations.findIndex(
-      element => element.examinationId === examinationId
+      (element) => element.examinationId === examinationId
     );
 
     state.examinations.splice(target, 1);
-  }
+  },
 };
 
 export const actions = {
@@ -39,10 +43,10 @@ export const actions = {
     commit("ADD_EXAMINATION", response.data.newExamination);
     return response.data;
   },
-  async getAllExaminations({ commit }) {
-    const response = await examinationServices.getAllExaminations();
+  async getExamLogOfQuestion({ commit }, examId) {
+    const response = await examinationServices.getExamLogOfQuestion(examId);
 
-    commit("SET_EXAMINATIONS", response.data.allExamination);
+    commit("SET_EXAMINATIONS", response.data.examLog);
     return response.data;
   },
   async getExamination({ commit, getters, state }, examinationId) {
@@ -67,13 +71,13 @@ export const actions = {
   async deleteExamination({ commit }, examinationId) {
     await examinationServices.deleteExamination(examinationId);
     commit("DELETE_EXAMINATION", examinationId);
-  }
+  },
 };
 
 export const getters = {
-  getByExaminationId: state => examinationId => {
+  getByExaminationId: (state) => (examinationId) => {
     return state.examinations.find(
-      examination => examination.examinationId == examinationId
+      (examination) => examination.examinationId == examinationId
     );
-  }
+  },
 };

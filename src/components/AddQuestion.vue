@@ -90,12 +90,18 @@
       <v-row class="mt-7" v-if="questionType !== ''">
         <v-col cols="12" sm="12" md="6" lg="6" v-if="questionType === 'ปรนัย'">
           <div
+            style="display: flex; justify-content: space-between;"
+            class="mb-5 mr-5 mt-0 pt-0"
+          >
+            <span class="mt-0 pt-0">คำตอบ</span>
+          </div>
+          <div
             v-for="(choice, i) in choices"
             :key="i"
             style="display: flex; justify-content: space-between;"
           >
             <v-checkbox
-              class="ma-0 mb-1"
+              class="ma-0 mb-1 ml-3"
               hide-details
               :value="(choice.order = i + 1)"
               v-model="answers"
@@ -221,16 +227,16 @@ export default {
   props: {
     examId: Number,
     addQuestion: Boolean,
-    countQuestions: Number
+    countQuestions: Number,
   },
   components: {
-    TagDialog
+    TagDialog,
   },
   data: () => ({
     dialog: false,
     types: ["ปรนัย", "อัตนัย"],
     levelItems: [1, 2, 3, 4, 5],
-    questionType: "",
+    questionType: "ปรนัย",
     tagsOfQuestion: [],
     level: null,
     question: "",
@@ -238,7 +244,7 @@ export default {
       { choice: "ตัวเลือกที่ 1", order: 0 },
       { choice: "ตัวเลือกที่ 2", order: 0 },
       { choice: "ตัวเลือกที่ 3", order: 0 },
-      { choice: "ตัวเลือกที่ 4", order: 0 }
+      { choice: "ตัวเลือกที่ 4", order: 0 },
     ],
     selectedFile: null,
     isSelecting: false,
@@ -246,84 +252,100 @@ export default {
     score: null,
     subjectiveAnswers: [{ answer: "คำตอบที่ 1" }, { answer: "คำตอบที่ 2" }],
     answers: [],
-    image: ""
+    image: "",
   }),
   methods: {
     getDialog(event) {
       this.dialog = event;
     },
     async createQuestion() {
-      let numberOfAnswer;
+      try {
+        let numberOfAnswer;
 
-      if (this.questionType == "ปรนัย") {
-        if (this.choices == undefined || this.choices.length == 0) {
-          return alert("กรุณาใส่ตัวเลือก");
-        }
-        if (this.answers === undefined || this.answers.length == 0) {
-          return alert("กรุณาใส่คำตอบ");
-        } else numberOfAnswer = this.answers.length;
-      }
-
-      if (this.questionType == "อัตนัย") {
         if (
-          this.subjectiveAnswers === undefined ||
-          this.subjectiveAnswers.length == 0
+          this.tagsOfQuestion === undefined ||
+          this.tagsOfQuestion.length == 0
         ) {
-          return alert("กรุณาใส่คำตอบ");
-        } else numberOfAnswer = this.subjectiveAnswers.length;
-      }
+          return alert("กรูณาใส่ป้ายระบุ(tag)");
+        }
 
-      if (
-        this.tagsOfQuestion === undefined ||
-        this.tagsOfQuestion.length == 0
-      ) {
-        return alert("กรูณาใส่ป้ายระบุ(tag)");
-      }
+        if (!this.level) {
+          return alert("กรูณาเลือกระดับความยาก");
+        }
 
-      const response = await this.$store.dispatch("question/createQuestion", {
-        questionType: this.questionType,
-        question: this.question,
-        examId: this.$route.params.examId,
-        level: this.level,
-        numberOfAnswer: numberOfAnswer,
-        sumScoreQuestion: this.score
-      });
+        if (!this.question) {
+          return alert("กรูณาใส่คำถาม");
+        }
 
-      if (this.questionType == "อัตนัย") {
-        this.createAnswers(response.data.newQuestion.questionId);
-      } else {
-        this.createChoices(response.data.newQuestion.questionId);
-        this.createAnswers(response.data.newQuestion.questionId);
-      }
+        if (this.questionType == "ปรนัย") {
+          if (this.choices == undefined || this.choices.length == 0) {
+            return alert("กรุณาใส่ตัวเลือก");
+          }
+          if (this.answers === undefined || this.answers.length == 0) {
+            return alert("กรุณาเลือกคำตอบ");
+          } else numberOfAnswer = this.answers.length;
+        }
 
-      this.addTagToQuestion(response.data.newQuestion.questionId);
+        if (this.questionType == "อัตนัย") {
+          if (
+            this.subjectiveAnswers === undefined ||
+            this.subjectiveAnswers.length == 0
+          ) {
+            return alert("กรุณาใส่คำตอบ");
+          } else numberOfAnswer = this.subjectiveAnswers.length;
+        }
 
-      if (this.selectedFile)
-        this.createImageInQuestion(response.data.newQuestion.questionId);
-      else {
+        if (!this.score) {
+          return alert("กรูณาใส่คะแนน");
+        }
+
+        const response = await this.$store.dispatch("question/createQuestion", {
+          questionType: this.questionType,
+          question: this.question,
+          examId: this.$route.params.examId,
+          level: this.level,
+          numberOfAnswer: numberOfAnswer,
+          sumScoreQuestion: this.score,
+        });
+
+        if (this.questionType == "อัตนัย") {
+          this.createAnswers(response.data.newQuestion.questionId);
+        } else {
+          this.createChoices(response.data.newQuestion.questionId);
+          this.createAnswers(response.data.newQuestion.questionId);
+        }
+
+        this.addTagToQuestion(response.data.newQuestion.questionId);
+
+        if (this.selectedFile)
+          this.createImageInQuestion(response.data.newQuestion.questionId);
+        else {
+          this.cancel();
+        }
+
+        alert(`${response.status}: ${response.data.message}`);
         this.cancel();
+      } catch (error) {
+        alert(error);
       }
-
-      alert(`${response.status}: ${response.data.message}`);
-      this.cancel();
     },
     createAnswers(questionId) {
       if (this.questionType == "ปรนัย") {
         this.$store.dispatch(
           "answer/createAnswers",
-          this.answers.map(element => ({
+          this.answers.map((element) => ({
             answer: element,
             score: this.score / this.answers.length,
-            questionId
+            questionId,
           }))
         );
       } else {
         this.$store.dispatch(
           "answer/createAnswers",
-          this.subjectiveAnswers.map(element => ({
+          this.subjectiveAnswers.map((element) => ({
             ...element,
             score: this.score / this.subjectiveAnswers.length,
-            questionId
+            questionId,
           }))
         );
       }
@@ -331,16 +353,16 @@ export default {
     addTagToQuestion(questionId) {
       this.$store.dispatch(
         "tag/addTagToQuestion",
-        this.tagsOfQuestion.map(element => ({
+        this.tagsOfQuestion.map((element) => ({
           tagId: element,
-          questionId
+          questionId,
         }))
       );
     },
     createChoices(questionId) {
       this.$store.dispatch(
         "choice/createChoices",
-        this.choices.map(element => {
+        this.choices.map((element) => {
           return { ...element, questionId };
         })
       );
@@ -356,11 +378,11 @@ export default {
       if (this.questionType == "ปรนัย") {
         this.choices.push({
           choice: `ตัวเลือกที่ ${this.choices.length + 1}`,
-          order: 0
+          order: 0,
         });
       } else {
         this.subjectiveAnswers.push({
-          answer: `คำตอบที่ ${this.subjectiveAnswers.length + 1}`
+          answer: `คำตอบที่ ${this.subjectiveAnswers.length + 1}`,
         });
       }
     },
@@ -396,7 +418,7 @@ export default {
     },
     cancel() {
       this.$emit("cancel", !this.addQuestion);
-    }
+    },
   },
   computed: {
     ...mapState("tag", ["tags"]),
@@ -404,10 +426,10 @@ export default {
       return this.selectedFile
         ? this.selectedFile.name
         : this.defaultButtonText;
-    }
+    },
   },
   created() {
     this.$store.dispatch("tag/getAllTags");
-  }
+  },
 };
 </script>

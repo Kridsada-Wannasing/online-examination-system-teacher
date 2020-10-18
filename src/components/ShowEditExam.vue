@@ -10,14 +10,15 @@
       </div>
       <v-btn
         v-if="checkAuthorityExam"
-        class="mt-4 ml-4"
-        color="success"
+        class="mt-4"
+        outlined
+        color="red"
         small
         dark
         :to="{ name: 'EditExam', params: { examId: examId } }"
         >แก้ไขชุดข้อสอบ</v-btn
       >
-      <v-btn
+      <!-- <v-btn
         v-if="checkAuthorityExam"
         class="mt-4 ml-4"
         outlined
@@ -26,7 +27,7 @@
         dark
         @click="deleteExam"
         >ลบชุดข้อสอบ</v-btn
-      >
+      > -->
       <v-btn
         v-else
         class="mt-4 ml-4"
@@ -48,12 +49,12 @@ export default {
   name: "showEditExam",
   props: ["examId", "subjectId"],
   components: {
-    Folder
+    Folder,
   },
   created() {
     this.$store.dispatch("exam/getExam", {
       examId: this.examId,
-      subjectId: this.subjectId
+      subjectId: this.subjectId,
     });
   },
   computed: {
@@ -69,7 +70,7 @@ export default {
         this.$emit("isYourExam", false);
         return false;
       }
-    }
+    },
   },
   methods: {
     deleteExam() {
@@ -82,17 +83,17 @@ export default {
       confirm("คุณต้องการคัดลอกชุดข้อสอบนี้หรือไม่") &&
         this.$store
           .dispatch("exam/duplicateExam", this.examId)
-          .then(response => {
+          .then((response) => {
             alert(`${response.status}: ${response.message}`);
             this.$router.push({
               name: "EditExam",
               params: {
                 subjectId: response.newDuplicateExam.subjectId,
-                examId: response.newDuplicateExam.examId
-              }
+                examId: response.newDuplicateExam.examId,
+              },
             });
           });
-    }
-  }
+    },
+  },
 };
 </script>

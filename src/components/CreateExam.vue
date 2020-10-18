@@ -61,22 +61,6 @@
       </v-col>
       <v-col cols="12" sm="6" md="4" lg="4">
         <span class="color-dark-blue" style="font-size: 12px;"
-          >รูปแบบการตอบคำถาม</span
-        >
-        <v-select
-          solo
-          rounded
-          filled
-          dense
-          :items="formatOfAnswer"
-          item-text="text"
-          item-value="format"
-          label="เลือกรูปแบบ"
-          v-model="examData.format"
-        ></v-select>
-      </v-col>
-      <v-col cols="12" sm="6" md="4" lg="4">
-        <span class="color-dark-blue" style="font-size: 12px;"
           >สิทธิ์การเข้าถึง</span
         >
         <v-select
@@ -152,7 +136,6 @@ export default {
       years: [],
       terms: [1, 2, 3],
       examData: {
-        format: null,
         authority: null,
         examName: "",
         examType: "",
@@ -167,30 +150,54 @@ export default {
   },
   methods: {
     async createExam() {
-      if (!this.examData.examName) {
-        this.examData.examName = `ข้อสอบวิชา${this.subject.subjectName}  ภาคเรียนที่ ${this.examData.term}/${this.examData.year}`;
+      try {
+        if (!this.examData.examType) {
+          return alert("กรุณาเลือกประเภทการสอบ");
+        }
+
+        if (!this.examData.year) {
+          return alert("กรุณาเลือกปีการศึกษา");
+        }
+
+        if (!this.examData.term) {
+          return alert("กรุณาเลือกภาคการศึกษา");
+        }
+
+        if (!this.examData.authority) {
+          return alert("กรุณาเลือกสิทธิ์การเข้าถึงชุดข้อสอบ");
+        }
+
+        if (!this.examData.examName) {
+          this.examData.examName = `ข้อสอบวิชา${this.subject.subjectName}  ภาคเรียนที่ ${this.examData.term}/${this.examData.year}`;
+        }
+
+        const response = await this.$store.dispatch(
+          "exam/createExam",
+          this.examData
+        );
+
+        alert(`${response.status}: ${response.message}`);
+
+        this.$emit("statusChange", status);
+      } catch (error) {
+        alert(error.response.data);
       }
-
-      const response = await this.$store.dispatch(
-        "exam/createExam",
-        this.examData
-      );
-
-      alert(`${response.status}: ${response.message}`);
-
-      this.$emit("statusChange", status);
     },
     cancel() {
       if (this.exam) this.examData = this.cachedExam;
       else this.$emit("statusChange", status);
     },
     async editExam() {
-      const response = await this.$store.dispatch(
-        "exam/editExam",
-        this.examData
-      );
-      alert(`${response.status}: ${response.message}`);
-      this.$emit("statusChange", status);
+      try {
+        const response = await this.$store.dispatch(
+          "exam/editExam",
+          this.examData
+        );
+        alert(`${response.status}: ${response.message}`);
+        this.$emit("statusChange", status);
+      } catch (error) {
+        alert(error);
+      }
     },
   },
   created() {
@@ -204,7 +211,6 @@ export default {
     this.years = range(startYear, currentYear);
 
     this.$store.dispatch("subject/getSubject", this.subjectId);
-    console.log(this.subject);
   },
 };
 </script>

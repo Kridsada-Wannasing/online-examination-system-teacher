@@ -27,7 +27,9 @@
               <p style="font-size: 12px">{{ exam.examName }}</p>
             </div>
             <div style="height: 30%">
-              <p class="mb-0" style="font-size: 12px">{{ exam.semester }}</p>
+              <p class="mb-0" style="font-size: 14px" v-if="checkAuthorityExam">
+                (ไม่ใช่ชุดข้อสอบของท่าน)
+              </p>
               <p class="mb-0" style="font-size: 12px">{{ exam.examType }}</p>
             </div>
           </v-col>
@@ -73,7 +75,9 @@
               <p style="font-size: 12px">{{ exam.examName }}</p>
             </div>
             <div style="height: 30%">
-              <p class="mb-0" style="font-size: 12px">{{ exam.semester }}</p>
+              <p class="mb-0" style="font-size: 14px" v-if="checkAuthorityExam">
+                (ไม่ใช่ชุดข้อสอบของท่าน)
+              </p>
               <p class="mb-0" style="font-size: 12px">{{ exam.examType }}</p>
             </div>
           </v-col>
@@ -106,11 +110,11 @@ export default {
     exam: Object,
     meeting: Object,
     color: String,
-    subject: Object
+    subject: Object,
   },
   data() {
     return {
-      imagePath: `@/assets/icon/folder-${this.color}.svg`
+      imagePath: `@/assets/icon/folder-${this.color}.svg`,
     };
   },
   methods: {
@@ -123,7 +127,7 @@ export default {
       return dayjs(date)
         .locale("th")
         .format("LLL");
-    }
+    },
   },
   computed: {
     formatMeetingDate() {
@@ -132,7 +136,17 @@ export default {
       return dayjs(this.meeting.startExamDate)
         .locale("th")
         .format("LLL");
-    }
-  }
+    },
+    checkAuthorityExam() {
+      if (
+        this.exam.teacherId ==
+        JSON.parse(localStorage.getItem("teacher")).teacherId
+      ) {
+        return false;
+      } else {
+        return true;
+      }
+    },
+  },
 };
 </script>

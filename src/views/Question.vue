@@ -25,8 +25,7 @@
           outlined
         >
           <h2 class="grey--text">
-            ท่านไม่ได้รับอนุญาติให้เข้าถึงชุดข้อสอบนี้ กรุณาคัดลอกชุดข้อสอบ
-            เพื่อสามารถแก้ไขชุดข้อสอบ
+            กรุณาคัดลอกชุดข้อสอบนี้ เพื่อสามารถดูหรือแก้ไขชุดข้อสอบ
           </h2>
         </v-card>
       </v-col>
@@ -49,12 +48,12 @@ export default {
   props: ["examId", "subjectId"],
   components: {
     Question,
-    ShowEditExam
+    ShowEditExam,
   },
   data: () => ({
     addQuestion: false,
     editQuestion: false,
-    isYourExam: false
+    isYourExam: false,
   }),
   methods: {
     getAddQuestionClick(event) {
@@ -65,7 +64,7 @@ export default {
     },
     checkIsYourExam(event) {
       this.isYourExam = event;
-    }
-  }
+    },
+  },
 };
 </script>
