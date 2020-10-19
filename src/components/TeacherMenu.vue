@@ -51,17 +51,21 @@ export default {
   data: () => ({
     item: 0,
     items: [
-      { text: "รายวิชา", icon: "mdi-star-outline", route: { name: "Welcome" } },
+      {
+        text: "รายวิชา",
+        icon: "mdi-file-document-outline",
+        route: { name: "Welcome" },
+      },
       {
         text: "ชุดข้อสอบ",
-        icon: "mdi-file-document-outline",
-        route: { name: "Exam" }
+        icon: "mdi-pencil",
+        route: { name: "Exam" },
       },
       { text: "คะแนนสอบ", icon: "mdi-poll", route: { name: "Score" } },
       {
         text: "การนัดหมาย",
         icon: "mdi-calendar-blank-outline",
-        route: { name: "Appointment" }
+        route: { name: "Appointment" },
       },
       // {
       //   text: "ห้องสอบ",
@@ -71,9 +75,9 @@ export default {
       {
         text: "บัญชีนักศึกษา",
         icon: "mdi-account-multiple-plus",
-        route: { name: "ListStudent" }
-      }
-    ]
-  })
+        route: { name: "ListStudent" },
+      },
+    ],
+  }),
 };
 </script>
