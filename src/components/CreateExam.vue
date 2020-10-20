@@ -136,7 +136,7 @@ export default {
       years: [],
       terms: [1, 2, 3],
       examData: {
-        authority: null,
+        authority: true,
         examName: "",
         examType: "",
         term: null,

@@ -417,7 +417,10 @@ export default {
       confirm("คุณต้องการลบคำถามข้อนี้ใช่ไหม") &&
         this.$store
           .dispatch("question/deleteQuestion", this.question.questionId)
-          .then(() => this.cancel)
+          .then(() => {
+            alert("ลบคำถามเรียบร้อย");
+            this.cancel;
+          })
           .catch((error) => alert(error));
     },
     async editingQuestion() {

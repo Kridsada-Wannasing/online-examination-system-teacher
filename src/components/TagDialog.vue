@@ -74,7 +74,7 @@
 import { mapState } from "vuex";
 export default {
   props: {
-    dialog: Boolean
+    dialog: Boolean,
   },
   data() {
     return {
@@ -84,42 +84,44 @@ export default {
           text: "หมายเลขประจำแท็ก",
           value: "tagId",
           align: "start",
-          sortable: false
+          sortable: false,
         },
         {
           text: "แท็ก",
           value: "tagName",
-          sortable: false
+          sortable: false,
         },
         {
           text: "จัดการ",
           value: "actions",
-          sortable: false
-        }
+          sortable: false,
+        },
       ],
       tagName: "",
       tagId: 0,
-      update: false
+      update: false,
     };
   },
   computed: {
     ...mapState("tag", ["tags"]),
     isUpdate() {
       return !!this.update;
-    }
+    },
   },
   methods: {
     async createTag() {
+      if (!this.tagName) return alert("กรุณาใส่ชื่อแท็ก");
       const response = await this.$store.dispatch("tag/createTag", {
-        tagName: this.tagName
+        tagName: this.tagName,
       });
       alert(`${response.status}: ${response.message}`);
       this.showTable = !this.showTable;
     },
     async updateTag() {
+      if (!this.tagName) return alert("กรุณาใส่ชื่อแท็ก");
       const response = await this.$store.dispatch("tag/updateTag", {
         tagId: this.tagId,
-        tagName: this.tagName
+        tagName: this.tagName,
       });
       alert(`${response.status}: ${response.message}`);
       this.showTable = !this.showTable;
@@ -143,10 +145,10 @@ export default {
     },
     close() {
       this.$emit("emittedDialog", !this.dialog);
-    }
+    },
   },
   mounted() {
     this.$store.dispatch("tag/getAllTags");
-  }
+  },
 };
 </script>
