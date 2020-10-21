@@ -11,8 +11,7 @@
       <v-btn
         v-if="checkAuthorityExam"
         class="mt-4"
-        outlined
-        color="red"
+        color="success"
         small
         dark
         :to="{ name: 'EditExam', params: { examId: examId } }"
