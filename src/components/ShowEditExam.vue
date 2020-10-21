@@ -18,7 +18,7 @@
         :to="{ name: 'EditExam', params: { examId: examId } }"
         >แก้ไขชุดข้อสอบ</v-btn
       >
-      <!-- <v-btn
+      <v-btn
         v-if="checkAuthorityExam"
         class="mt-4 ml-4"
         outlined
@@ -27,7 +27,7 @@
         dark
         @click="deleteExam"
         >ลบชุดข้อสอบ</v-btn
-      > -->
+      >
       <v-btn
         v-else
         class="mt-4 ml-4"
