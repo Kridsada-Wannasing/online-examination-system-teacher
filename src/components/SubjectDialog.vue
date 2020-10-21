@@ -7,12 +7,12 @@
       <v-card-text>
         <v-container>
           <v-row>
-            <!-- <v-col cols="12">
+            <v-col cols="12">
               <v-text-field
                 label="รหัสวิชา"
                 v-model="subjectData.subjectId"
               ></v-text-field>
-            </v-col> -->
+            </v-col>
             <v-col cols="12">
               <v-text-field
                 label="ชื่อวิชา"
@@ -49,20 +49,21 @@ export default {
       subjectId: null,
       subjectName: "",
     },
+    oldSubjectId: null,
   }),
   watch: {
     subject() {
       this.subjectData = this.subject;
+      this.oldSubjectId = this.subject.subjectId;
     },
   },
   methods: {
     async updateSubject() {
       try {
-        const response = await this.$store.dispatch(
-          "subject/updateSubject",
-          this.subjectData,
-          this.subject.subjectId
-        );
+        const response = await this.$store.dispatch("subject/updateSubject", {
+          ...this.subjectData,
+          oldSubjectId: this.oldSubjectId,
+        });
 
         alert(`${response.status}: ${response.message}`);
         this.cancel();

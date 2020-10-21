@@ -17,9 +17,9 @@ export const mutations = {
   ADD_SUBJECT(state, subject) {
     state.subjects.push(subject);
   },
-  EDIT_SUBJECT(state, subject) {
+  EDIT_SUBJECT(state, { subject, oldSubjectId }) {
     const target = state.subjects.findIndex(
-      (element) => element.subjectId == subject.subjectId
+      (element) => element.subjectId == oldSubjectId
     );
     state.subjects.splice(target, 1, subject);
   },
@@ -68,10 +68,17 @@ export const actions = {
       return Promise.reject(error);
     }
   },
-  async updateSubject({ commit }, subject) {
+  async updateSubject({ commit }, { subjectName, subjectId, oldSubjectId }) {
     try {
-      const response = await subjectServices.updateSubject(subject);
-      commit("EDIT_SUBJECT", subject);
+      const subject = {
+        subjectId,
+        subjectName,
+      };
+      const response = await subjectServices.updateSubject(
+        subject,
+        oldSubjectId
+      );
+      commit("EDIT_SUBJECT", { subject, oldSubjectId });
       return response.data;
     } catch (error) {
       return Promise.reject(error);

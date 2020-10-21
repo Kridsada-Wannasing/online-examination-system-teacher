@@ -12,10 +12,10 @@ export default {
   getSubject(subjectId) {
     return apiClient.get(`/${endpoint}/${subjectId}`);
   },
-  updateSubject(subject) {
-    return apiClient.patch(`/${endpoint}/${subject.subjectId}`, subject);
+  updateSubject(subject, oldSubjectId) {
+    return apiClient.patch(`/${endpoint}/${oldSubjectId}`, subject);
   },
   deleteSubject(subjectId) {
     return apiClient.delete(`/${endpoint}/${subjectId}`);
-  }
+  },
 };

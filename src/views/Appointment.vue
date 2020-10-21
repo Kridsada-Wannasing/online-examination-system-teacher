@@ -20,20 +20,14 @@
             ></v-select>
           </v-col>
         </v-row>
-        <div class="pt-8" style="max-height: 400px;">
+        <div class="pt-8" v-if="isSelectSubject" style="max-height: 400px;">
           <v-card v-if="!status" class="pa-10" style="border-radius: 20px">
             <div
               class="pb-5"
               style="display: flex; justify-content: space-between;"
             >
               <h3 class="color-dark-blue">การนัดหมายตอนนี้</h3>
-              <v-btn
-                small
-                outlined
-                color="primary"
-                @click="status = !status"
-                v-if="isSelectSubject"
-              >
+              <v-btn small outlined color="primary" @click="status = !status">
                 <v-icon left>mdi-plus</v-icon>เพิ่มการนัดหมาย
               </v-btn>
             </div>
@@ -47,6 +41,14 @@
               @statusChange="getStatusChange"
             />
           </div>
+        </div>
+        <div v-else class="pt-8" style="max-height: 500px;">
+          <v-card
+            class="pa-10 d-flex justify-center align-center text-center rounded-xl"
+            height="500"
+          >
+            <h3>กรณาเลือกรายวิชาเพื่อแสดงการนัดหมาย</h3>
+          </v-card>
         </div>
       </v-col>
       <v-col lg="3" md="4" sm="12" xs="12" class="h-100 pl-5">
