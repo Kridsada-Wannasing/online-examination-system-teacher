@@ -109,12 +109,18 @@
             v-if="defaultQuestion.questionType === 'ปรนัย'"
           >
             <div
+              style="display: flex; justify-content: space-between;"
+              class="mb-5 mr-5 mt-0 pt-0"
+            >
+              <span class="mt-0 pt-0">คำตอบ</span>
+            </div>
+            <div
               v-for="(choice, i) in defaultChoices"
               :key="i"
               style="display: flex; justify-content: space-between;"
             >
               <v-checkbox
-                class="ma-0 mb-1"
+                class="ma-0 mb-1 ml-3"
                 hide-details
                 :value="(choice.order = i + 1)"
                 v-model="defaultAnswers"
