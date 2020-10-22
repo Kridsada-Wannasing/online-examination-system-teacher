@@ -92,18 +92,19 @@ export default {
     },
     editScore(index) {
       let addScore = Number(this.score[index]);
-      this.$store
-        .dispatch("score/editScore", {
-          scoreId: this.item.scoreId,
-          score: this.item.score + addScore,
-          examLogId: this.examLogs[index].examLogId,
-        })
-        .then((response) => {
-          alert(`${response.status}: ${response.message}`);
-          this.score.splice(index, 1);
-          if (this.examLogs.length == 0) this.cancel();
-        })
-        .catch((error) => alert(error));
+      confirm("ต้องการเปลี่ยนแปลงคะแนนสอบหรือไม่") &&
+        this.$store
+          .dispatch("score/editScore", {
+            scoreId: this.item.scoreId,
+            score: this.item.score + addScore,
+            examLogId: this.examLogs[index].examLogId,
+          })
+          .then((response) => {
+            alert(`${response.status}: ${response.message}`);
+            this.score.splice(index, 1);
+            if (this.examLogs.length == 0) this.cancel();
+          })
+          .catch((error) => alert(error));
     },
   },
 };
