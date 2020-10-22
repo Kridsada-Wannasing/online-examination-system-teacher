@@ -5,6 +5,9 @@ import store from "./store";
 import vuetify from "./plugins/vuetify";
 import DatetimePicker from "vuetify-datetime-picker";
 import "nprogress/nprogress.css";
+import TextHighlight from "vue-text-highlight";
+
+Vue.component("text-highlight", TextHighlight);
 
 // CSS
 import "vue2-timepicker/dist/VueTimepicker.css";

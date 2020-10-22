@@ -313,7 +313,6 @@ export default {
       this.cancel();
     },
     deleteStudent(item) {
-      console.log(item.studentId);
       confirm("คุณต้องการลบรายชื่อนักศึกษาหรือไม่") &&
         this.$store
           .dispatch("meeting/deleteStudentInMeeting", {

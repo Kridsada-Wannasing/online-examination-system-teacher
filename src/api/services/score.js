@@ -14,10 +14,10 @@ export default {
   getScore(subjectId, scoreId) {
     return apiClient.get(`/${endpoint}/${subjectId}/${scoreId}`);
   },
-  updateScore(subjectId, score) {
-    return apiClient.patch(`/${endpoint}/${subjectId}/${score.scoreId}`, score);
+  updateScore(examLogId, score) {
+    return apiClient.patch(`/${endpoint}/${examLogId}/${score.scoreId}`, score);
   },
   deleteScore(subjectId, scoreId) {
     return apiClient.delete(`${endpoint}/${subjectId}/${scoreId}`);
-  }
+  },
 };

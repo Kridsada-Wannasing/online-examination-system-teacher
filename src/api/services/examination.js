@@ -6,8 +6,8 @@ export default {
   createExamination(examination) {
     return apiClient.post(`/${endpoint}`, examination);
   },
-  getExamLogOfQuestion(examId) {
-    return apiClient.get(`/exam-log/${examId}`);
+  getExamLogOfQuestion(examId, studentId) {
+    return apiClient.get(`/exam-log/${examId}/${studentId}`);
   },
   getExamination(examinationId) {
     return apiClient.get(`/${endpoint}/${examinationId}`);

@@ -5,7 +5,7 @@ export const namespaced = true;
 export const state = {
   examinations: [],
   examination: {},
-  examLog: [],
+  examLogs: [],
 };
 
 export const mutations = {
@@ -15,8 +15,8 @@ export const mutations = {
   SET_EXAMINATION(state, examination) {
     state.examination = examination;
   },
-  SET_EXAM_LOG(state, examLog) {
-    state.examLog = examLog;
+  SET_EXAM_LOGS(state, examLogs) {
+    state.examLogs = examLogs;
   },
   ADD_EXAMINATION(state, examination) {
     state.examinations.unshift(examination);
@@ -35,6 +35,13 @@ export const mutations = {
 
     state.examinations.splice(target, 1);
   },
+  DELETE_EXAM_LOGS(state, examLogId) {
+    const target = state.examLogs.findIndex(
+      (element) => element.examLogId == examLogId
+    );
+
+    state.examLogs.splice(target, 1);
+  },
 };
 
 export const actions = {
@@ -43,11 +50,18 @@ export const actions = {
     commit("ADD_EXAMINATION", response.data.newExamination);
     return response.data;
   },
-  async getExamLogOfQuestion({ commit }, examId) {
-    const response = await examinationServices.getExamLogOfQuestion(examId);
+  async getExamLogOfQuestion({ commit }, { examId, studentId }) {
+    try {
+      const response = await examinationServices.getExamLogOfQuestion(
+        examId,
+        studentId
+      );
 
-    commit("SET_EXAMINATIONS", response.data.examLog);
-    return response.data;
+      commit("SET_EXAM_LOGS", response.data.examLogs);
+      return response.data;
+    } catch (error) {
+      Promise.reject(error);
+    }
   },
   async getExamination({ commit, getters, state }, examinationId) {
     if (examinationId == state.examination.examinationId)

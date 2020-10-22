@@ -21,16 +21,15 @@ export const mutations = {
   ADD_SCORE(state, score) {
     state.scores.unshift(score);
   },
-  EDIT_SCORE(state, score) {
-    const target = state.scores.findIndex(
-      (element) => element.scoreId === score.scoreId
-    );
+  EDIT_SCORE(state, { score, scoreId }) {
+    const target = state.scores.find((element) => element.scoreId == scoreId);
 
-    state.scores.splice(target, 1, score);
+    target.score = score.score;
+    target.isCompleted = score.isCompleted;
   },
   DELETE_SCORE(state, scoreId) {
     const target = state.scores.findIndex(
-      (element) => element.scoreId === scoreId
+      (element) => element.scoreId == scoreId
     );
 
     state.scores.splice(target, 1);
@@ -85,11 +84,15 @@ export const actions = {
       return Promise.reject(error);
     }
   },
-  async editScore({ commit }, score) {
+  async editScore({ commit }, { examLogId, ...score }) {
     try {
-      const { subjectId } = score;
-      const response = await scoreServices.updateScore(subjectId, score);
-      commit("EDIT_SCORE", response.data.updateScore);
+      const { scoreId } = score;
+      const response = await scoreServices.updateScore(examLogId, score);
+      commit("examination/DELETE_EXAM_LOGS", examLogId, {
+        root: true,
+      });
+      commit("EDIT_SCORE", { score: response.data.score, scoreId });
+      return response.data;
     } catch (error) {
       return Promise.reject(error);
     }

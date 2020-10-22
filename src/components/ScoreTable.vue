@@ -32,61 +32,36 @@
         <template v-slot:item.semester="{ item }">
           {{ item.term }}/{{ item.year }}
         </template>
-        <!-- <template v-slot:item.actions="{ item }">
-          <v-icon small class="mr-2" @click="dialog = !dialog">
+        <template v-slot:item.actions="{ item }">
+          <v-icon
+            small
+            class="mr-2"
+            @click="showDialog(item)"
+            v-if="!item.isCompleted"
+          >
             mdi-pencil
           </v-icon>
-        </template> -->
-      </v-data-table>
-      <!-- <div
-        class="pl-3 pr-3 color-dark-blue"
-        style="display: flex; justify-content: space-between;"
-      >
-        <h4 class="color-dark-blue">รายชื่อนักศึกษา {{ scores.length }} คน</h4>
-        <v-btn
-          small
-          dark
-          color="primary"
-          @click="exportScores"
-          v-if="showButton"
-        >
-          <v-icon left>mdi-arrow-up</v-icon>Export file
-        </v-btn>
-      </div>
-      <v-simple-table>
-        <template v-slot:default>
-          <thead>
-            <tr>
-              <th class="text-left">รหัสนักศึกษา</th>
-              <th class="text-left">ชื่อนาม-สกุล</th>
-              <th class="text-left">การสอบ</th>
-              <th class="text-left">ภาคเรียนที่</th>
-              <th class="text-left">คะแนนทั้งหมด</th>
-              <th class="text-left">คะแนนที่ได้</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(score, index) in scores" :key="index">
-              <td class="color-dark-blue">{{ score.student.studentId }}</td>
-              <td class="color-dark-blue">
-                {{ score.student.firstName }} {{ score.student.lastName }}
-              </td>
-              <td class="color-dark-blue">{{ score.examType }}</td>
-              <td class="color-dark-blue">{{ score.term }}/{{ score.year }}</td>
-              <td class="color-dark-blue">{{ score.sum }}</td>
-              <td class="color-dark-blue">{{ score.score }}</td>
-            </tr>
-          </tbody>
         </template>
-      </v-simple-table> -->
+      </v-data-table>
     </v-card>
+    <DialogScore
+      :dialog="dialog"
+      :examId="examId"
+      :studentId="studentId"
+      :item="score"
+      @dialogChange="getDialogChange"
+    />
   </div>
 </template>
 <script>
 import { mapState } from "vuex";
+import DialogScore from "@/components/DialogScore";
 import XLSX from "xlsx";
 export default {
   name: "scoreTable",
+  components: {
+    DialogScore,
+  },
   data() {
     return {
       headers: [
@@ -104,6 +79,9 @@ export default {
         { text: "จัดการ", value: "actions", sortable: false },
       ],
       dialog: false,
+      examId: null,
+      studentId: null,
+      score: {},
     };
   },
   computed: {
@@ -137,6 +115,15 @@ export default {
 
       /* generate an XLSX file */
       XLSX.writeFile(wb, fileName);
+    },
+    getDialogChange(event) {
+      this.dialog = event;
+    },
+    showDialog(item) {
+      this.score = item;
+      this.dialog = !this.dialog;
+      this.studentId = item.student.studentId;
+      this.examId = item.examId;
     },
   },
 };

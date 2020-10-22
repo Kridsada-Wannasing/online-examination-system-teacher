@@ -147,7 +147,7 @@ import qs from "qs";
 import { mapState } from "vuex";
 export default {
   props: {
-    examId: [Number, String]
+    examId: [Number, String],
   },
   data() {
     return {
@@ -160,9 +160,9 @@ export default {
         {
           text: "รายละเอียดคำถาม",
           value: "data-table-expand",
-          sortable: false
+          sortable: false,
         },
-        { text: "", value: "data-table-select", sortable: false }
+        { text: "", value: "data-table-select", sortable: false },
       ],
       types: ["ปรนัย", "อัตนัย"],
       level: [1, 2, 3, 4, 5],
@@ -174,7 +174,7 @@ export default {
       questionType: "",
       exam: null,
       subject: null,
-      questionsInExam: []
+      questionsInExam: [],
     };
   },
   computed: {
@@ -183,15 +183,15 @@ export default {
     ...mapState("tag", ["tags"]),
     ...mapState("subject", ["subjects"]),
     showExam() {
-      let exam = this.exams.find(exam => exam.examId == this.exam);
+      let exam = this.exams.find((exam) => exam.examId == this.exam);
       return exam.examName;
     },
     showSubject() {
       let subject = this.subjects.find(
-        subject => subject.subjectId == this.subject
+        (subject) => subject.subjectId == this.subject
       );
       return subject.subjectName;
-    }
+    },
   },
   methods: {
     getExams(subjectId) {
@@ -214,10 +214,9 @@ export default {
       this.search();
     },
     search() {
-      console.log(this.exam);
       this.$store.dispatch("question/searchQuestions", {
         examId: this.exam,
-        queryString: qs.stringify(this.query)
+        queryString: qs.stringify(this.query),
       });
     },
     async save() {
@@ -229,9 +228,9 @@ export default {
       this.cancel();
     },
     mapQuestionIdAndExamId() {
-      return this.questionsInExam.map(question => ({
+      return this.questionsInExam.map((question) => ({
         questionId: question.questionId,
-        examId: this.$route.params.examId
+        examId: this.$route.params.examId,
       }));
     },
     async showDialog() {
@@ -241,8 +240,8 @@ export default {
     },
     cancel() {
       this.dialog = !this.dialog;
-    }
-  }
+    },
+  },
 };
 </script>
 

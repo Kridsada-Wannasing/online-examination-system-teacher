@@ -22,7 +22,6 @@ export const mutations = {
     state.questions.push(question);
   },
   ADD_QUESTION_IN_EXAM(state, question) {
-    console.log(question);
     if (state.questionsInExam == undefined) state.questionsInExam = [];
     state.questionsInExam.push(question);
   },

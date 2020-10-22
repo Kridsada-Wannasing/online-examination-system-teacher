@@ -388,7 +388,6 @@ export default {
           candidateNewPassword: this.candidateNewPassword,
         })
         .then((response) => {
-          console.log(response);
           alert(`${response.data.status}: ${response.data.message}`);
           this.logout();
         })
