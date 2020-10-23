@@ -163,10 +163,6 @@ export default {
           return alert("กรุณาเลือกภาคการศึกษา");
         }
 
-        if (!this.examData.authority) {
-          return alert("กรุณาเลือกสิทธิ์การเข้าถึงชุดข้อสอบ");
-        }
-
         if (!this.examData.examName) {
           this.examData.examName = `ข้อสอบวิชา${this.subject.subjectName}  ภาคเรียนที่ ${this.examData.term}/${this.examData.year}`;
         }
