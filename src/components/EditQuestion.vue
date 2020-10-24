@@ -424,8 +424,8 @@ export default {
         this.$store
           .dispatch("question/deleteQuestion", this.question.questionId)
           .then(() => {
-            alert("ลบคำถามเรียบร้อย");
             this.cancel;
+            alert("ลบคำถามเรียบร้อย");
           })
           .catch((error) => alert(error));
     },
