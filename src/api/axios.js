@@ -26,7 +26,7 @@ apiClient.interceptors.request.use(
     }
 
     if (config.data instanceof FormData) {
-      config.headers.post["Content-Type"] = "multipart/form-data";
+      config.headers.common["Content-Type"] = "multipart/form-data";
     }
 
     NProgress.start();
