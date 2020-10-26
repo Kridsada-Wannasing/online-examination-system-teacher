@@ -335,12 +335,21 @@ export default {
       }));
     },
     mapAnswers() {
-      return this.defaultAnswers.map((element) => ({
-        answer: element,
-        score:
-          this.defaultQuestion.sumScoreQuestion / this.defaultAnswers.length,
-        questionId: this.question.questionId,
-      }));
+      if (this.defaultQuestion.questionType == "ปรนัย") {
+        return this.defaultAnswers.map((element) => ({
+          answer: element,
+          score:
+            this.defaultQuestion.sumScoreQuestion / this.defaultAnswers.length,
+          questionId: this.question.questionId,
+        }));
+      } else {
+        return this.defaultAnswers.map((element) => ({
+          answer: element.answer,
+          score:
+            this.defaultQuestion.sumScoreQuestion / this.defaultAnswers.length,
+          questionId: this.question.questionId,
+        }));
+      }
     },
     mapTags() {
       return this.defaultTagsOfQuestion.map((element) => ({
