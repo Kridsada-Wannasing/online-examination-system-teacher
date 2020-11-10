@@ -301,7 +301,9 @@ export default {
   methods: {
     async updateMeeting() {
       if (this.meetingData.startExamDate == this.meeting.startExamDate) {
-        delete this.meetingData.startExamDate;
+        await delete this.meetingData.startExamDate;
+      } else if (this.meetingData.endExamDate == this.meeting.endExamDate) {
+        await delete this.meetingData.endExamDate;
       }
 
       const response = await this.$store.dispatch("meeting/updateMeeting", {
