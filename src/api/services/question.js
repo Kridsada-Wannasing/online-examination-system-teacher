@@ -7,7 +7,7 @@ export default {
     return apiClient.post(`/${endpoint}`, question);
   },
   importQuestionsInExam(questions) {
-    return apiClient.post(`/question-exam/import`, questions);
+    return apiClient.post("/question-exam/import", questions);
   },
   getAllQuestions() {
     return apiClient.get(`/${endpoint}`);
@@ -29,7 +29,7 @@ export default {
       updateQuestion
     );
   },
-  deleteQuestion(questionId) {
-    return apiClient.delete(`${endpoint}/${questionId}`);
-  }
+  deleteQuestion(examId, questionId) {
+    return apiClient.delete(`/question-exam/${examId}/${questionId}`);
+  },
 };

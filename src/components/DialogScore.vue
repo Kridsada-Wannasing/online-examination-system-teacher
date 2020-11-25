@@ -44,6 +44,8 @@
                 :rules="[
                   (v) => !!v || 'ใส่คะแนน',
                   (v) =>
+                    /^\+?(0|[1-9]\d*)$/.test(v) || 'ใส่คะแนนเป็นจำนวนเต็มบวก',
+                  (v) =>
                     v <= item.question.sumScoreQuestion ||
                     `ใส่คะแนนไม่เกิน ${item.question.sumScoreQuestion} คะแนน`,
                 ]"

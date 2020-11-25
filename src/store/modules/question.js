@@ -135,10 +135,11 @@ export const actions = {
       return Promise.reject(error);
     }
   },
-  async deleteQuestion({ commit }, questionId) {
+  async deleteQuestion({ commit }, { examId, questionId }) {
     try {
-      await questionServices.deleteQuestion(questionId);
-      commit("DELETE_QUESTION_IN_EXAM", questionId);
+      await questionServices.deleteQuestion(examId, questionId);
+      await commit("DELETE_QUESTION_IN_EXAM", questionId);
+      return Promise.resolve();
     } catch (error) {
       return Promise.reject(error);
     }

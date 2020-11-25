@@ -264,6 +264,12 @@ export default {
   }),
   methods: {
     async updateQuestion() {
+      if (!this.defaultQuestion.question.length) {
+        return alert("กรุณาใส่คำถาม");
+      } else if (this.defaultQuestion.question.length > 255) {
+        return alert("ใส่คำถามไม่เกิน 255 ตัวอักษร");
+      }
+
       if (this.defaultQuestion.questionType == "ปรนัย") {
         if (
           this.defaultChoices == undefined ||
@@ -293,6 +299,14 @@ export default {
         this.defaultTagsOfQuestion.length == 0
       ) {
         return alert("กรูณาใส่ป้ายระบุ(tag)");
+      }
+
+      if (!this.defaultQuestion.sumScoreQuestion) {
+        return alert("กรูณาใส่คะแนน");
+      } else if (
+        !/^\+?(0|[1-9]\d*)$/.test(this.defaultQuestion.sumScoreQuestion)
+      ) {
+        return alert("ใส่คะแนนเป็นจำนวนเต็มบวก");
       }
 
       const updatedQuestion = await this.$store.dispatch(
@@ -431,7 +445,10 @@ export default {
     deleteQuestion() {
       confirm("คุณต้องการลบคำถามข้อนี้ใช่ไหม") &&
         this.$store
-          .dispatch("question/deleteQuestion", this.question.questionId)
+          .dispatch("question/deleteQuestion", {
+            examId: this.$route.params.examId,
+            questionId: this.question.questionId,
+          })
           .then(() => {
             this.cancel;
             alert("ลบคำถามเรียบร้อย");

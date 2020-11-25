@@ -274,7 +274,9 @@ export default {
         }
 
         if (!this.question) {
-          return alert("กรูณาใส่คำถาม");
+          return alert("กรุณาใส่คำถาม");
+        } else if (this.question > 255) {
+          return alert("ใส่คำถามไม่เกิน 255 ตัวอักษร");
         }
 
         if (this.questionType == "ปรนัย") {
@@ -297,6 +299,8 @@ export default {
 
         if (!this.score) {
           return alert("กรูณาใส่คะแนน");
+        } else if (!/^\+?(0|[1-9]\d*)$/.test(this.score)) {
+          return alert("ใส่คะแนนเป็นจำนวนเต็มบวก");
         }
 
         const response = await this.$store.dispatch("question/createQuestion", {

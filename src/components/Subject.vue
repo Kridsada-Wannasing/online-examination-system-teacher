@@ -67,7 +67,13 @@ export default {
   methods: {
     async createSubject() {
       if (!this.subjectId) return alert("กรุณาใส่รหัสวิชา");
-      else if (!this.subjectName) return alert("กรุณาใส่ชื่อวิชา");
+      else if (this.subjectId.length > 8)
+        return alert("ใส่รหัสวิชาไม่เกิน 8 ตัวอักษร");
+
+      if (!this.subjectName) return alert("กรุณาใส่ชื่อวิชา");
+      else if (this.subjectName.length > 50)
+        return alert("ใส่ชื่อวิชาไม่เกิน 50 ตัวอักษร");
+
       try {
         const response = await this.$store.dispatch("subject/createSubject", {
           subjectId: this.subjectId,
